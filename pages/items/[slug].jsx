@@ -86,11 +86,12 @@ const ItemPage = ({ item, token }) => {
               <BackButton onClick={() => router.back()}>
                 <ArrowBackIcon />
               </BackButton>
-              {tags.split(',').map((tag) => (
-                <p key={tag} onClick={() => router.push(`/items/search?term=${tag}&page=1`)}>
-                  {tag}
-                </p>
-              ))}
+              {tags.length > 1 &&
+                tags.split(',').map((tag) => (
+                  <p key={tag} onClick={() => router.push(`/items/search?term=${tag}&page=1`)}>
+                    {tag}
+                  </p>
+                ))}
               <IconContainer onClick={() => deleteItem()}>
                 <DeleteIcon />
               </IconContainer>

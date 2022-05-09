@@ -38,14 +38,7 @@ export async function getServerSideProps({ req }) {
     }
   }
 
-  const res = await fetch(`${API_URL}/items`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-
-  const { data } = await res.json()
-  const categories = [...new Set(data.map((cat) => cat.attributes.category))]
+  const categories = ['books', 'magazines', 'comics', 'videogames', 'music']
 
   return {
     props: { categories },
