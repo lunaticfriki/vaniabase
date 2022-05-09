@@ -204,6 +204,7 @@ const EditItem = ({ item, token }) => {
               <option value="comics">Comics</option>
               <option value="videogames">Videogames</option>
               <option value="magazines">Magazines</option>
+              <option value="video">Video</option>
             </Select>
             {errors.category && <FormErrorMessage>{errors.category}</FormErrorMessage>}
           </InputStyled>

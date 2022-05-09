@@ -20,7 +20,7 @@ export default function Home({ items, categories }) {
 export async function getServerSideProps({ req }) {
   const { token } = parseCookies(req)
 
-  const categories = ['books', 'videogames', 'music', 'magazines', 'comics']
+  const categories = ['books', 'videogames', 'music', 'magazines', 'comics', 'video']
 
   const res = await fetch(`${API_URL}/items?sort=createdAt:desc&populate=*`, {
     headers: {

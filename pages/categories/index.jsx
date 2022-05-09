@@ -38,7 +38,7 @@ export async function getServerSideProps({ req }) {
     }
   }
 
-  const categories = ['books', 'magazines', 'comics', 'videogames', 'music']
+  const categories = ['books', 'videogames', 'music', 'magazines', 'comics', 'video']
 
   return {
     props: { categories },
