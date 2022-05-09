@@ -10,14 +10,15 @@ class MyDocument extends Document {
       <Html>
         <Head>
           <link
-            href='https://fonts.googleapis.com/css2?family=Tomorrow:wght@300;500;700&display=swap'
-            rel='stylesheet'
+            href="https://fonts.googleapis.com/css2?family=Tomorrow:wght@300;500;700&display=swap"
+            rel="stylesheet"
           />
+          <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         </Head>
         <body>
-        <Main />
-        <NextScript />
-        <div id='modal-root'></div>
+          <Main />
+          <NextScript />
+          <div id="modal-root"></div>
         </body>
       </Html>
     )
