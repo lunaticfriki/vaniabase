@@ -11,7 +11,7 @@ import { parseCookies } from '../../helpers'
 
 export default function SearchPage({ items, page, total, term }) {
   return (
-    <Layout title="| Search">
+    <Layout title={`| Search: ${term}`}>
       <TitleLabelContainer>
         <TitleLabel>
           Search results{' '}
