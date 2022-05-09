@@ -156,7 +156,7 @@ const ItemTitleContainer = styled.div`
   }
 
   ${device.md`
-    min-width: 400px;
+    min-width: 500px;
     `}
 `
 const IconContainer = styled.div`
