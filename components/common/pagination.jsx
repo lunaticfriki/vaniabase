@@ -6,6 +6,8 @@ import { PER_PAGE } from '../../config'
 const Pagination = ({ page, total, backUrl, nextUrl }) => {
   const lastPage = Math.ceil(total / PER_PAGE)
 
+  console.log(`Last page: ${lastPage}, page: ${page}, total: ${total}`)
+
   return (
     <PaginationContainer>
       {page > 1 && <ArrowBack page={page} url={backUrl} />}

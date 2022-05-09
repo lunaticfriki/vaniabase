@@ -10,7 +10,6 @@ import { API_URL } from '../../config'
 import Pagination from '../../components/common/pagination'
 
 export default function All({ items, page, total, data }) {
-  console.log(data)
   return (
     <Layout title="| All items">
       <TitleLabelContainer>

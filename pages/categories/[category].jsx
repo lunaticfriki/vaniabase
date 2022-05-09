@@ -106,7 +106,7 @@ export async function getServerSideProps({ query: { category, page }, req }) {
       data: categoryItems,
       category,
       page: +page,
-      total: userData.items.length,
+      total: categoryItems.length,
     },
   }
 }
