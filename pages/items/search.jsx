@@ -134,7 +134,9 @@ export async function getServerSideProps({ query: { term, page }, req }) {
 
   const userData = await user.json()
 
-  if (!userData.items || userData.items.length < 1) {
+  const items = data.filter((item) => userData.items.some((el) => el.id === item.id))
+
+  if (!items || items.length < 1) {
     return {
       redirect: {
         destination: '/404',
@@ -142,8 +144,6 @@ export async function getServerSideProps({ query: { term, page }, req }) {
       },
     }
   }
-
-  const items = data.filter((item) => userData.items.some((el) => el.id === item.id))
 
   return {
     props: { items: itemsPerPage(items, +page), page: +page, total: items.length, term },

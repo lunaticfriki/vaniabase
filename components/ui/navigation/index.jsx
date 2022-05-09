@@ -172,16 +172,24 @@ const NavigationList = styled.ul`
   `};
 `
 const NavigationElement = styled.li`
-  ${bggradient};
   ${transition};
 
   display: flex;
   align-items: center;
   padding: 0.5rem;
   font-size: 1.2rem;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  //background-clip: text;
+  //-webkit-background-clip: text;
+  //-webkit-text-fill-color: transparent;
+
+  svg {
+    ${transition};
+    
+    color: var(--pink);
+    
+    ${device.md`
+      color: var(--secondary_white);
+    `}
 
   &:hover {
     cursor: pointer;
