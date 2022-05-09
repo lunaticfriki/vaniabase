@@ -87,13 +87,13 @@ export async function getServerSideProps({ query: { page }, req }) {
     }
   }
 
-  const items = data.filter((item) => userData.items.map((el) => el.id === item.id))
+  const items = data.filter((item) => userData.items.some((el) => el.id === item.id))
 
   return {
     props: {
       items,
       page: +page,
-      total: meta.pagination.total,
+      total: userData.items.length,
       data,
     },
   }
