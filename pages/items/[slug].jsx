@@ -88,7 +88,10 @@ const ItemPage = ({ item, token }) => {
               </BackButton>
               {tags.length > 1 &&
                 tags.split(',').map((tag) => (
-                  <p key={tag} onClick={() => router.push(`/items/search?term=${tag}&page=1`)}>
+                  <p
+                    key={tag}
+                    onClick={() => router.push(`/items/search?term=${tag.trim()}&page=1`)}
+                  >
                     {tag}
                   </p>
                 ))}
