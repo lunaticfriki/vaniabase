@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router'
 import styled from '@emotion/styled'
-import { API_URL, itemsPerPage } from '../../config'
+import { API_URL } from '../../config'
 import { device } from '../../styles/utils'
 import Layout from '../../components/layouts'
 import ItemPreview from '../../components/items/ItemPreview'
 import { TitleLabelContainer, TitleLabel } from '../../components/common/titles'
-import { START, PER_PAGE } from '../../config'
 import Pagination from '../../components/common/pagination'
 import { parseCookies } from '../../helpers'
 
@@ -73,12 +72,15 @@ export async function getServerSideProps({ query: { category, page }, req }) {
     }
   }
 
-  const res = await fetch(`${API_URL}/items?filters[category]=${category}&populate=*`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-  const { data } = await res.json()
+  const res = await fetch(
+    `${API_URL}/items?filters[category]=${category}&pagination[page]=${page}&populate=*`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  )
+  const { data, meta } = await res.json()
 
   const user = await fetch(`${API_URL}/users/me`, {
     headers: {
@@ -101,10 +103,10 @@ export async function getServerSideProps({ query: { category, page }, req }) {
 
   return {
     props: {
-      data: itemsPerPage(categoryItems, +page),
+      data: categoryItems,
       category,
       page: +page,
-      total: categoryItems.length,
+      total: meta.pagination.total,
     },
   }
 }

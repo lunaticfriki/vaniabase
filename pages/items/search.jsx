@@ -5,7 +5,7 @@ import Layout from '../../components/layouts'
 import { device } from '../../styles/utils'
 import { TitleLabelContainer, TitleLabel } from '../../components/common/titles'
 import { LastItemsEmptyMessage } from '../../components/items/LastItems'
-import { API_URL, itemsPerPage } from '../../config'
+import { API_URL } from '../../config'
 import Pagination from '../../components/common/pagination'
 import { parseCookies } from '../../helpers'
 
@@ -119,12 +119,12 @@ export async function getServerSideProps({ query: { term, page }, req }) {
       encodeValuesOnly: true,
     }
   )
-  const res = await fetch(`${API_URL}/items?${query}&populate=*`, {
+  const res = await fetch(`${API_URL}/items?${query}&pagination[page]=${page}&populate=*`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   })
-  const { data } = await res.json()
+  const { data, meta } = await res.json()
 
   const user = await fetch(`${API_URL}/users/me`, {
     headers: {
@@ -146,6 +146,6 @@ export async function getServerSideProps({ query: { term, page }, req }) {
   }
 
   return {
-    props: { items: itemsPerPage(items, +page), page: +page, total: items.length, term },
+    props: { items, page: +page, total: meta.pagination.total, term },
   }
 }

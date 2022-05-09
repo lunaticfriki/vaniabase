@@ -6,10 +6,11 @@ import Layout from '../../components/layouts'
 import { device } from '../../styles/utils'
 import { TitleLabelContainer, TitleLabel } from '../../components/common/titles'
 import { LastItemsEmptyMessage } from '../../components/items/LastItems'
-import { API_URL, itemsPerPage } from '../../config'
+import { API_URL } from '../../config'
 import Pagination from '../../components/common/pagination'
 
-export default function All({ items, page, total }) {
+export default function All({ items, page, total, data }) {
+  console.log(data)
   return (
     <Layout title="| All items">
       <TitleLabelContainer>
@@ -62,12 +63,12 @@ export async function getServerSideProps({ query: { page }, req }) {
     }
   }
 
-  const res = await fetch(`${API_URL}/items?sort=title:asc&populate=*`, {
+  const res = await fetch(`${API_URL}/items?asc&pagination[page]=${page}&populate=*`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   })
-  const { data } = await res.json()
+  const { data, meta } = await res.json()
 
   const user = await fetch(`${API_URL}/users/me`, {
     headers: {
@@ -86,9 +87,14 @@ export async function getServerSideProps({ query: { page }, req }) {
     }
   }
 
-  const items = data.filter((item) => userData.items.some((el) => el.id === item.id))
+  const items = data.filter((item) => userData.items.map((el) => el.id === item.id))
 
   return {
-    props: { items: itemsPerPage(items, +page), page: +page, total: items.length },
+    props: {
+      items,
+      page: +page,
+      total: meta.pagination.total,
+      data,
+    },
   }
 }
