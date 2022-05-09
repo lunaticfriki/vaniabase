@@ -46,7 +46,7 @@ const ItemPage = ({ item, token }) => {
   } = item[0]?.attributes
 
   return (
-    <Layout>
+    <Layout title={`| ${title}`}>
       <Section image={image.data?.attributes.url}>
         <ItemContainer>
           <ItemTitleContainer>

@@ -3,7 +3,7 @@ import Layout from '../components/layouts'
 
 const ErrorPage = () => {
   return (
-    <Layout>
+    <Layout title="| Not found">
       <ErrorPageStyled>
         <h3>ERROR 404</h3>
         <h1>Ups, sorry, we didn't found what you were looking for</h1>

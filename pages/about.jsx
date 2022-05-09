@@ -5,7 +5,7 @@ const AboutPage = () => {
   const year = new Date().getFullYear()
 
   return (
-    <Layout>
+    <Layout title="| About">
       <AboutPageStyled>
         <h2>Welcome to Vaniabase!</h2>
         <i>@lunaticfriki, {year}</i>

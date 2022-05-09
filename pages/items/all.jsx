@@ -11,7 +11,7 @@ import Pagination from '../../components/common/pagination'
 
 export default function All({ items, page, total }) {
   return (
-    <Layout>
+    <Layout title="| All items">
       <TitleLabelContainer>
         <TitleLabel>
           All items <span>({total})</span>

@@ -36,7 +36,7 @@ const Login = () => {
   const { email, password } = values
 
   return (
-    <Layout>
+    <Layout title="| Login">
       <AuthStyled>
         <AuthTitle>Login</AuthTitle>
         <Form onSubmit={handleSubmit} noValidate>

@@ -76,7 +76,7 @@ const NewItem = ({ token }) => {
     values
 
   return (
-    <Layout>
+    <Layout title="| New Item">
       <AuthStyled>
         <AuthTitle>New Item</AuthTitle>
         <Form onSubmit={handleSubmit} noValidate>

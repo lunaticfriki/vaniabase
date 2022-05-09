@@ -8,7 +8,7 @@ import { Line } from '../components/common/line'
 
 export default function Home({ items, categories }) {
   return (
-    <Layout>
+    <Layout title="| Home">
       <Categories categories={categories} />
       <Line />
       <LastItems items={items} />

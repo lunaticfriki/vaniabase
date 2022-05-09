@@ -11,7 +11,7 @@ import { parseCookies } from '../../helpers'
 
 const CategoryPage = ({ data, category, page, total }) => {
   return (
-    <Layout>
+    <Layout title={`| Category: ${category}`}>
       <TitleLabelContainer>
         <TitleLabel>
           {category} <span>({total})</span>

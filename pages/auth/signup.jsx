@@ -36,7 +36,7 @@ const Signup = () => {
   const { username, email, password, repeat } = values
 
   return (
-    <Layout>
+    <Layout title="| Signup">
       <AuthStyled>
         <AuthTitle>Signup</AuthTitle>
         <Form onSubmit={handleSubmit} noValidate>

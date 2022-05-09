@@ -8,7 +8,7 @@ import { parseCookies } from '../../helpers'
 
 const CategoriesPage = ({ categories }) => {
   return (
-    <Layout>
+    <Layout title="| Categories">
       <CategoryPageContainer>
         <Categories categories={categories} />
         <Line />

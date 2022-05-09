@@ -105,7 +105,7 @@ const EditItem = ({ item, token }) => {
     values
 
   return (
-    <Layout>
+    <Layout title={`| Edit ${title}`}>
       <AuthStyled>
         <AuthTitle>Edit Item</AuthTitle>
         <Form onSubmit={handleSubmit} noValidate>
