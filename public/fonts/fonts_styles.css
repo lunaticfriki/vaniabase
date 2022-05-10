@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Tomorrow';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/Tomorrow-Regular.ttf');
+    url('../fonts/Tomorrow-Regular.ttf?#iefix') format('embedded-opentype'),
+    url('../fonts/Tomorrow-Regular.ttf') format('truetype'),
+}

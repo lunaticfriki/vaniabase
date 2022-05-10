@@ -9,10 +9,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Tomorrow:wght@300;500;700&display=swap"
-            rel="stylesheet"
-          />
+          <link href="/fonts/fonts_styles.css" rel="stylesheet" />
           <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         </Head>
         <body>
