@@ -13,7 +13,8 @@ const colors = css`
 `
 
 const sizes = {
-  sm: '500px',
+  xs: '300px',
+  sm: '550px',
   md: '769px',
   lg: '972px',
   xl: '1200px',

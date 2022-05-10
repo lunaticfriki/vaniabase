@@ -1,14 +1,15 @@
+import React from 'react'
 import styled from '@emotion/styled'
+import { parseCookies } from '../../helpers'
 import qs from 'qs'
 import ItemPreview from '../../components/items/ItemPreview'
 import Layout from '../../components/layouts'
-import { device } from '../../styles/utils'
 import { TitleLabelContainer, TitleLabel } from '../../components/common/titles'
+import { ItemsContainer } from './all'
 import { LastItemsEmptyMessage } from '../../components/items/LastItems'
 import { API_URL } from '../../config'
 import Pagination from '../../components/common/pagination'
-import { parseCookies } from '../../helpers'
-import React from 'react'
+import { CategoryListFooter } from '../categories/[category]'
 
 export default function SearchPage({ items, page, total, term, pages }) {
   return (
@@ -24,38 +25,32 @@ export default function SearchPage({ items, page, total, term, pages }) {
       {items.length === 0 ? (
         <LastItemsEmptyMessage>Sorry, nothing found</LastItemsEmptyMessage>
       ) : (
-        <ItemsContainer>
-          {items.map((item) => (
-            <ItemPreview item={item.attributes} key={item.id} id={item.id} />
-          ))}
-          <Pagination
-            page={page}
-            total={total}
-            backUrl={`/items/search/?term=${term}&page=${page - 1}`}
-            nextUrl={`/items/search/?term=${term}&page=${page + 1}`}
-          />
-          <TitleLabelContainer>
-            <TitleLabel>
-              <span>{page}</span> / <span>{pages}</span>
-            </TitleLabel>
-          </TitleLabelContainer>
-        </ItemsContainer>
+        <>
+          <ItemsContainer>
+            {items.map((item) => (
+              <ItemPreview item={item.attributes} key={item.id} id={item.id} />
+            ))}
+          </ItemsContainer>
+          <SearchListFooter>
+            <Pagination
+              page={page}
+              total={total}
+              backUrl={`/items/search/?term=${term}&page=${page - 1}`}
+              nextUrl={`/items/search/?term=${term}&page=${page + 1}`}
+            />
+            <TitleLabelContainer>
+              <TitleLabel>
+                <span>{page}</span> / <span>{pages}</span>
+              </TitleLabel>
+            </TitleLabelContainer>
+          </SearchListFooter>
+        </>
       )}
     </Layout>
   )
 }
 
-const ItemsContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: auto;
-
-  ${device.xl`
-    width: 70%;
-  `}
-`
+const SearchListFooter = styled(CategoryListFooter)``
 
 export async function getServerSideProps({ query: { term, page }, req }) {
   const { token } = parseCookies(req)

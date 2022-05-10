@@ -43,15 +43,30 @@ export default function All({ items, page, total, pages }) {
   )
 }
 
-const ItemsContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+export const ItemsContainer = styled.div`
+  width: 90%;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  place-content: center;
+  place-items: center;
   margin: auto;
 
-  ${device.xl`
+  ${device.xs`
+    grid-template-columns: repeat(2, 1fr);
+  `}
+
+  ${device.sm`
+    grid-template-columns: repeat(3, 1fr);
+  `}
+
+  ${device.md`
     width: 70%;
+    grid-template-columns: repeat(4, 1fr);
+  `}
+  
+  ${device.lg`
+    width: 50%;
+    grid-template-columns: repeat(5, 1fr);
   `}
 `
 

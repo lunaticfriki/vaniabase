@@ -1,13 +1,12 @@
-import { useRouter } from 'next/router'
 import styled from '@emotion/styled'
 import { API_URL } from '../../config'
-import { device } from '../../styles/utils'
 import Layout from '../../components/layouts'
 import ItemPreview from '../../components/items/ItemPreview'
 import { TitleLabelContainer, TitleLabel } from '../../components/common/titles'
 import Pagination from '../../components/common/pagination'
 import { parseCookies } from '../../helpers'
 import React from 'react'
+import { ItemsContainer } from '../items/all'
 
 const CategoryPage = ({ data, category, page, total, pages }) => {
   return (
@@ -17,55 +16,43 @@ const CategoryPage = ({ data, category, page, total, pages }) => {
           {category} <span>({total})</span>
         </TitleLabel>
       </TitleLabelContainer>
-      <CategoryContainer>
-        <CategoryList>
-          {data.map((el) => (
-            <ItemPreview item={el.attributes} key={el.id} id={el.id} />
-          ))}
-        </CategoryList>
-        {data.length === 0 ? (
-          <SearchMessage> Sorry, nothing found</SearchMessage>
-        ) : (
-          <>
-            <Pagination
-              page={page}
-              total={total}
-              backUrl={`/categories/${category}?page=${page - 1}`}
-              nextUrl={`/categories/${category}?page=${page + 1}`}
-            />
-            <TitleLabelContainer>
-              <TitleLabel>
-                <span>{page}</span> / <span>{pages}</span>
-              </TitleLabel>
-            </TitleLabelContainer>
-          </>
-        )}
-      </CategoryContainer>
+      <ItemsContainer>
+        {data.map((el) => (
+          <ItemPreview item={el.attributes} key={el.id} id={el.id} />
+        ))}
+      </ItemsContainer>
+      {data.length === 0 ? (
+        <SearchMessage> Sorry, nothing found</SearchMessage>
+      ) : (
+        <CategoryListFooter>
+          <Pagination
+            page={page}
+            total={total}
+            backUrl={`/categories/${category}?page=${page - 1}`}
+            nextUrl={`/categories/${category}?page=${page + 1}`}
+          />
+          <TitleLabelContainer>
+            <TitleLabel>
+              <span>{page}</span> / <span>{pages}</span>
+            </TitleLabel>
+          </TitleLabelContainer>
+        </CategoryListFooter>
+      )}
     </Layout>
   )
 }
 export default CategoryPage
 
-const CategoryContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  flex-direction: column;
-  margin: auto;
-
-  ${device.xl`
-    width: 70%;
-  `}
-`
-const CategoryList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: auto;
-`
 const SearchMessage = styled.p`
   text-align: center;
+`
+
+export const CategoryListFooter = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `
 
 export async function getServerSideProps({ query: { category, page }, req }) {
