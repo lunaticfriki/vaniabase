@@ -7,8 +7,9 @@ import ItemPreview from '../../components/items/ItemPreview'
 import { TitleLabelContainer, TitleLabel } from '../../components/common/titles'
 import Pagination from '../../components/common/pagination'
 import { parseCookies } from '../../helpers'
+import React from 'react'
 
-const CategoryPage = ({ data, category, page, total }) => {
+const CategoryPage = ({ data, category, page, total, pages }) => {
   return (
     <Layout title={`| Category: ${category}`}>
       <TitleLabelContainer>
@@ -25,12 +26,19 @@ const CategoryPage = ({ data, category, page, total }) => {
         {data.length === 0 ? (
           <SearchMessage> Sorry, nothing found</SearchMessage>
         ) : (
-          <Pagination
-            page={page}
-            total={total}
-            backUrl={`/categories/${category}?page=${page - 1}`}
-            nextUrl={`/categories/${category}?page=${page + 1}`}
-          />
+          <>
+            <Pagination
+              page={page}
+              total={total}
+              backUrl={`/categories/${category}?page=${page - 1}`}
+              nextUrl={`/categories/${category}?page=${page + 1}`}
+            />
+            <TitleLabelContainer>
+              <TitleLabel>
+                <span>{page}</span> / <span>{pages}</span>
+              </TitleLabel>
+            </TitleLabelContainer>
+          </>
         )}
       </CategoryContainer>
     </Layout>
@@ -107,6 +115,7 @@ export async function getServerSideProps({ query: { category, page }, req }) {
       category,
       page: +page,
       total: categoryItems.length,
+      pages: meta.pagination.pageCount,
     },
   }
 }

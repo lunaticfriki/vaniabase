@@ -8,8 +8,9 @@ import { LastItemsEmptyMessage } from '../../components/items/LastItems'
 import { API_URL } from '../../config'
 import Pagination from '../../components/common/pagination'
 import { parseCookies } from '../../helpers'
+import React from 'react'
 
-export default function SearchPage({ items, page, total, term }) {
+export default function SearchPage({ items, page, total, term, pages }) {
   return (
     <Layout title={`| Search: ${term}`}>
       <TitleLabelContainer>
@@ -21,7 +22,7 @@ export default function SearchPage({ items, page, total, term }) {
         </TitleLabel>
       </TitleLabelContainer>
       {items.length === 0 ? (
-        <LastItemsEmptyMessage>Sorry, nothing to show yet</LastItemsEmptyMessage>
+        <LastItemsEmptyMessage>Sorry, nothing found</LastItemsEmptyMessage>
       ) : (
         <ItemsContainer>
           {items.map((item) => (
@@ -33,6 +34,11 @@ export default function SearchPage({ items, page, total, term }) {
             backUrl={`/items/search/?term=${term}&page=${page - 1}`}
             nextUrl={`/items/search/?term=${term}&page=${page + 1}`}
           />
+          <TitleLabelContainer>
+            <TitleLabel>
+              <span>{page}</span> / <span>{pages}</span>
+            </TitleLabel>
+          </TitleLabelContainer>
         </ItemsContainer>
       )}
     </Layout>
@@ -136,16 +142,13 @@ export async function getServerSideProps({ query: { term, page }, req }) {
 
   const items = data.filter((item) => userData.items.some((el) => el.id === item.id))
 
-  if (!items || items.length < 1) {
-    return {
-      redirect: {
-        destination: '/404',
-        permanent: false,
-      },
-    }
-  }
-
   return {
-    props: { items, page: +page, total: meta.pagination.total, term },
+    props: {
+      items,
+      page: +page,
+      total: meta.pagination.total,
+      term,
+      pages: meta.pagination.pageCount,
+    },
   }
 }

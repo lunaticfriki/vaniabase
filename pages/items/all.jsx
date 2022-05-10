@@ -9,7 +9,7 @@ import { LastItemsEmptyMessage } from '../../components/items/LastItems'
 import { API_URL } from '../../config'
 import Pagination from '../../components/common/pagination'
 
-export default function All({ items, page, total, data }) {
+export default function All({ items, page, total, pages }) {
   return (
     <Layout title="| All items">
       <TitleLabelContainer>
@@ -32,6 +32,11 @@ export default function All({ items, page, total, data }) {
             backUrl={`/items/all?page=${page - 1}`}
             nextUrl={`/items/all?page=${page + 1}`}
           />
+          <TitleLabelContainer>
+            <TitleLabel>
+              <span>{page}</span> / <span>{pages}</span>
+            </TitleLabel>
+          </TitleLabelContainer>
         </>
       )}
     </Layout>
@@ -94,6 +99,7 @@ export async function getServerSideProps({ query: { page }, req }) {
       page: +page,
       total: userData.items.length,
       data,
+      pages: meta.pagination.pageCount,
     },
   }
 }
