@@ -7,7 +7,7 @@ const colors = css`
   --gray: #cfcccf;
   --pink: #cc004e;
   --yellow: #e6f977;
-  --dark_blue: #0f090f;
+  --dark_blue: rgb(2, 0, 36);
   --secondary_white: #f4f4f4;
   --blur: rgba(0, 0, 0, 0.8);
 `
@@ -32,6 +32,24 @@ const device = Object.keys(sizes).reduce((acc, label) => {
 const transition = css`
   transition: 0.3s all ease-in-out;
 `
+const bodyGradient = css`
+  background: linear-gradient(
+    0deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(8, 1, 8, 1) 35%,
+    rgba(85, 20, 72, 1) 100%
+  );
+`
+
+const bggradient = css`
+  background: linear-gradient(
+    90deg,
+    rgba(210, 4, 98, 1) 0%,
+    rgba(121, 9, 117, 1) 35%,
+    rgba(136, 7, 53, 1) 100%
+  );
+`
+
 const globalStyle = css`
   :root {
     ${colors}
@@ -43,10 +61,11 @@ const globalStyle = css`
   }
   html,
   body {
+    ${bodyGradient}
+
     font-family: Tomorrow, sans-serif;
     font-size: 16px;
     line-height: 1.5;
-    background-color: var(--dark_blue);
   }
   main,
   footer {
@@ -74,20 +93,8 @@ const LayoutStyled = styled.div`
   min-height: 100vh;
   display: grid;
   grid-template-rows: 5rem 1fr 10rem;
-  background: url('/images/pattern.jpg') no-repeat fixed;
-  background-size: cover;
   color: var(--secondary_white);
   position: relative;
-
-  &:before {
-    position: absolute;
-    content: '';
-    width: 100%;
-    height: 100%;
-    background-color: var(--blur);
-    border-radius: 5px;
-    margin: auto;
-  }
 `
 
 const fadeIn = keyframes`
@@ -97,15 +104,6 @@ const fadeIn = keyframes`
 100% {
   opacity: 1;
 }
-`
-
-const bggradient = css`
-  background: linear-gradient(
-    90deg,
-    rgba(210, 4, 98, 1) 0%,
-    rgba(121, 9, 117, 1) 35%,
-    rgba(136, 7, 53, 1) 100%
-  );
 `
 
 export { colors, sizes, device, globalStyle, LayoutStyled, transition, fadeIn, bggradient }

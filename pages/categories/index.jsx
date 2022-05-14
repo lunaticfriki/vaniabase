@@ -2,8 +2,6 @@ import styled from '@emotion/styled'
 import Layout from '../../components/layouts'
 import Categories from '../../components/categories'
 import { Line } from '../../components/common/line'
-import { arrayOf } from 'prop-types'
-import { API_URL } from '../../config'
 import { parseCookies } from '../../helpers'
 
 const CategoriesPage = ({ categories }) => {
