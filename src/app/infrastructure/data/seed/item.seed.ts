@@ -1,4 +1,4 @@
-import { Item } from '@domain/item';
+import { Item } from '@app/domain/item/item';
 
 export const ITEM_SEED: Item[] = [
   Item.create(
