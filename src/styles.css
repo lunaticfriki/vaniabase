@@ -1,1 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'Play';
+  src: url('assets/fonts/Play-Regular.ttf') format('truetype'),
+    url('/assets/fonts/Play-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PlayBold';
+  src: url('/assets/fonts/Play-Bold.ttf') format('truetype'),
+    url('/assets/fonts/Play-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+*,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Play', 'Arial', sans-serif;
+  line-height: 1.5;
+  color: #ffffff85;
+  background-color: #13020b;
+}
+
+h1,
+h2,
+h3 {
+  color: rgb(204, 239, 3);
+  text-transform: uppercase;
+}
+
+span {
+  color: rgb(204, 239, 3);
+}
+
+a {
+  text-decoration: none;
+}
