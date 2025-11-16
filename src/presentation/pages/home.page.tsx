@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useItemReadService } from '../../app/item.readService';
+import { HeaderComponent } from '../components/header.component';
 
 export const Home = () => {
   const { state, actions } = useItemReadService();
@@ -16,7 +17,7 @@ export const Home = () => {
 
   return (
     <>
-      <h1>VANIABASE</h1>
+      <HeaderComponent />
       <pre>{JSON.stringify(state.value.items, null, 2)}</pre>
     </>
   );
