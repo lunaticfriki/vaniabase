@@ -138,6 +138,10 @@ function createItemReadService() {
     return categoryWithItems || state.value.categories[0];
   };
 
+  const getCompletedItems = (): Item[] => {
+    return state.value.items.filter((item) => item.completed === true);
+  };
+
   const clearError = (): void => {
     state.value = { ...state.value, error: null };
   };
@@ -153,6 +157,7 @@ function createItemReadService() {
       getCategories,
       getItemsByCategory,
       getDefaultCategory,
+      getCompletedItems,
       getItem,
       clearError,
       reset,

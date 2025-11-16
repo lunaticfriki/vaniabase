@@ -18,6 +18,13 @@ export const ContentComponent = () => {
         Last Items
       </Link>
       <Link
+        to="/completed"
+        data-text="Completed"
+        className="cyber-button text-pink-500 hover:text-white text-sm sm:text-base whitespace-nowrap"
+      >
+        Completed
+      </Link>
+      <Link
         to="/search"
         data-text="Search"
         className="cyber-button text-pink-500 hover:text-white text-sm sm:text-base whitespace-nowrap"

@@ -7,6 +7,7 @@ import { AllItemsRoute } from './allItems.route';
 import { LastItemsRoute } from './lastItems.route';
 import { SearchRoute } from './search.route';
 import { CategoriesRoute } from './categories.route';
+import { CompletedRoute } from './completed.route';
 
 export const MainRoutes = () => {
   return (
@@ -17,6 +18,7 @@ export const MainRoutes = () => {
         <Route path="item/:id" element={<ItemRoute />} />
         <Route path="all-items" element={<AllItemsRoute />} />
         <Route path="last-items" element={<LastItemsRoute />} />
+        <Route path="completed" element={<CompletedRoute />} />
         <Route path="search" element={<SearchRoute />} />
         <Route path="categories" element={<CategoriesRoute />} />
         <Route path="categories/:category" element={<CategoriesRoute />} />

@@ -29,6 +29,7 @@ export const MenuComponent = () => {
     { path: '/', label: 'Home' },
     { path: '/all-items', label: 'All Items' },
     { path: '/last-items', label: 'Last Items' },
+    { path: '/completed', label: 'Completed' },
     { path: '/search', label: 'Search' },
     { path: '/categories', label: 'Categories' },
     { path: '/about', label: 'About' },
