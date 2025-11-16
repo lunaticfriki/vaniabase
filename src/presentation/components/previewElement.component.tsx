@@ -15,7 +15,7 @@ export const PreviewElementComponent = ({ item }: PreviewElementProps) => {
         <img
           src={item.imageUrl}
           alt={item.name}
-          className="w-full aspect-2/3 object-cover rounded border-2 border-pink-500"
+          className="w-full aspect-2/3 object-cover rounded"
         />
         <h3 className="mt-2 text-white text-center text-sm line-clamp-2">
           {item.name}

@@ -132,16 +132,43 @@ function runFixMissingCoversScript(): Promise<void> {
   });
 }
 
-async function promptUser(): Promise<void> {
-  const hasMissingCovers = checkMissingCovers();
+function reloadSeedData() {
+  const seedPath = join(__dirname, 'data', 'items.seed.json');
+  const newData = JSON.parse(readFileSync(seedPath, 'utf-8'));
+  itemsData.length = 0;
+  itemsData.push(...newData);
+  console.log(`\n✓ Reloaded ${itemsData.length} items from seed\n`);
+}
 
-  if (!hasMissingCovers) {
-    console.log('✓ All book covers are already up to date!\n');
-    return;
-  }
+function listSeedElements() {
+  console.log('\n📚 Current Seed Data:\n');
+  console.log('═'.repeat(80));
 
-  console.log('⚠️  Some book covers are missing or using placeholders\n');
+  itemsData.forEach((item, index) => {
+    const coverStatus = item.imageUrl.includes('covers.openlibrary.org')
+      ? '✓'
+      : item.imageUrl.includes('logo.ts')
+      ? '📘'
+      : '✗';
+    console.log(`\n${index + 1}. ${item.name}`);
+    console.log(`   Author: ${item.author}`);
+    console.log(`   Year: ${item.year} | Topic: ${item.topic}`);
+    console.log(`   Format: ${item.format} | Language: ${item.language}`);
+    console.log(`   Cover: ${coverStatus} ${item.imageUrl}`);
+    console.log(`   Completed: ${item.compeleted ? '✓' : '✗'}`);
+    console.log(`   Tags: ${item.tags.join(', ')}`);
+  });
 
+  console.log('\n' + '═'.repeat(80));
+  console.log(
+    `\nTotal: ${itemsData.length} items | ${
+      itemsData.filter((i) => i.imageUrl.includes('covers.openlibrary.org'))
+        .length
+    } with Open Library covers\n`
+  );
+}
+
+async function showMenu(): Promise<boolean> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -154,28 +181,66 @@ async function promptUser(): Promise<void> {
   };
 
   try {
-    const answer = await question(
-      'Would you like to update book covers now? (y/n): '
-    );
+    const hasMissingCovers = checkMissingCovers();
+    const coverStatus = hasMissingCovers
+      ? '⚠️  Some covers missing'
+      : '✓ All covers OK';
 
-    if (answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes') {
-      await runUpdateCoversScript();
+    console.log('\n╔════════════════════════════════════════╗');
+    console.log('║     Mock API Server - Main Menu       ║');
+    console.log('╚════════════════════════════════════════╝\n');
+    console.log(`Status: ${coverStatus}\n`);
+    console.log('1. 🔄 Reload book covers from API');
+    console.log('2. 🚀 Start the server');
+    console.log('3. 📋 List seed elements');
+    console.log('4. 🚪 Exit\n');
 
-      const stillMissing = checkMissingCovers();
-      if (stillMissing) {
-        const fixAnswer = await question(
-          'Some covers are still missing. Run fix script? (y/n): '
-        );
-        if (
-          fixAnswer.toLowerCase() === 'y' ||
-          fixAnswer.toLowerCase() === 'yes'
-        ) {
-          await runFixMissingCoversScript();
-        }
-      }
-    }
-  } finally {
+    const answer = await question('Select an option (1-4): ');
+
     rl.close();
+
+    switch (answer.trim()) {
+      case '1': {
+        await runUpdateCoversScript();
+        const stillMissing = checkMissingCovers();
+        if (stillMissing) {
+          const rl2 = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+          const fixAnswer = await new Promise<string>((resolve) => {
+            rl2.question(
+              'Some covers are still missing. Run fix script? (y/n): ',
+              resolve
+            );
+          });
+          rl2.close();
+          if (
+            fixAnswer.toLowerCase() === 'y' ||
+            fixAnswer.toLowerCase() === 'yes'
+          ) {
+            await runFixMissingCoversScript();
+          }
+        }
+        reloadSeedData();
+        return true;
+      }
+      case '2':
+        return false;
+      case '3':
+        listSeedElements();
+        return true;
+      case '4':
+        console.log('\n👋 Goodbye!\n');
+        process.exit(0);
+        break;
+      default:
+        console.log('\n❌ Invalid option. Please select 1-4.\n');
+        return true;
+    }
+  } catch (error) {
+    rl.close();
+    throw error;
   }
 }
 
@@ -196,7 +261,11 @@ function startServer() {
 async function main() {
   console.log('🎬 Starting Mock API Server...\n');
 
-  await promptUser();
+  let continueMenu = true;
+
+  while (continueMenu) {
+    continueMenu = await showMenu();
+  }
 
   startServer();
 }

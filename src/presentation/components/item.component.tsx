@@ -13,7 +13,7 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
       <img
         src={item.imageUrl}
         alt={item.name}
-        className="w-full max-w-md mx-auto aspect-2/3 object-cover rounded border-2 border-pink-500 mb-6"
+        className="w-full max-w-md mx-auto aspect-2/3 object-cover rounded mb-6"
       />
 
       <h1 className="text-4xl text-white mb-2">{item.name}</h1>

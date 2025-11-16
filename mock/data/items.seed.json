@@ -6,7 +6,11 @@
     "description": "A guide to writing clean, maintainable code with practical examples and principles.",
     "imageUrl": "https://covers.openlibrary.org/b/id/8065615-L.jpg",
     "topic": "Software Engineering",
-    "tags": ["programming", "best-practices", "refactoring"],
+    "tags": [
+      "programming",
+      "best-practices",
+      "refactoring"
+    ],
     "owner": "user123",
     "compeleted": true,
     "year": "2008",
@@ -20,7 +24,11 @@
     "description": "The foundational book on DDD, introducing strategic and tactical patterns for complex software systems.",
     "imageUrl": "https://covers.openlibrary.org/b/id/5548424-L.jpg",
     "topic": "Software Architecture",
-    "tags": ["ddd", "architecture", "design-patterns"],
+    "tags": [
+      "ddd",
+      "architecture",
+      "design-patterns"
+    ],
     "owner": "user123",
     "compeleted": false,
     "year": "2003",
@@ -34,7 +42,11 @@
     "description": "Timeless advice for software developers on improving their craft.",
     "imageUrl": "https://covers.openlibrary.org/b/id/10143650-L.jpg",
     "topic": "Software Development",
-    "tags": ["career", "best-practices", "programming"],
+    "tags": [
+      "career",
+      "best-practices",
+      "programming"
+    ],
     "owner": "user456",
     "compeleted": true,
     "year": "1999",
@@ -48,7 +60,11 @@
     "description": "Comprehensive textbook covering fundamental algorithms and data structures.",
     "imageUrl": "https://covers.openlibrary.org/b/id/2341462-L.jpg",
     "topic": "Computer Science",
-    "tags": ["algorithms", "data-structures", "textbook"],
+    "tags": [
+      "algorithms",
+      "data-structures",
+      "textbook"
+    ],
     "owner": "user789",
     "compeleted": false,
     "year": "2009",
@@ -62,7 +78,11 @@
     "description": "Classic book introducing 23 design patterns for object-oriented programming.",
     "imageUrl": "https://covers.openlibrary.org/b/id/6601119-L.jpg",
     "topic": "Software Design",
-    "tags": ["design-patterns", "oop", "architecture"],
+    "tags": [
+      "design-patterns",
+      "oop",
+      "architecture"
+    ],
     "owner": "user123",
     "compeleted": true,
     "year": "1994",
@@ -76,7 +96,11 @@
     "description": "Deep dive into JavaScript's core mechanisms and language features.",
     "imageUrl": "https://covers.openlibrary.org/b/id/8117575-L.jpg",
     "topic": "JavaScript",
-    "tags": ["javascript", "web-development", "frontend"],
+    "tags": [
+      "javascript",
+      "web-development",
+      "frontend"
+    ],
     "owner": "user456",
     "compeleted": false,
     "year": "2014",
@@ -90,7 +114,11 @@
     "description": "Essential techniques for improving code structure without changing behavior.",
     "imageUrl": "https://covers.openlibrary.org/b/id/7087623-L.jpg",
     "topic": "Software Engineering",
-    "tags": ["refactoring", "clean-code", "maintenance"],
+    "tags": [
+      "refactoring",
+      "clean-code",
+      "maintenance"
+    ],
     "owner": "user123",
     "compeleted": true,
     "year": "2018",
@@ -104,7 +132,11 @@
     "description": "Practical patterns for building scalable microservices architectures.",
     "imageUrl": "https://covers.openlibrary.org/b/id/8508272-L.jpg",
     "topic": "Microservices",
-    "tags": ["microservices", "architecture", "distributed-systems"],
+    "tags": [
+      "microservices",
+      "architecture",
+      "distributed-systems"
+    ],
     "owner": "user789",
     "compeleted": false,
     "year": "2018",
@@ -118,7 +150,11 @@
     "description": "Modern introduction to JavaScript programming with interactive examples.",
     "imageUrl": "https://covers.openlibrary.org/b/id/7082166-L.jpg",
     "topic": "JavaScript",
-    "tags": ["javascript", "beginners", "programming"],
+    "tags": [
+      "javascript",
+      "beginners",
+      "programming"
+    ],
     "owner": "user456",
     "compeleted": true,
     "year": "2018",
@@ -132,7 +168,11 @@
     "description": "Learn TDD through practical examples and step-by-step guidance.",
     "imageUrl": "https://covers.openlibrary.org/b/id/192577-L.jpg",
     "topic": "Testing",
-    "tags": ["tdd", "testing", "agile"],
+    "tags": [
+      "tdd",
+      "testing",
+      "agile"
+    ],
     "owner": "user123",
     "compeleted": false,
     "year": "2002",
@@ -146,7 +186,11 @@
     "description": "A novel about IT, DevOps, and helping your business win.",
     "imageUrl": "https://covers.openlibrary.org/b/id/9151976-L.jpg",
     "topic": "DevOps",
-    "tags": ["devops", "management", "it-operations"],
+    "tags": [
+      "devops",
+      "management",
+      "it-operations"
+    ],
     "owner": "user789",
     "compeleted": true,
     "year": "2013",
@@ -160,7 +204,11 @@
     "description": "Designing fine-grained systems with practical approaches to microservices.",
     "imageUrl": "https://covers.openlibrary.org/b/id/8513315-L.jpg",
     "topic": "Software Architecture",
-    "tags": ["microservices", "architecture", "distributed-systems"],
+    "tags": [
+      "microservices",
+      "architecture",
+      "distributed-systems"
+    ],
     "owner": "user456",
     "compeleted": false,
     "year": "2021",
@@ -174,7 +222,11 @@
     "description": "Focused guide on the best features of JavaScript and how to use them effectively.",
     "imageUrl": "https://covers.openlibrary.org/b/id/9245523-L.jpg",
     "topic": "JavaScript",
-    "tags": ["javascript", "best-practices", "language-features"],
+    "tags": [
+      "javascript",
+      "best-practices",
+      "language-features"
+    ],
     "owner": "user123",
     "compeleted": true,
     "year": "2008",
@@ -188,7 +240,11 @@
     "description": "Reliable software releases through build, test, and deployment automation.",
     "imageUrl": "https://covers.openlibrary.org/b/id/6998977-L.jpg",
     "topic": "DevOps",
-    "tags": ["ci-cd", "automation", "deployment"],
+    "tags": [
+      "ci-cd",
+      "automation",
+      "deployment"
+    ],
     "owner": "user789",
     "compeleted": false,
     "year": "2010",
@@ -202,7 +258,11 @@
     "description": "The big ideas behind reliable, scalable, and maintainable systems.",
     "imageUrl": "https://covers.openlibrary.org/b/id/8434671-L.jpg",
     "topic": "Systems Design",
-    "tags": ["databases", "distributed-systems", "architecture"],
+    "tags": [
+      "databases",
+      "distributed-systems",
+      "architecture"
+    ],
     "owner": "user456",
     "compeleted": true,
     "year": "2017",
@@ -216,7 +276,11 @@
     "description": "Building web applications with React and modern JavaScript tooling.",
     "imageUrl": "https://covers.openlibrary.org/b/id/13919031-L.jpg",
     "topic": "Frontend Development",
-    "tags": ["react", "javascript", "web-development"],
+    "tags": [
+      "react",
+      "javascript",
+      "web-development"
+    ],
     "owner": "user123",
     "compeleted": false,
     "year": "2021",
@@ -230,7 +294,11 @@
     "description": "Comprehensive monograph covering many kinds of programming algorithms.",
     "imageUrl": "https://covers.openlibrary.org/b/id/136600-L.jpg",
     "topic": "Computer Science",
-    "tags": ["algorithms", "theory", "mathematics"],
+    "tags": [
+      "algorithms",
+      "theory",
+      "mathematics"
+    ],
     "owner": "user789",
     "compeleted": false,
     "year": "1968",
@@ -244,7 +312,11 @@
     "description": "Brain-friendly guide to design patterns with visual learning approach.",
     "imageUrl": "https://covers.openlibrary.org/b/id/388950-L.jpg",
     "topic": "Software Design",
-    "tags": ["design-patterns", "oop", "visual-learning"],
+    "tags": [
+      "design-patterns",
+      "oop",
+      "visual-learning"
+    ],
     "owner": "user456",
     "compeleted": true,
     "year": "2004",
@@ -258,7 +330,11 @@
     "description": "Official guide to TypeScript's type system and advanced features.",
     "imageUrl": "https://raw.githubusercontent.com/remojansen/logo.ts/master/ts.png",
     "topic": "TypeScript",
-    "tags": ["typescript", "javascript", "types"],
+    "tags": [
+      "typescript",
+      "javascript",
+      "types"
+    ],
     "owner": "user123",
     "compeleted": true,
     "year": "2023",
@@ -272,7 +348,11 @@
     "description": "Essential patterns for enterprise application architecture and design.",
     "imageUrl": "https://covers.openlibrary.org/b/id/192501-L.jpg",
     "topic": "Software Architecture",
-    "tags": ["architecture", "enterprise", "patterns"],
+    "tags": [
+      "architecture",
+      "enterprise",
+      "patterns"
+    ],
     "owner": "user789",
     "compeleted": false,
     "year": "2002",

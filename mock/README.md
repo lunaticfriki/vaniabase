@@ -21,26 +21,50 @@ mock/
 pnpm mock:server
 ```
 
-When starting the server, it will:
-
-1. Check if any book covers are missing or using placeholders
-2. Prompt you to update covers if needed
-3. Optionally run the cover update scripts
-4. Start the API server at `http://localhost:3001`
+When starting the server, you'll see an interactive menu with the following options:
 
 #### Interactive Menu
 
-If book covers are missing, you'll see:
-
 ```
-⚠️  Some book covers are missing or using placeholders
+╔════════════════════════════════════════╗
+║     Mock API Server - Main Menu       ║
+╚════════════════════════════════════════╝
 
-Would you like to update book covers now? (y/n):
+Status: ✓ All covers OK
+
+1. 🔄 Reload book covers from API
+2. 🚀 Start the server
+3. 📋 List seed elements
+4. 🚪 Exit
+
+Select an option (1-4):
 ```
 
-- Type `y` or `yes` to automatically fetch covers from Open Library API
-- If some covers are still missing after the first update, you'll be prompted to run the fix script
-- Type `n` or `no` to skip and start the server immediately
+**Menu Options:**
+
+1. **🔄 Reload book covers from API**
+
+   - Runs the `update-covers.ts` script to fetch covers from Open Library
+   - If some covers are still missing, prompts to run the `fix-missing-covers.ts` script
+   - Automatically reloads the seed data after updating
+
+2. **🚀 Start the server**
+
+   - Starts the API server immediately at `http://localhost:3001`
+   - Skips any cover updates
+
+3. **📋 List seed elements**
+
+   - Displays all 20 books in the seed with their details:
+     - Title, author, year, topic
+     - Format, language, completion status
+     - Cover URL and status (✓ for Open Library, 📘 for TypeScript logo, ✗ for missing)
+     - Tags
+   - Shows total count and number of books with Open Library covers
+   - Returns to the menu after displaying
+
+4. **🚪 Exit**
+   - Closes the application without starting the server
 
 ### Available Endpoints
 
