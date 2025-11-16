@@ -1,0 +1,30 @@
+{
+    "name": "VaniaBase Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss",
+                "ZixuanChen.vitest-explorer"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "editor.formatOnSave": true,
+                "editor.defaultFormatter": "esbenp.prettier-vscode",
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.eslint": "explicit"
+                }
+            }
+        }
+    },
+    "forwardPorts": [
+        5173
+    ],
+    "postCreateCommand": "pnpm install",
+    "remoteUser": "node"
+}
