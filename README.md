@@ -93,6 +93,7 @@ This project includes a fully configured development container for a consistent 
 - `pnpm test:coverage` - Generate test coverage report
 - `pnpm mock:server` - Start mock API server (port 3001)
 - `pnpm commit` - Interactive commit helper with type selection and testing
+- `pnpm commit:push` - Interactive commit helper that also pushes after successful commit
 
 ## 🧪 Testing
 
@@ -158,6 +159,14 @@ This will:
 4. ✅ Create the commit if tests pass
 5. ❌ Abort if tests fail
 
+**Commit and Push:**
+
+```bash
+pnpm commit:push
+```
+
+Same as `pnpm commit`, but also pushes to remote after successful commit.
+
 **Commit Message Format:** `<type>: <description>`
 
 Example: `feat: add item filtering functionality`
@@ -172,7 +181,7 @@ When you run `git push`, the hook will:
 
 This ensures only tested code reaches the repository.
 
-## �🗄️ Mock API Server
+## 🗄️ Mock API Server
 
 A mock REST API server is available for development purposes. See [`mock/README.md`](./mock/README.md) for details.
 
