@@ -4,6 +4,8 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
+import { spawn } from 'child_process';
+import * as readline from 'readline';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -82,14 +84,124 @@ app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', items: itemsData.length });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Mock API server running at http://localhost:${PORT}`);
-  console.log(`📦 Loaded ${itemsData.length} items from seed`);
-  console.log(`\nAvailable endpoints:`);
-  console.log(`  GET    /api/items       - Get all items`);
-  console.log(`  GET    /api/items/:id   - Get item by id`);
-  console.log(`  POST   /api/items       - Create new item`);
-  console.log(`  PUT    /api/items/:id   - Update item`);
-  console.log(`  DELETE /api/items/:id   - Delete item`);
-  console.log(`  GET    /health          - Health check\n`);
+function checkMissingCovers(): boolean {
+  return itemsData.some(
+    (item) =>
+      !item.imageUrl.includes('covers.openlibrary.org') &&
+      !item.imageUrl.includes('logo.ts')
+  );
+}
+
+function runUpdateCoversScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    console.log('\n📚 Running update-covers script...\n');
+    const updateProcess = spawn('npx', ['tsx', 'update-covers.ts'], {
+      cwd: __dirname,
+      stdio: 'inherit',
+    });
+
+    updateProcess.on('close', (code) => {
+      if (code === 0) {
+        console.log('\n✓ Cover update completed\n');
+        resolve();
+      } else {
+        console.error(`\n✗ Cover update failed with code ${code}\n`);
+        reject(new Error(`Process exited with code ${code}`));
+      }
+    });
+  });
+}
+
+function runFixMissingCoversScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    console.log('\n🔧 Running fix-missing-covers script...\n');
+    const fixProcess = spawn('npx', ['tsx', 'fix-missing-covers.ts'], {
+      cwd: __dirname,
+      stdio: 'inherit',
+    });
+
+    fixProcess.on('close', (code) => {
+      if (code === 0) {
+        console.log('\n✓ Missing covers fix completed\n');
+        resolve();
+      } else {
+        console.error(`\n✗ Missing covers fix failed with code ${code}\n`);
+        reject(new Error(`Process exited with code ${code}`));
+      }
+    });
+  });
+}
+
+async function promptUser(): Promise<void> {
+  const hasMissingCovers = checkMissingCovers();
+
+  if (!hasMissingCovers) {
+    console.log('✓ All book covers are already up to date!\n');
+    return;
+  }
+
+  console.log('⚠️  Some book covers are missing or using placeholders\n');
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  const question = (prompt: string): Promise<string> => {
+    return new Promise((resolve) => {
+      rl.question(prompt, resolve);
+    });
+  };
+
+  try {
+    const answer = await question(
+      'Would you like to update book covers now? (y/n): '
+    );
+
+    if (answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes') {
+      await runUpdateCoversScript();
+
+      const stillMissing = checkMissingCovers();
+      if (stillMissing) {
+        const fixAnswer = await question(
+          'Some covers are still missing. Run fix script? (y/n): '
+        );
+        if (
+          fixAnswer.toLowerCase() === 'y' ||
+          fixAnswer.toLowerCase() === 'yes'
+        ) {
+          await runFixMissingCoversScript();
+        }
+      }
+    }
+  } finally {
+    rl.close();
+  }
+}
+
+function startServer() {
+  app.listen(PORT, () => {
+    console.log(`🚀 Mock API server running at http://localhost:${PORT}`);
+    console.log(`📦 Loaded ${itemsData.length} items from seed`);
+    console.log(`\nAvailable endpoints:`);
+    console.log(`  GET    /api/items       - Get all items`);
+    console.log(`  GET    /api/items/:id   - Get item by id`);
+    console.log(`  POST   /api/items       - Create new item`);
+    console.log(`  PUT    /api/items/:id   - Update item`);
+    console.log(`  DELETE /api/items/:id   - Delete item`);
+    console.log(`  GET    /health          - Health check\n`);
+  });
+}
+
+async function main() {
+  console.log('🎬 Starting Mock API Server...\n');
+
+  await promptUser();
+
+  startServer();
+}
+
+main().catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
 });
