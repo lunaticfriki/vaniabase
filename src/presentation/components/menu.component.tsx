@@ -37,7 +37,7 @@ export const MenuComponent = () => {
       </button>
 
       {isOpen && (
-        <div className="fixed md:absolute inset-0 md:inset-auto md:right-0 md:top-full md:mt-2 bg-pink-500 md:bg-transparent border-0 md:border-2 md:border-pink-500 md:rounded p-6 md:min-w-[200px] z-50">
+        <div className="fixed md:absolute inset-0 md:inset-auto md:right-0 md:top-full md:mt-2 bg-pink-500 md:bg-[rgb(11,3,15)] border-0 md:border-2 md:border-pink-500 md:rounded p-6 md:min-w-[200px] z-50">
           <button
             onClick={toggleMenu}
             className="absolute top-4 right-4 text-white hover:text-[rgb(11,3,15)] cursor-pointer p-2 transition-colors md:hidden"
