@@ -1,10 +1,10 @@
 import { HomeContainer } from '../containers/home.container';
-import { LastElementsContainer } from '../containers/lastElements.container';
+import { LastItemsContainer } from '../containers/lastItems.container';
 
 export const Home = () => {
   return (
     <div>
-      <LastElementsContainer />
+      <LastItemsContainer />
       <div className="p-8">
         <HomeContainer />
       </div>

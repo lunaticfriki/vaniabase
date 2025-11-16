@@ -10,6 +10,10 @@ export const MenuComponent = () => {
 
   const menuItems = [
     { path: '/', label: 'Home' },
+    { path: '/all-items', label: 'All Items' },
+    { path: '/last-items', label: 'Last Items' },
+    { path: '/search', label: 'Search' },
+    { path: '/categories', label: 'Categories' },
     { path: '/about', label: 'About' },
   ];
 

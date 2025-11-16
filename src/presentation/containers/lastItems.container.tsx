@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import { useItemReadService } from '../../app/item.readService';
-import { LastElementsComponent } from '../components/lastElements.component';
-import { LastElementsSkeleton } from '../skeletons/lastElements.skeleton';
+import { LastItemsComponent } from '../components/lastItems.component';
+import { LastItemsSkeleton } from '../skeletons/lastItems.skeleton';
 
-interface LastElementsContainerProps {
+interface LastItemsContainerProps {
   count?: number;
   showTitle?: boolean;
 }
 
-export const LastElementsContainer = ({
+export const LastItemsContainer = ({
   count = 5,
   showTitle = true,
-}: LastElementsContainerProps) => {
+}: LastItemsContainerProps) => {
   const itemReadService = useItemReadService();
   const items = itemReadService.state.value.items;
   const loading = itemReadService.state.value.loading;
@@ -23,7 +23,7 @@ export const LastElementsContainer = ({
   }, []);
 
   if (loading) {
-    return <LastElementsSkeleton />;
+    return <LastItemsSkeleton />;
   }
 
   if (error) {
@@ -32,5 +32,5 @@ export const LastElementsContainer = ({
 
   const lastItems = items.slice(-count).reverse();
 
-  return <LastElementsComponent items={lastItems} showTitle={showTitle} />;
+  return <LastItemsComponent items={lastItems} showTitle={showTitle} />;
 };

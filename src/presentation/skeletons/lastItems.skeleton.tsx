@@ -1,4 +1,4 @@
-export const LastElementsSkeleton = () => {
+export const LastItemsSkeleton = () => {
   return (
     <div className="p-6">
       <div className="h-9 bg-pink-500/20 rounded w-48 mb-6 animate-pulse" />

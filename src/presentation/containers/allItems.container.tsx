@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useItemReadService } from '../../app/item.readService';
-import { LastElementsComponent } from '../components/lastElements.component';
-import { LastElementsSkeleton } from '../skeletons/lastElements.skeleton';
+import { LastItemsComponent } from '../components/lastItems.component';
+import { LastItemsSkeleton } from '../skeletons/lastItems.skeleton';
 
 export const AllItemsContainer = () => {
   const itemReadService = useItemReadService();
@@ -15,12 +15,12 @@ export const AllItemsContainer = () => {
   }, []);
 
   if (loading) {
-    return <LastElementsSkeleton />;
+    return <LastItemsSkeleton />;
   }
 
   if (error) {
     return <div className="p-6 text-pink-500">Error: {error}</div>;
   }
 
-  return <LastElementsComponent items={items} />;
+  return <LastItemsComponent items={items} showTitle={false} />;
 };

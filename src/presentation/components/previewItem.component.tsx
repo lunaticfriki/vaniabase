@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import type { Item } from '../../domain/item';
 
-interface PreviewElementProps {
+interface PreviewItemProps {
   item: Item;
 }
 
-export const PreviewElementComponent = ({ item }: PreviewElementProps) => {
+export const PreviewItemComponent = ({ item }: PreviewItemProps) => {
   return (
     <Link
       to={`/item/${item.id}`}
