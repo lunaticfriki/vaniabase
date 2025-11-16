@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import type { ComponentType, LazyExoticComponent } from 'react';
+import { LoadingComponent } from './loading.component';
 
 interface LazyLoadProps {
   component: LazyExoticComponent<ComponentType>;
@@ -8,7 +9,7 @@ interface LazyLoadProps {
 
 export const LazyLoadComponent = ({
   component: Component,
-  fallback = <></>,
+  fallback = <LoadingComponent />,
 }: LazyLoadProps) => {
   return (
     <Suspense fallback={fallback}>
