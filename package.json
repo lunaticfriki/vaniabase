@@ -14,6 +14,7 @@
     "test:coverage": "vitest --coverage",
     "mock:server": "tsx mock/server.ts",
     "commit": ".husky/commit-helper.sh",
+    "commit:push": ".husky/commit-with-push.sh",
     "prepare": "husky"
   },
   "dependencies": {
