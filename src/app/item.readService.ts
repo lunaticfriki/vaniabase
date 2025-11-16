@@ -1,15 +1,17 @@
 import { signal } from '@preact/signals-react';
-import type { Item } from '../domain/item';
+import { Item } from '../domain/item';
 import { ItemsDI } from '../di';
 
 interface ItemsState {
   items: Item[];
   error: string | null;
   loading: boolean;
+  categories: string[];
 }
 
 const initialState: ItemsState = {
-  items: [],
+  items: [] as Item[],
+  categories: [] as string[],
   error: null,
   loading: false,
 };
@@ -24,6 +26,7 @@ function createItemReadService() {
       const items = await ItemsDI.repository.getItems(endpoint);
       state.value = {
         items,
+        categories: state.value.categories,
         error: null,
         loading: false,
       };
@@ -61,6 +64,7 @@ function createItemReadService() {
 
       state.value = {
         items: updatedItems,
+        categories: state.value.categories,
         error: null,
         loading: false,
       };
@@ -78,6 +82,41 @@ function createItemReadService() {
     }
   };
 
+  const getCategories = () => {
+    state.value = { ...state.value, loading: true, error: null };
+
+    try {
+      const categories = state.value.items
+        .map((item) => item.category)
+        .filter((value, index, self) => self.indexOf(value) === index);
+
+      const categoriesSet = new Set(categories);
+      const uniqueCategories = Array.from(categoriesSet);
+      state.value = {
+        ...state.value,
+        categories: uniqueCategories,
+        loading: false,
+      };
+      ItemsDI.notification.success(
+        `Loaded ${categories.length} categories successfully`
+      );
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      state.value = {
+        ...state.value,
+        error: errorMessage,
+        loading: false,
+      };
+      ItemsDI.errorManager.handleError(error as Error);
+      ItemsDI.notification.error('Failed to load categories', 'Error');
+    }
+  };
+
+  const getItemsByCategory = (category: string): Item[] => {
+    return state.value.items.filter((item) => item.category === category);
+  };
+
   const clearError = (): void => {
     state.value = { ...state.value, error: null };
   };
@@ -90,6 +129,8 @@ function createItemReadService() {
     state,
     actions: {
       getItems,
+      getCategories,
+      getItemsByCategory,
       getItem,
       clearError,
       reset,

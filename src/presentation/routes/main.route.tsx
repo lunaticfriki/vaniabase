@@ -19,6 +19,7 @@ export const MainRoutes = () => {
         <Route path="last-items" element={<LastItemsRoute />} />
         <Route path="search" element={<SearchRoute />} />
         <Route path="categories" element={<CategoriesRoute />} />
+        <Route path="categories/:category" element={<CategoriesRoute />} />
       </Route>
     </Routes>
   );
