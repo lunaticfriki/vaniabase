@@ -69,11 +69,13 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
           </div>
 
           <div className="md:order-2 md:shrink-0 order-1">
-            <img
-              src={item.imageUrl}
-              alt={item.name}
-              className="cyber-card-image w-full max-w-md mx-auto md:mx-0 md:w-80 aspect-2/3 object-cover"
-            />
+            <div className="w-full max-w-md mx-auto md:mx-0 md:w-80 h-[400px] md:h-[480px] flex items-center justify-center">
+              <img
+                src={item.imageUrl}
+                alt={item.name}
+                className="cyber-card-image max-w-full max-h-full w-auto h-auto object-contain"
+              />
+            </div>
           </div>
         </div>
       </div>
