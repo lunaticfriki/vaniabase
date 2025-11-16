@@ -11,13 +11,15 @@ export const PreviewElementComponent = ({ item }: PreviewElementProps) => {
       to={`/item/${item.id}`}
       className="block cursor-pointer hover:opacity-80 transition-opacity"
     >
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center max-w-[300px]">
         <img
           src={item.imageUrl}
           alt={item.name}
-          className="w-full aspect-2/3 object-cover rounded"
+          className="w-full aspect-2/3 object-cover rounded border-2 border-pink-500"
         />
-        <h3 className="mt-3 text-white text-center text-lg">{item.name}</h3>
+        <h3 className="mt-2 text-white text-center text-sm line-clamp-2">
+          {item.name}
+        </h3>
       </div>
     </Link>
   );

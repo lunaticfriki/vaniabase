@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { HeaderComponent } from '../components/header.component';
+import { FooterComponent } from '../components/footer.component';
 
 export const MainLayout = () => {
   return (
@@ -8,7 +9,7 @@ export const MainLayout = () => {
       <main className="overflow-y-auto">
         <Outlet />
       </main>
-      <footer className="p-4 text-pink-500 text-center">footer</footer>
+      <FooterComponent />
     </div>
   );
 };
