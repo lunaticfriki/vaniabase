@@ -7,7 +7,11 @@ interface ItemComponentProps {
 
 export const ItemComponent = ({ item }: ItemComponentProps) => {
   return (
-    <div className="max-w-6xl mx-auto grid grid-rows-[auto_1fr] h-full">
+    <div className="max-w-6xl mx-auto grid grid-rows-[auto_1fr] h-full relative pt-8">
+      <div
+        className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 -z-10"
+        style={{ backgroundImage: `url(${item.imageUrl})` }}
+      />
       <BackButtonComponent />
       <div className="h-full p-6 flex items-center">
         <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 md:mt-8">
