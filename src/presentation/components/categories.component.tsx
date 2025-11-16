@@ -28,7 +28,11 @@ export const CategoriesComponent = ({
             key={category}
             to={`/categories/${encodeURIComponent(category)}`}
             data-text={category}
-            className="cyber-button text-pink-500 hover:text-white text-sm sm:text-base whitespace-nowrap"
+            className={`cyber-button ${
+              category === selectedCategory
+                ? 'text-yellow-400 hover:text-yellow-300'
+                : 'text-pink-500 hover:text-white'
+            } text-sm sm:text-base whitespace-nowrap`}
           >
             {category}
           </Link>
