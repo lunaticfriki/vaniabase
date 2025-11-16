@@ -1,73 +1,152 @@
-# React + TypeScript + Vite
+# Vaniabase
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive collection management application for organizing and cataloging various media items including books, CDs, video games, magazines, comics, and more.
 
-Currently, two official plugins are available:
+## 📖 Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Vaniabase is built with a Domain-Driven Design (DDD) and Hexagonal Architecture approach, providing a clean separation of concerns and maintainable codebase. The application allows users to track their personal collections with detailed metadata for each item.
 
-## React Compiler
+## 🏗️ Architecture
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The project follows DDD and Hexagonal Architecture principles:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── domain/          # Business logic and entities (Item domain model)
+├── infrastructure/  # External adapters (API clients, repositories)
+├── application/     # Use cases and application services
+└── presentation/    # UI components and views (React)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Framework:** React 19 + TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS
+- **State Management:** Preact Signals
+- **Testing:** Vitest + Testing Library + ts-mockito + ts-arch
+- **Package Manager:** pnpm
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📋 Prerequisites
+
+- Docker and VS Code with Dev Containers extension (recommended)
+- **OR** Node.js (v20 or higher) and pnpm (for local setup)
+
+## 🐳 Dev Container
+
+This project includes a fully configured development container for a consistent development environment.
+
+**Features:**
+
+- **Base Image:** Node.js 20 on Debian Bookworm
+- **Pre-installed:** pnpm, git, curl
+- **VS Code Extensions:**
+  - ESLint
+  - Prettier
+  - Tailwind CSS IntelliSense
+  - Vitest Explorer
+- **Auto-configuration:**
+  - Format on save enabled
+  - ESLint auto-fix on save
+  - Port forwarding for Vite (5173)
+  - Automatic `pnpm install` on container creation
+
+**To use:**
+
+1. Open the project in VS Code
+2. Click "Reopen in Container" when prompted
+3. Wait for the container to build and dependencies to install
+4. Start developing!
+
+**Manual setup** (without Dev Container):
+
+- Ensure Node.js 20+ and pnpm are installed locally
+
+## 🛠️ Setup
+
+1. **Install dependencies:**
+
+   ```bash
+   pnpm install
+   ```
+
+2. **Start development server:**
+
+   ```bash
+   pnpm dev
+   ```
+
+3. **Start mock API server** (for development without backend):
+   ```bash
+   pnpm mock:server
+   ```
+
+## 📜 Available Scripts
+
+- `pnpm dev` - Start Vite development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm lint` - Run ESLint
+- `pnpm test` - Run tests in watch mode
+- `pnpm test:ui` - Run tests with UI
+- `pnpm test:coverage` - Generate test coverage report
+- `pnpm mock:server` - Start mock API server (port 3001)
+
+## 🧪 Testing
+
+The project uses Vitest for unit and integration testing. Test files are located alongside the source files with the `__tests__` suffix.
+
+**Testing Strategy:**
+
+- **Object Mother Pattern** - Test data builders in `__tests__/objectMothers/` for creating domain entities with realistic test data
+- **Unit Tests** - Testing domain logic and business rules
+- **Integration Tests** - Testing component behavior and interactions
+
+Run tests:
+
+```bash
+pnpm test
 ```
+
+## 🗄️ Mock API Server
+
+A mock REST API server is available for development purposes. See [`mock/README.md`](./mock/README.md) for details.
+
+The mock server provides:
+
+- 20 pre-seeded items
+- Full CRUD operations
+- CORS enabled
+- Runs on `http://localhost:3001`
+
+## 🎯 Domain Model
+
+The core domain entity is `Item`, which represents any collectible with properties:
+
+- `id`, `name`, `author`, `description`
+- `imageUrl`, `topic`, `tags`
+- `owner`, `completed`, `year`
+- `language`, `format`
+
+## 📝 Configuration Files
+
+- `vite.config.ts` - Vite configuration
+- `vitest.config.ts` - Test configuration
+- `tsconfig.json` - TypeScript configuration
+- `tailwind.config.js` - Tailwind CSS configuration
+- `eslint.config.js` - ESLint rules
+- `.devcontainer/` - Dev container configuration
+- `eslint.config.js` - ESLint rules
+
+## 🤝 Contributing
+
+This project follows clean architecture principles. When adding features:
+
+1. Start with the domain model
+2. Create use cases in the application layer
+3. Implement infrastructure adapters
+4. Build UI in the presentation layer
+
+## 📄 License
+
+Private project
