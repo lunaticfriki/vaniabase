@@ -84,7 +84,7 @@ export class Item {
     };
   }
 
-  static update(item: Item, props: Partial<Omit<Item, 'id'>>): Item {
+  update(item: Item, props: Partial<Omit<Item, 'id'>>): Item {
     return new Item(
       item.id,
       props.name ?? item.name,

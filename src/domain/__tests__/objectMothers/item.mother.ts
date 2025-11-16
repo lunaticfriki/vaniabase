@@ -2,7 +2,7 @@ import { Item, type IItem } from '../../item';
 import { faker } from '@faker-js/faker';
 
 export class ItemMother {
-  static createWIthData(data: IItem): Item {
+  static createWithData(data: IItem): Item {
     return new Item(
       data.id,
       data.name,
