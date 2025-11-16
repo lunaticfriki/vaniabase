@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useItemReadService } from '../../app/item.readService';
 import { LastItemsComponent } from '../components/lastItems.component';
 import { LastItemsSkeleton } from '../skeletons/lastItems.skeleton';
+import { ErrorComponent } from '../components/error.component';
 
 interface LastItemsContainerProps {
   count?: number;
@@ -27,7 +28,7 @@ export const LastItemsContainer = ({
   }
 
   if (error) {
-    return <div className="p-6 text-pink-500">Error: {error}</div>;
+    return <ErrorComponent error={error} />;
   }
 
   const lastItems = items.slice(-count).reverse();

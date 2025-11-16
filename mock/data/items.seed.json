@@ -298,5 +298,35 @@
     "language": "English",
     "format": "Book",
     "category": "books"
+  },
+  {
+    "id": "1u2v3w4x-5y6z-7a8b-9c0d-1e2f3g4h5i6j",
+    "name": "Persona 5 Royal",
+    "author": "P-Studio / Atlus",
+    "description": "Enhanced version of Persona 5, a critically acclaimed JRPG following the Phantom Thieves of Hearts as they explore the Metaverse and change the hearts of corrupt adults in modern-day Tokyo.",
+    "imageUrl": "https://www.rpgfan.com/wp-content/uploads/2020/06/Persona-5-Royal-Cover-Art-US.jpg",
+    "topic": "Role-Playing Game",
+    "tags": ["jrpg", "phantom-thieves", "turn-based", "social-simulation"],
+    "owner": "user123",
+    "completed": true,
+    "year": "2019",
+    "language": "Japanese",
+    "format": "Video Game",
+    "category": "videogames"
+  },
+  {
+    "id": "2v3w4x5y-6z7a-8b9c-0d1e-2f3g4h5i6j7k",
+    "name": "Goldberg Variations (1955 Recording)",
+    "author": "Johann Sebastian Bach / Glenn Gould",
+    "description": "Glenn Gould's legendary 1955 debut recording of Bach's Goldberg Variations (BWV 988), a groundbreaking interpretation that brought the work to popular attention and established Gould as a major artist.",
+    "imageUrl": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.vinylgourmet.com%2F1640-thickbox_default%2Fglenn-gould-the-goldberg-variations-1955-bach-lp-180-gram-vinyl-sony-columbia-masterworks-2015-eu.jpg&f=1&nofb=1&ipt=fda84bd6b73817e4ae556ad0415c35e2a6d8e379ab34c43d1c8aa72aa02c2603",
+    "topic": "Classical Music",
+    "tags": ["bach", "piano", "baroque", "variations", "classical"],
+    "owner": "user456",
+    "completed": true,
+    "year": "1955",
+    "language": "Instrumental",
+    "format": "Album",
+    "category": "music"
   }
 ]
