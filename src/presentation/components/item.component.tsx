@@ -21,11 +21,6 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
 
             <div className="space-y-3 text-lg">
               <div>
-                <span className="text-pink-500">Description: </span>
-                <span className="text-white">{item.description}</span>
-              </div>
-
-              <div>
                 <span className="text-pink-500">Topic: </span>
                 <span className="text-white">{item.topic}</span>
               </div>
@@ -61,6 +56,11 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
                 <span className="text-pink-500">Tags: </span>
                 <span className="text-white">{item.tags.join(', ')}</span>
               </div>
+
+              <div>
+                <span className="text-pink-500">Description: </span>
+                <span className="text-white">{item.description}</span>
+              </div>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
             <img
               src={item.imageUrl}
               alt={item.name}
-              className="w-full max-w-md mx-auto md:mx-0 md:w-80 aspect-2/3 object-cover rounded"
+              className="cyber-card-image w-full max-w-md mx-auto md:mx-0 md:w-80 aspect-2/3 object-cover"
             />
           </div>
         </div>
