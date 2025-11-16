@@ -11,16 +11,19 @@ export const LastItemsComponent = ({
   showTitle = true,
 }: LastItemsProps) => {
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-[1800px] mx-auto">
       {showTitle && <h2 className="text-3xl text-pink-500 mb-6">Last Items</h2>}
       <div className="text-center mb-4">
         <p className="text-white text-lg">
           Total: <span className="text-pink-500">{items.length}</span>
         </p>
       </div>
-      <div className="flex py-4 gap-4 overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 md:justify-items-center scrollbar-hide snap-x snap-mandatory">
+      <div className="flex py-4 gap-4 overflow-x-auto md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-5 xl:gap-3 scrollbar-hide snap-x snap-mandatory">
         {items.map((item) => (
-          <div key={item.id} className="shrink-0 snap-start">
+          <div
+            key={item.id}
+            className="shrink-0 snap-start md:shrink md:w-full md:flex md:justify-center"
+          >
             <PreviewItemComponent item={item} />
           </div>
         ))}
