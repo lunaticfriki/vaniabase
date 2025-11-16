@@ -22,10 +22,11 @@ interface Item {
   topic: string;
   tags: string[];
   owner: string;
-  compeleted: boolean;
+  completed: boolean;
   year: string;
   language: string;
   format: string;
+  category: string;
 }
 
 app.use(cors());
@@ -152,10 +153,11 @@ function listSeedElements() {
       : '✗';
     console.log(`\n${index + 1}. ${item.name}`);
     console.log(`   Author: ${item.author}`);
+    console.log(`   Category: ${item.category}`);
     console.log(`   Year: ${item.year} | Topic: ${item.topic}`);
     console.log(`   Format: ${item.format} | Language: ${item.language}`);
     console.log(`   Cover: ${coverStatus} ${item.imageUrl}`);
-    console.log(`   Completed: ${item.compeleted ? '✓' : '✗'}`);
+    console.log(`   Completed: ${item.completed ? '✓' : '✗'}`);
     console.log(`   Tags: ${item.tags.join(', ')}`);
   });
 

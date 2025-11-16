@@ -12,15 +12,16 @@ export class ItemMother {
       data.topic,
       data.tags,
       data.owner,
-      data.compeleted,
+      data.completed,
       data.year,
       data.language,
-      data.format
+      data.format,
+      data.category
     );
   }
 
   static createEmpty(): Item {
-    return new Item('', '', '', '', '', '', [], '', false, '', '', '');
+    return new Item('', '', '', '', '', '', [], '', false, '', '', '', '');
   }
 
   static createRandom(): Item {
@@ -36,7 +37,8 @@ export class ItemMother {
       faker.datatype.boolean(),
       faker.date.past().getFullYear().toString(),
       faker.lorem.word(),
-      faker.system.fileType()
+      faker.system.fileType(),
+      faker.lorem.word()
     );
   }
 }

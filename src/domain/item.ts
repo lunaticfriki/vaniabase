@@ -7,10 +7,11 @@ export interface IItem {
   topic: string;
   tags: string[];
   owner: string;
-  compeleted: boolean;
+  completed: boolean;
   year: string;
   language: string;
   format: string;
+  category: string;
 }
 
 export class Item {
@@ -23,10 +24,11 @@ export class Item {
     public readonly topic: string,
     public readonly tags: string[],
     public readonly owner: string,
-    public readonly compeleted: boolean,
+    public readonly completed: boolean,
     public readonly year: string,
     public readonly language: string,
-    public readonly format: string
+    public readonly format: string,
+    public readonly category: string
   ) {}
 
   static create(props: Omit<Item, 'id'>, id?: string): Item {
@@ -39,15 +41,16 @@ export class Item {
       props.topic,
       props.tags,
       props.owner,
-      props.compeleted,
+      props.completed,
       props.year,
       props.language,
-      props.format
+      props.format,
+      props.category
     );
   }
 
   static empty(): Item {
-    return new Item('', '', '', '', '', '', [], '', false, '', '', '');
+    return new Item('', '', '', '', '', '', [], '', false, '', '', '', '');
   }
 
   static fromJson(json: IItem): Item {
@@ -60,10 +63,11 @@ export class Item {
       json.topic,
       json.tags,
       json.owner,
-      json.compeleted,
+      json.completed,
       json.year,
       json.language,
-      json.format
+      json.format,
+      json.category
     );
   }
 
@@ -77,10 +81,11 @@ export class Item {
       topic: item.topic,
       tags: item.tags,
       owner: item.owner,
-      compeleted: item.compeleted,
+      completed: item.completed,
       year: item.year,
       language: item.language,
       format: item.format,
+      category: item.category,
     };
   }
 
@@ -94,10 +99,11 @@ export class Item {
       props.topic ?? item.topic,
       props.tags ?? item.tags,
       props.owner ?? item.owner,
-      props.compeleted ?? item.compeleted,
+      props.completed ?? item.completed,
       props.year ?? item.year,
       props.language ?? item.language,
-      props.format ?? item.format
+      props.format ?? item.format,
+      props.category ?? item.category
     );
   }
 
@@ -118,7 +124,8 @@ export class Item {
       true,
       this.year,
       this.language,
-      this.format
+      this.format,
+      this.category
     );
   }
 
@@ -132,10 +139,11 @@ export class Item {
       this.topic,
       this.tags,
       this.owner,
-      !this.compeleted,
+      !this.completed,
       this.year,
       this.language,
-      this.format
+      this.format,
+      this.category
     );
   }
 }

@@ -21,6 +21,10 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
 
             <div className="space-y-3 text-lg">
               <div>
+                <span className="text-pink-500">Category: </span>
+                <span className="text-white capitalize">{item.category}</span>
+              </div>
+              <div>
                 <span className="text-pink-500">Topic: </span>
                 <span className="text-white">{item.topic}</span>
               </div>
@@ -48,7 +52,7 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
               <div>
                 <span className="text-pink-500">Completed: </span>
                 <span className="text-white">
-                  {item.compeleted ? 'Yes' : 'No'}
+                  {item.completed ? 'Yes' : 'No'}
                 </span>
               </div>
 

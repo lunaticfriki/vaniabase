@@ -14,7 +14,7 @@ interface Book {
   topic: string;
   tags: string[];
   owner: string;
-  compeleted: boolean;
+  completed: boolean;
   year: string;
   language: string;
   format: string;

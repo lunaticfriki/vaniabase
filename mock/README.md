@@ -95,7 +95,7 @@ curl -X POST http://localhost:3001/api/items \
     "topic": "Technology",
     "tags": ["tech"],
     "owner": "user123",
-    "compeleted": false,
+    "completed": false,
     "year": "2024",
     "language": "English",
     "format": "Book"

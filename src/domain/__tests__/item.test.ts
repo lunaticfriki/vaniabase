@@ -13,7 +13,7 @@ describe('item domain tests', () => {
     expect(item.topic).toBeDefined();
     expect(item.tags).toBeDefined();
     expect(item.owner).toBeDefined();
-    expect(item.compeleted).toBeDefined();
+    expect(item.completed).toBeDefined();
     expect(item.year).toBeDefined();
     expect(item.language).toBeDefined();
     expect(item.format).toBeDefined();
@@ -31,7 +31,7 @@ describe('item domain tests', () => {
     expect(item.topic).toBe('');
     expect(item.tags).toEqual([]);
     expect(item.owner).toBe('');
-    expect(item.compeleted).toBe(false);
+    expect(item.completed).toBe(false);
     expect(item.year).toBe('');
     expect(item.language).toBe('');
     expect(item.format).toBe('');
@@ -47,7 +47,7 @@ describe('item domain tests', () => {
       topic: 'Test Topic',
       tags: ['tag1', 'tag2'],
       owner: 'owner123',
-      compeleted: true,
+      completed: true,
       year: '2023',
       language: 'English',
       format: 'PDF',
@@ -63,7 +63,7 @@ describe('item domain tests', () => {
     expect(item.topic).toBe(data.topic);
     expect(item.tags).toEqual(data.tags);
     expect(item.owner).toBe(data.owner);
-    expect(item.compeleted).toBe(data.compeleted);
+    expect(item.completed).toBe(data.completed);
     expect(item.year).toBe(data.year);
     expect(item.language).toBe(data.language);
     expect(item.format).toBe(data.format);
@@ -87,7 +87,7 @@ describe('item domain tests', () => {
     const item = ItemMother.createRandom();
     const completedItem = item.markAsCompleted();
 
-    expect(completedItem.compeleted).toBe(true);
+    expect(completedItem.completed).toBe(true);
     expect(completedItem.id).toBe(item.id);
   });
 
@@ -95,7 +95,7 @@ describe('item domain tests', () => {
     const item = ItemMother.createRandom();
     const toggledItem = item.toggleComplete();
 
-    expect(toggledItem.compeleted).toBe(!item.compeleted);
+    expect(toggledItem.completed).toBe(!item.completed);
     expect(toggledItem.id).toBe(item.id);
   });
 
