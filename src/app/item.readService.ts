@@ -117,6 +117,27 @@ function createItemReadService() {
     return state.value.items.filter((item) => item.category === category);
   };
 
+  const getDefaultCategory = (): string | null => {
+    if (state.value.categories.length === 0) {
+      return null;
+    }
+
+    const booksCategory = state.value.categories.find(
+      (cat) => cat.toLowerCase() === 'books'
+    );
+
+    if (booksCategory) {
+      return booksCategory;
+    }
+
+    const categoryWithItems = state.value.categories.find((cat) => {
+      const items = getItemsByCategory(cat);
+      return items.length > 0;
+    });
+
+    return categoryWithItems || state.value.categories[0];
+  };
+
   const clearError = (): void => {
     state.value = { ...state.value, error: null };
   };
@@ -131,6 +152,7 @@ function createItemReadService() {
       getItems,
       getCategories,
       getItemsByCategory,
+      getDefaultCategory,
       getItem,
       clearError,
       reset,

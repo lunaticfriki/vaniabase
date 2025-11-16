@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { Item } from '../../domain/item';
 import { PreviewItemComponent } from './previewItem.component';
+import { ErrorComponent } from './error.component';
 
 export const CategoriesComponent = ({
   categories,
@@ -11,6 +12,14 @@ export const CategoriesComponent = ({
   selectedCategory?: string;
   items?: Item[];
 }) => {
+  if (categories.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] px-4">
+        <ErrorComponent error="There aren't categories yet" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4 my-8 px-4">
@@ -28,9 +37,14 @@ export const CategoriesComponent = ({
 
       {selectedCategory && items && items.length > 0 && (
         <div className="px-4">
-          <h2 className="text-2xl text-pink-500 font-bold mb-6 text-center">
+          <h2 className="text-2xl text-pink-500 font-bold mb-6 text-center uppercase">
             {selectedCategory}
           </h2>
+          <div className="text-center mb-4">
+            <p className="text-white text-lg">
+              Total: <span className="text-pink-500">{items.length}</span>
+            </p>
+          </div>
           <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             {items.map((item) => (
               <PreviewItemComponent key={item.id} item={item} />
