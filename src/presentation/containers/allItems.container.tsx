@@ -3,13 +3,7 @@ import { useItemReadService } from '../../app/item.readService';
 import { LastElementsComponent } from '../components/lastElements.component';
 import { LastElementsSkeleton } from '../skeletons/lastElements.skeleton';
 
-interface LastElementsContainerProps {
-  count?: number;
-}
-
-export const LastElementsContainer = ({
-  count = 5,
-}: LastElementsContainerProps) => {
+export const AllItemsContainer = () => {
   const itemReadService = useItemReadService();
   const items = itemReadService.state.value.items;
   const loading = itemReadService.state.value.loading;
@@ -28,7 +22,5 @@ export const LastElementsContainer = ({
     return <div className="p-6 text-pink-500">Error: {error}</div>;
   }
 
-  const lastItems = items.slice(-count).reverse();
-
-  return <LastElementsComponent items={lastItems} />;
+  return <LastElementsComponent items={items} />;
 };

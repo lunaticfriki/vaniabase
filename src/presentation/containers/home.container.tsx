@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useItemReadService } from '../../app/item.readService';
 import { HomeSkeleton } from '../skeletons/home.skeleton';
+import { ContentComponent } from '../components/content.component';
 
 export const HomeContainer = () => {
   const { state, actions } = useItemReadService();
@@ -17,7 +18,7 @@ export const HomeContainer = () => {
 
   return (
     <>
-      <pre>{JSON.stringify(state.value.items, null, 2)}</pre>
+      <ContentComponent />
     </>
   );
 };

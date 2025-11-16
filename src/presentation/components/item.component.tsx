@@ -1,15 +1,14 @@
-import { useNavigate } from 'react-router-dom';
 import type { Item } from '../../domain/item';
+import { BackButtonComponent } from './backButton.component';
 
 interface ItemComponentProps {
   item: Item;
 }
 
 export const ItemComponent = ({ item }: ItemComponentProps) => {
-  const navigate = useNavigate();
-
   return (
     <div className="max-w-2xl mx-auto p-6">
+      <BackButtonComponent />
       <img
         src={item.imageUrl}
         alt={item.name}
@@ -59,15 +58,6 @@ export const ItemComponent = ({ item }: ItemComponentProps) => {
           <span className="text-pink-500">Tags: </span>
           <span className="text-white">{item.tags.join(', ')}</span>
         </div>
-      </div>
-
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="px-6 py-2 text-pink-500 border-2 border-pink-500 rounded hover:bg-pink-500 hover:text-white transition-colors cursor-pointer"
-        >
-          Back
-        </button>
       </div>
     </div>
   );
