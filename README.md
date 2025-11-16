@@ -138,15 +138,6 @@ The core domain entity is `Item`, which represents any collectible with properti
 - `.devcontainer/` - Dev container configuration
 - `eslint.config.js` - ESLint rules
 
-## 🤝 Contributing
-
-This project follows clean architecture principles. When adding features:
-
-1. Start with the domain model
-2. Create use cases in the application layer
-3. Implement infrastructure adapters
-4. Build UI in the presentation layer
-
 ## 📄 License
 
 Private project
