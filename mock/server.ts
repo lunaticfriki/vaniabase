@@ -192,7 +192,7 @@ async function showMenu(): Promise<boolean> {
     console.log('║     Mock API Server - Main Menu       ║');
     console.log('╚════════════════════════════════════════╝\n');
     console.log(`Status: ${coverStatus}\n`);
-    console.log('1. 🔄 Reload book covers from API');
+    console.log('1. 🔄 Reload item covers from API');
     console.log('2. 🚀 Start the server');
     console.log('3. 📋 List seed elements');
     console.log('4. 🚪 Exit\n');
