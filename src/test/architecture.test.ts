@@ -1,5 +1,4 @@
 import { filesOfProject } from 'tsarch';
-import { describe, it, expect } from 'vitest';
 import { globSync } from 'glob';
 
 describe('Architecture Tests', () => {

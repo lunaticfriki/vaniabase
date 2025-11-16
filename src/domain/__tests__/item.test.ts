@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'vitest';
 import { ItemMother } from './objectMothers/item.mother';
 
 describe('item domain tests', () => {
