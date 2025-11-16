@@ -1,17 +1,26 @@
 # Mock API Server
 
-This folder contains a mock API server, seed data, and utilities for managing book covers for development and testing purposes.
+This folder contains a mock API server, seed data, and utilities for managing item covers for development and testing purposes.
 
 ## Structure
 
 ```
 mock/
 ├── server.ts              # Express server providing REST API
-├── update-covers.ts       # Script to fetch book covers from Open Library API
+├── update-covers.ts       # Script to fetch covers from multiple APIs based on category
 ├── fix-missing-covers.ts  # Script to fix remaining missing covers
 └── data/
-    └── items.seed.json    # 20 mock items following the Item domain model
+    └── items.seed.json    # Mock items following the Item domain model
 ```
+
+## Cover APIs Support
+
+The scripts now support multiple media types with appropriate APIs:
+
+- **Books**: Open Library API (`openlibrary.org`)
+- **Video Games**: RAWG Video Games Database API (`rawg.io`)
+- **Music/CDs**: MusicBrainz + Cover Art Archive APIs
+- **Comics/Magazines**: Manual URLs (no automatic API yet)
 
 ## Usage
 
@@ -42,9 +51,10 @@ Select an option (1-4):
 
 **Menu Options:**
 
-1. **🔄 Reload book covers from API**
+1. **🔄 Reload covers from APIs**
 
-   - Runs the `update-covers.ts` script to fetch covers from Open Library
+   - Runs the `update-covers.ts` script to fetch covers from appropriate APIs based on item category
+   - Supports books (Open Library), games (RAWG), and music (MusicBrainz/Cover Art Archive)
    - If some covers are still missing, prompts to run the `fix-missing-covers.ts` script
    - Automatically reloads the seed data after updating
 
@@ -55,12 +65,12 @@ Select an option (1-4):
 
 3. **📋 List seed elements**
 
-   - Displays all 20 books in the seed with their details:
-     - Title, author, year, topic
+   - Displays all items in the seed with their details:
+     - Title, author, year, topic, category
      - Format, language, completion status
-     - Cover URL and status (✓ for Open Library, 📘 for TypeScript logo, ✗ for missing)
+     - Cover URL and status (✓ for valid API cover, ✗ for missing)
      - Tags
-   - Shows total count and number of books with Open Library covers
+   - Shows total count and number of items with valid covers
    - Returns to the menu after displaying
 
 4. **🚪 Exit**
@@ -115,22 +125,27 @@ export async function fetchItems(): Promise<Item[]> {
 }
 ```
 
-## Book Cover Management
+## Cover Management
 
 ### Automatic Cover Updates
 
-The mock server includes utilities to fetch real book covers from the Open Library API:
+The mock server includes utilities to fetch real covers from multiple APIs based on item category:
 
-**update-covers.ts**: Automatically searches for book covers by title and author
+**update-covers.ts**: Automatically searches for covers by category
 
-- Fetches covers from Open Library Covers API
-- Updates the seed file with actual book cover URLs
-- Processes all 20 books in the seed data
+- **Books**: Fetches from Open Library API (by title and author)
+- **Video Games**: Fetches from RAWG API (by game title)
+- **Music/CDs**: Fetches from MusicBrainz + Cover Art Archive (by album and artist)
+- **Comics/Magazines**: Keeps existing URLs (no automatic API)
+- Updates the seed file with actual cover URLs
+- Processes all items in the seed data
 
-**fix-missing-covers.ts**: Handles edge cases for books not found in the initial search
+**fix-missing-covers.ts**: Handles edge cases for items not found in the initial search
 
-- Uses alternative search strategies
-- Manually configured for specific difficult-to-find books
+- Checks all image URLs for validity
+- Automatically attempts to fix broken covers using category-specific APIs
+- Includes manual fixes for specific difficult-to-find items
+- Reports summary of broken vs. valid covers
 
 ### Manual Cover Update
 
@@ -138,8 +153,8 @@ You can also run the cover update scripts manually:
 
 ```bash
 cd mock
-npx tsx update-covers.ts
-npx tsx fix-missing-covers.ts
+npx tsx update-covers.ts      # Update all covers from APIs
+npx tsx fix-missing-covers.ts # Fix remaining broken/missing covers
 ```
 
 ## Notes
