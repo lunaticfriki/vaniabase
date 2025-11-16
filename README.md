@@ -103,11 +103,39 @@ The project uses Vitest for unit and integration testing. Test files are located
 - **Object Mother Pattern** - Test data builders in `__tests__/objectMothers/` for creating domain entities with realistic test data
 - **Unit Tests** - Testing domain logic and business rules
 - **Integration Tests** - Testing component behavior and interactions
+- **Architecture Tests** - Using `tsarch` to enforce hexagonal architecture principles and naming conventions
+
+**Architecture Tests:**
+
+The project includes automated architecture tests (`src/test/architecture.test.ts`) that enforce:
+
+- **Hexagonal Architecture Rules:**
+
+  - Domain layer cannot import from infrastructure, app, or presentation
+  - Infrastructure layer cannot import from app or presentation
+  - App layer cannot import from presentation
+  - Infrastructure must depend on domain only
+
+- **Naming Conventions:**
+
+  - Services: `*.readService.ts` or `*.writeService.ts`
+  - Components: `camelCase.component.tsx`
+  - Containers: `camelCase.container.tsx`
+  - Skeletons: `camelCase.skeleton.tsx`
+  - Pages: `camelCase.page.tsx`
+  - Errors: `camelCase.error.tsx`
+
+- **Folder Structure:**
+  - Presentation layer must use specific folders: `components/`, `containers/`, `skeletons/`, `pages/`, `errors/`
 
 Run tests:
 
 ```bash
+# All tests
 pnpm test
+
+# Architecture tests only
+pnpm test architecture.test.ts
 ```
 
 ## � Git Hooks (Husky)
