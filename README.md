@@ -88,9 +88,11 @@ This project includes a fully configured development container for a consistent 
 - `pnpm preview` - Preview production build
 - `pnpm lint` - Run ESLint
 - `pnpm test` - Run tests in watch mode
+- `pnpm test:ci` - Run tests once (used in CI/hooks)
 - `pnpm test:ui` - Run tests with UI
 - `pnpm test:coverage` - Generate test coverage report
 - `pnpm mock:server` - Start mock API server (port 3001)
+- `pnpm commit` - Interactive commit helper with type selection and testing
 
 ## 🧪 Testing
 
@@ -108,7 +110,41 @@ Run tests:
 pnpm test
 ```
 
-## 🗄️ Mock API Server
+## � Git Hooks (Husky)
+
+The project uses Husky to enforce code quality through automated git hooks:
+
+### Interactive Commit Helper
+
+Instead of using `git commit` directly, use:
+
+```bash
+pnpm commit
+```
+
+This will:
+
+1. ✅ Prompt you to select a commit type (feat, fix, refactor, test, docs, style, chore, perf)
+2. ✅ Ask for a commit description
+3. ✅ Run all tests automatically
+4. ✅ Create the commit if tests pass
+5. ❌ Abort if tests fail
+
+**Commit Message Format:** `<type>: <description>`
+
+Example: `feat: add item filtering functionality`
+
+### Pre-Push Hook
+
+When you run `git push`, the hook will:
+
+1. ✅ Run all tests automatically
+2. ✅ Allow push if tests pass
+3. ❌ Block push if tests fail
+
+This ensures only tested code reaches the repository.
+
+## �🗄️ Mock API Server
 
 A mock REST API server is available for development purposes. See [`mock/README.md`](./mock/README.md) for details.
 

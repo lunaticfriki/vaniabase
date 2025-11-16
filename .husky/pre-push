@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo ""
+echo "🔍 Pre-push checks..."
+echo "====================="
+echo ""
+
+# Run tests before pushing
+echo "🧪 Running tests..."
+pnpm test:ci
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ Tests failed! Push aborted."
+    echo "💡 Fix the failing tests before pushing."
+    exit 1
+fi
+
+echo ""
+echo "✅ All tests passed!"
+echo "🚀 Proceeding with push..."
+echo ""
+
+exit 0
