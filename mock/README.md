@@ -7,8 +7,10 @@ This folder contains a mock API server, seed data, and utilities for managing it
 ```
 mock/
 ├── server.ts              # Express server providing REST API
+├── server.test.ts         # Comprehensive test suite for the API
 ├── update-covers.ts       # Script to fetch covers from multiple APIs based on category
 ├── fix-missing-covers.ts  # Script to fix remaining missing covers
+├── TEST_README.md         # Detailed testing documentation
 └── data/
     └── items.seed.json    # Mock items following the Item domain model
 ```
@@ -157,6 +159,50 @@ npx tsx update-covers.ts      # Update all covers from APIs
 npx tsx fix-missing-covers.ts # Fix remaining broken/missing covers
 ```
 
+## Testing
+
+The mock server includes a comprehensive test suite covering all API endpoints and functionality.
+
+### Running Tests
+
+1. **Start the mock server** in a terminal:
+
+   ```bash
+   pnpm mock:server
+   # Select option 2 to start the server
+   ```
+
+2. **Run tests** in another terminal:
+
+   ```bash
+   # Run tests once
+   pnpm test:mock
+
+   # Run tests in watch mode
+   pnpm test:mock:watch
+
+   # Run with coverage
+   pnpm test:mock:coverage
+   ```
+
+### Test Coverage
+
+The test suite includes:
+
+- ✅ Health check endpoint
+- ✅ GET all items
+- ✅ GET item by ID (with 404 handling)
+- ✅ POST create new items
+- ✅ PUT update items (full and partial updates)
+- ✅ DELETE items with proper cleanup
+- ✅ CORS headers validation
+- ✅ Content-Type validation
+- ✅ Item categories handling
+- ✅ Completion status toggling
+- ✅ Tags management
+
+For detailed testing documentation, see [TEST_README.md](./TEST_README.md).
+
 ## Notes
 
 - This server is for **development/testing only**
@@ -164,3 +210,4 @@ npx tsx fix-missing-covers.ts # Fix remaining broken/missing covers
 - The seed data follows the `Item` domain model from `src/domain/item.ts`
 - CORS is enabled for all origins
 - Book covers are fetched from Open Library (https://covers.openlibrary.org)
+- Test suite automatically backs up and restores seed data
