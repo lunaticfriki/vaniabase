@@ -1,0 +1,4 @@
+# Mock Rust Server
+
+/target/
+Cargo.lock

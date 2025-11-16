@@ -12,10 +12,6 @@
     "test:ci": "vitest run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "test:mock": "vitest run mock/server.test.ts",
-    "test:mock:watch": "vitest mock/server.test.ts",
-    "test:mock:coverage": "vitest run mock/server.test.ts --coverage",
-    "mock:server": "tsx mock/server.ts",
     "commit": ".husky/commit-helper.sh",
     "commit:push": ".husky/commit-with-push.sh",
     "prepare": "husky"

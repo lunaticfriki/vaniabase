@@ -1,0 +1,32 @@
+[package]
+name = "mock-rust"
+version = "0.1.0"
+edition = "2021"
+default-run = "mock-rust"
+
+[dependencies]
+actix-web = "4.4"
+actix-cors = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.35", features = ["full"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+env_logger = "0.11"
+log = "0.4"
+reqwest = { version = "0.11", features = ["json"] }
+urlencoding = "2.1"
+
+[dev-dependencies]
+actix-rt = "2.11"
+
+[[bin]]
+name = "mock-rust"
+path = "src/main.rs"
+
+[[bin]]
+name = "update-covers"
+path = "src/update_covers.rs"
+
+[[bin]]
+name = "fix-missing-covers"
+path = "src/fix_missing_covers.rs"
