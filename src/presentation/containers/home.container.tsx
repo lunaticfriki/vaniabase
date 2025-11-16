@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useItemReadService } from '../../app/item.readService';
+import { HomeSkeleton } from '../skeletons/home.skeleton';
 
 export const HomeContainer = () => {
   const { state, actions } = useItemReadService();
@@ -11,7 +12,7 @@ export const HomeContainer = () => {
   }, []);
 
   if (state.value.loading) {
-    return <div>Loading...</div>;
+    return <HomeSkeleton />;
   }
 
   return (
