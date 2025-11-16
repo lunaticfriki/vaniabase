@@ -36,3 +36,336 @@ body {
   background-color: rgb(11, 3, 15);
   color: rgba(255, 255, 255, 0.781);
 }
+
+/* Cyberpunk Button Styles */
+.cyber-button {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.1),
+    rgba(236, 72, 153, 0.05)
+  );
+  border: 2px solid #ec4899;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.cyber-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(236, 72, 153, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.cyber-button:hover::before {
+  left: 100%;
+}
+
+.cyber-button:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.2),
+    rgba(236, 72, 153, 0.1)
+  );
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.5),
+    inset 0 0 20px rgba(236, 72, 153, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Glitch effect on hover */
+.cyber-button:hover {
+  animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.cyber-button:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00ffff;
+  background: rgba(236, 72, 153, 0.1);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+  animation: glitch-text 0.3s infinite;
+  opacity: 0.8;
+  mix-blend-mode: screen;
+}
+
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translateY(0) translateY(-2px);
+  }
+  20% {
+    transform: translate(-2px, 2px) translateY(-2px);
+  }
+  40% {
+    transform: translate(-2px, -2px) translateY(-2px);
+  }
+  60% {
+    transform: translate(2px, 2px) translateY(-2px);
+  }
+  80% {
+    transform: translate(2px, -2px) translateY(-2px);
+  }
+}
+
+@keyframes glitch-text {
+  0% {
+    transform: translate(0);
+    opacity: 0.8;
+  }
+  20% {
+    transform: translate(-2px, 2px);
+    opacity: 0.6;
+  }
+  40% {
+    transform: translate(-2px, -2px);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(2px, 2px);
+    opacity: 0.6;
+  }
+  80% {
+    transform: translate(2px, -2px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(0);
+    opacity: 0.8;
+  }
+}
+
+/* Cyber menu button (hamburger/close) */
+.cyber-menu-toggle {
+  position: relative;
+  padding: 0.5rem;
+  background: transparent;
+  border: 2px solid #ec4899;
+  clip-path: polygon(
+    0 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% 100%,
+    8px 100%,
+    0 calc(100% - 8px)
+  );
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.cyber-menu-toggle:hover {
+  background: rgba(236, 72, 153, 0.2);
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+  transform: translateY(-2px);
+  animation: glitch-menu 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes glitch-menu {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  25% {
+    transform: translate(-1px, -1px);
+  }
+  50% {
+    transform: translate(1px, -3px);
+  }
+  75% {
+    transform: translate(-1px, -3px);
+  }
+}
+
+/* Cyber card for preview items */
+.cyber-card {
+  position: relative;
+  display: block;
+  background: linear-gradient(
+    135deg,
+    rgba(236, 72, 153, 0.05),
+    rgba(236, 72, 153, 0.02)
+  );
+  border: 2px solid rgba(236, 72, 153, 0.5);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cyber-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(236, 72, 153, 0.1),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cyber-card:hover::before {
+  opacity: 1;
+}
+
+.cyber-card:hover {
+  border-color: #ec4899;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4),
+    inset 0 0 20px rgba(236, 72, 153, 0.1);
+  transform: translateY(-4px) scale(1.02);
+  animation: glitch-card 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.cyber-card-image {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+  transition: all 0.3s ease;
+}
+
+.cyber-card:hover .cyber-card-image {
+  filter: brightness(1.1) contrast(1.1);
+}
+
+@keyframes glitch-card {
+  0%,
+  100% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  25% {
+    transform: translate(-2px, -6px) scale(1.02);
+  }
+  50% {
+    transform: translate(2px, -2px) scale(1.02);
+  }
+  75% {
+    transform: translate(-2px, -6px) scale(1.02);
+  }
+}
+
+/* Cyber text with glitch effect */
+.cyber-text {
+  position: relative;
+  display: inline-block;
+}
+
+.cyber-card:hover .cyber-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #00ffff;
+  animation: glitch-text-left 0.3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  z-index: -1;
+}
+
+.cyber-card:hover .cyber-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #ff00ff;
+  animation: glitch-text-right 0.3s infinite;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  z-index: -1;
+}
+
+@keyframes glitch-text-left {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 1px);
+  }
+  40% {
+    transform: translate(-1px, -1px);
+  }
+  60% {
+    transform: translate(2px, 1px);
+  }
+  80% {
+    transform: translate(1px, -1px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes glitch-text-right {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(2px, -1px);
+  }
+  40% {
+    transform: translate(1px, 1px);
+  }
+  60% {
+    transform: translate(-2px, -1px);
+  }
+  80% {
+    transform: translate(-1px, 1px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}

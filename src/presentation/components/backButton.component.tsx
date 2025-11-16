@@ -7,7 +7,8 @@ export const BackButtonComponent = () => {
     <div className="flex justify-center">
       <button
         onClick={() => navigate(-1)}
-        className="px-6 py-2 text-pink-500 border-2 border-pink-500 rounded hover:bg-pink-500 hover:text-white transition-colors cursor-pointer"
+        data-text="Back"
+        className="cyber-button text-pink-500 hover:text-white"
       >
         Back
       </button>

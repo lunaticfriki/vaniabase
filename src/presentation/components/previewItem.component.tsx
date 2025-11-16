@@ -7,17 +7,17 @@ interface PreviewItemProps {
 
 export const PreviewItemComponent = ({ item }: PreviewItemProps) => {
   return (
-    <Link
-      to={`/item/${item.id}`}
-      className="block cursor-pointer hover:opacity-80 transition-opacity"
-    >
-      <div className="flex flex-col items-center max-w-[300px]">
+    <Link to={`/item/${item.id}`} className="cyber-card p-3 max-w-[300px]">
+      <div className="flex flex-col items-center">
         <img
           src={item.imageUrl}
           alt={item.name}
-          className="w-full aspect-2/3 object-cover rounded"
+          className="cyber-card-image w-full aspect-2/3 object-cover"
         />
-        <h3 className="mt-2 text-white text-center text-sm line-clamp-2">
+        <h3
+          data-text={item.name}
+          className="cyber-text mt-3 text-pink-500 text-center text-sm line-clamp-2 font-bold uppercase tracking-wide"
+        >
           {item.name}
         </h3>
       </div>

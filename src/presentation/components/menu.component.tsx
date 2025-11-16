@@ -38,7 +38,7 @@ export const MenuComponent = () => {
     <div className="relative" ref={menuRef}>
       <button
         onClick={toggleMenu}
-        className="text-pink-500 hover:text-white cursor-pointer p-2 transition-colors"
+        className="cyber-menu-toggle text-pink-500 hover:text-white"
         aria-label="Toggle menu"
       >
         <svg
@@ -58,10 +58,16 @@ export const MenuComponent = () => {
       </button>
 
       {isOpen && (
-        <div className="fixed md:absolute inset-0 md:inset-auto md:right-0 md:top-full md:mt-2 bg-pink-500 md:bg-[rgb(11,3,15)] border-0 md:border-2 md:border-pink-500 md:rounded p-6 md:min-w-[200px] z-50">
+        <div
+          className="fixed md:absolute inset-0 md:inset-auto md:right-0 md:top-full md:mt-2 bg-pink-500 md:bg-[rgb(11,3,15)] border-0 md:border-2 md:border-pink-500 p-6 md:min-w-[200px] z-50"
+          style={{
+            clipPath:
+              'polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))',
+          }}
+        >
           <button
             onClick={toggleMenu}
-            className="absolute top-4 right-4 text-white hover:text-[rgb(11,3,15)] cursor-pointer p-2 transition-colors md:hidden"
+            className="cyber-menu-toggle absolute top-4 right-4 text-white md:hidden"
             aria-label="Close menu"
           >
             <svg
@@ -79,16 +85,14 @@ export const MenuComponent = () => {
               />
             </svg>
           </button>
-          <ul className="list-disc list-inside space-y-4 md:space-y-4">
+          <ul className="list-none space-y-4 md:space-y-4">
             {menuItems.map((item) => (
-              <li
-                key={item.path}
-                className="text-white md:text-pink-500 hover:text-[rgb(11,3,15)] md:hover:text-white transition-colors text-lg"
-              >
+              <li key={item.path}>
                 <Link
                   to={item.path}
                   onClick={() => setIsOpen(false)}
-                  className="cursor-pointer"
+                  data-text={item.label}
+                  className="cyber-button block text-center text-white md:text-pink-500"
                 >
                   {item.label}
                 </Link>
