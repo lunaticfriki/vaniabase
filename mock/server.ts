@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -10,21 +11,33 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = 3001;
 
-// Middleware
+interface Item {
+  id: string;
+  name: string;
+  author: string;
+  description: string;
+  imageUrl: string;
+  topic: string;
+  tags: string[];
+  owner: string;
+  compeleted: boolean;
+  year: string;
+  language: string;
+  format: string;
+}
+
 app.use(cors());
 app.use(express.json());
 
-// Load seed data
-const itemsData = JSON.parse(
+const itemsData: Item[] = JSON.parse(
   readFileSync(join(__dirname, 'data', 'items.seed.json'), 'utf-8')
 );
 
-// Routes
-app.get('/api/items', (req, res) => {
+app.get('/api/items', (_req: Request, res: Response) => {
   res.json(itemsData);
 });
 
-app.get('/api/items/:id', (req, res) => {
+app.get('/api/items/:id', (req: Request, res: Response) => {
   const item = itemsData.find((item) => item.id === req.params.id);
 
   if (!item) {
@@ -34,16 +47,16 @@ app.get('/api/items/:id', (req, res) => {
   res.json(item);
 });
 
-app.post('/api/items', (req, res) => {
-  const newItem = {
-    id: crypto.randomUUID(),
+app.post('/api/items', (req: Request, res: Response) => {
+  const newItem: Item = {
+    id: randomUUID(),
     ...req.body,
   };
   itemsData.push(newItem);
   res.status(201).json(newItem);
 });
 
-app.put('/api/items/:id', (req, res) => {
+app.put('/api/items/:id', (req: Request, res: Response) => {
   const index = itemsData.findIndex((item) => item.id === req.params.id);
 
   if (index === -1) {
@@ -54,7 +67,7 @@ app.put('/api/items/:id', (req, res) => {
   res.json(itemsData[index]);
 });
 
-app.delete('/api/items/:id', (req, res) => {
+app.delete('/api/items/:id', (req: Request, res: Response) => {
   const index = itemsData.findIndex((item) => item.id === req.params.id);
 
   if (index === -1) {
@@ -65,8 +78,7 @@ app.delete('/api/items/:id', (req, res) => {
   res.status(204).send();
 });
 
-// Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', items: itemsData.length });
 });
 
