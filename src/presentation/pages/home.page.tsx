@@ -1,24 +1,10 @@
-import { useEffect } from 'react';
-import { useItemReadService } from '../../app/item.readService';
-import { HeaderComponent } from '../components/header.component';
+import { HomeContainer } from '../containers/home.container';
 
 export const Home = () => {
-  const { state, actions } = useItemReadService();
-
-  useEffect(() => {
-    actions.getItems();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (state.value.loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <>
-      <HeaderComponent />
-      <pre>{JSON.stringify(state.value.items, null, 2)}</pre>
-    </>
+    <div className="p-8">
+      <h2 className="text-3xl font-bold mb-4">Home</h2>
+      <HomeContainer />
+    </div>
   );
 };

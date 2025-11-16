@@ -17,6 +17,8 @@ describe('Architecture Tests', () => {
     'skeletons',
     'pages',
     'errors',
+    'routes',
+    'layouts',
   ];
 
   describe('Hexagonal Architecture - Layer Dependencies', () => {
@@ -134,6 +136,22 @@ describe('Architecture Tests', () => {
     it('all .tsx files in errors/ should end with .error.tsx', () => {
       const files = globSync('src/presentation/errors/**/*.tsx');
       const invalidFiles = files.filter((file) => !file.endsWith('.error.tsx'));
+
+      expect(invalidFiles).toEqual([]);
+    });
+
+    it('all .tsx files in routes/ should end with .route.tsx', () => {
+      const files = globSync('src/presentation/routes/**/*.tsx');
+      const invalidFiles = files.filter((file) => !file.endsWith('.route.tsx'));
+
+      expect(invalidFiles).toEqual([]);
+    });
+
+    it('all .tsx files in layouts/ should end with .layout.tsx', () => {
+      const files = globSync('src/presentation/layouts/**/*.tsx');
+      const invalidFiles = files.filter(
+        (file) => !file.endsWith('.layout.tsx')
+      );
 
       expect(invalidFiles).toEqual([]);
     });
