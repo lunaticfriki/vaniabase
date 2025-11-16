@@ -3,11 +3,12 @@ import { HeaderComponent } from '../components/header.component';
 
 export const MainLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen grid grid-rows-[auto_1fr_auto]">
       <HeaderComponent />
-      <main className="flex-1">
+      <main className="overflow-y-auto">
         <Outlet />
       </main>
+      <footer className="p-4 text-pink-500 text-center">footer</footer>
     </div>
   );
 };
