@@ -175,20 +175,20 @@ fn list_seed_elements(items: &[Item]) {
 fn show_menu(items: &[Item]) -> io::Result<String> {
     let has_missing_covers = check_missing_covers(items);
     let cover_status = if has_missing_covers {
-        "⚠️  Some covers missing"
+        "Some covers missing"
     } else {
-        "✓ All covers OK"
+        "All covers OK"
     };
 
     println!("\n╔════════════════════════════════════════╗");
     println!("║     Mock API Server - Main Menu        ║");
     println!("╚════════════════════════════════════════╝\n");
     println!("Status: {}\n", cover_status);
-    println!("1. 🔄 Update covers from API");
-    println!("2. 🔧 Fix missing covers");
-    println!("3. 🚀 Start the server");
-    println!("4. 📋 List seed elements");
-    println!("5. 🚪 Exit\n");
+    println!("1. Update covers from API");
+    println!("2. Fix missing covers");
+    println!("3. Start the server");
+    println!("4. List seed elements");
+    println!("5. Exit\n");
 
     print!("Select an option (1-5): ");
     io::stdout().flush()?;
@@ -202,7 +202,7 @@ fn show_menu(items: &[Item]) -> io::Result<String> {
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    println!("🎬 Starting Mock API Server (Rust version)...\n");
+    println!("Starting Mock API Server (Rust version)...\n");
 
     let items = load_items_from_file();
     let app_state = web::Data::new(AppState {
@@ -216,7 +216,7 @@ async fn main() -> std::io::Result<()> {
         match show_menu(&items) {
             Ok(choice) => match choice.as_str() {
                 "1" => {
-                    println!("\n🔄 Running update-covers...\n");
+                    println!("\nRunning update-covers...\n");
                     let status = std::process::Command::new("cargo")
                         .arg("run")
                         .arg("--bin")
@@ -225,15 +225,14 @@ async fn main() -> std::io::Result<()> {
                     
                     match status {
                         Ok(exit_status) if exit_status.success() => {
-                            println!("\n✓ Cover update completed\n");
-                            // Reload items
+                            println!("\nCover update completed\n");
                             let new_items = load_items_from_file();
                             let mut items_lock = app_state.items.lock().unwrap();
                             items_lock.clear();
                             items_lock.extend(new_items);
                         }
                         _ => {
-                            println!("\n✗ Cover update failed\n");
+                            println!("\nCover update failed\n");
                         }
                     }
                     println!("Press Enter to continue...");
@@ -241,7 +240,7 @@ async fn main() -> std::io::Result<()> {
                     io::stdin().read_line(&mut _input).ok();
                 }
                 "2" => {
-                    println!("\n🔧 Running fix-missing-covers...\n");
+                    println!("\nRunning fix-missing-covers...\n");
                     let status = std::process::Command::new("cargo")
                         .arg("run")
                         .arg("--bin")
@@ -250,15 +249,14 @@ async fn main() -> std::io::Result<()> {
                     
                     match status {
                         Ok(exit_status) if exit_status.success() => {
-                            println!("\n✓ Missing covers fix completed\n");
-                            // Reload items
+                            println!("\nMissing covers fix completed\n");
                             let new_items = load_items_from_file();
                             let mut items_lock = app_state.items.lock().unwrap();
                             items_lock.clear();
                             items_lock.extend(new_items);
                         }
                         _ => {
-                            println!("\n✗ Missing covers fix failed\n");
+                            println!("\nMissing covers fix failed\n");
                         }
                     }
                     println!("Press Enter to continue...");
@@ -275,11 +273,11 @@ async fn main() -> std::io::Result<()> {
                     io::stdin().read_line(&mut _input).ok();
                 }
                 "5" => {
-                    println!("\n👋 Goodbye!\n");
+                    println!("\nGoodbye!\n");
                     process::exit(0);
                 }
                 _ => {
-                    println!("\n❌ Invalid option. Please select 1-5.\n");
+                    println!("\nInvalid option. Please select 1-5.\n");
                 }
             },
             Err(e) => {
@@ -291,7 +289,7 @@ async fn main() -> std::io::Result<()> {
 
     // Start the server
     let port = 3001;
-    println!("\n🚀 Mock API server running at http://localhost:{}", port);
+    println!("\n Mock API server running at http://localhost:{}", port);
     println!("📦 Loaded {} items from seed", app_state.items.lock().unwrap().len());
     println!("\nAvailable endpoints:");
     println!("  GET    /api/items       - Get all items");
@@ -450,7 +448,7 @@ mod tests {
         .await;
 
         let new_item = Item {
-            id: "".to_string(), // Will be generated
+            id: "".to_string(),
             name: "New Test Book".to_string(),
             author: "New Author".to_string(),
             description: "A new test book".to_string(),
@@ -475,7 +473,7 @@ mod tests {
 
         let body: Item = test::read_body_json(resp).await;
         assert_eq!(body.name, "New Test Book");
-        assert!(!body.id.is_empty()); // UUID should be generated
+        assert!(!body.id.is_empty()); 
 
         // Verify item was added to state
         let items = app_state.items.lock().unwrap();
@@ -585,7 +583,6 @@ mod tests {
         let resp = test::call_service(&app, req).await;
         assert_eq!(resp.status().as_u16(), 204);
 
-        // Verify item was deleted
         let items = app_state.items.lock().unwrap();
         assert_eq!(items.len(), 1);
         assert_eq!(items[0].id, "test-id-2");
@@ -674,10 +671,7 @@ mod tests {
             },
         ];
 
-        // First item has openlibrary cover (good), second doesn't (missing)
         assert!(check_missing_covers(&items));
-
-        // All items with openlibrary covers
         let items_ok = vec![
             Item {
                 id: "1".to_string(),
