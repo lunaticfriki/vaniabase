@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 export const MenuComponent = () => {
@@ -34,6 +34,20 @@ export const MenuComponent = () => {
     { path: '/categories', label: 'Categories' },
     { path: '/about', label: 'About' },
   ];
+
+  const handleFullscreen = useCallback(() => {
+    const docElm = document.documentElement;
+    if (!document.fullscreenElement) {
+      if (docElm.requestFullscreen) {
+        docElm.requestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+    setIsOpen(false);
+  }, []);
 
   return (
     <div className="relative" ref={menuRef}>
@@ -86,7 +100,19 @@ export const MenuComponent = () => {
               />
             </svg>
           </button>
+
           <ul className="list-none space-y-4 md:space-y-4">
+            <li>
+              <button
+                onClick={handleFullscreen}
+                className="cyber-button block w-full text-center text-white md:text-pink-500"
+                data-text="Fullscreen"
+                type="button"
+              >
+                Fullscreen
+              </button>
+            </li>
+
             {menuItems.map((item) => (
               <li key={item.path}>
                 <Link

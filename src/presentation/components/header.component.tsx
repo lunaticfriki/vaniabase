@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { MenuComponent } from './menu.component';
-
 export const HeaderComponent = () => {
   return (
     <header className="flex items-center justify-between p-4 text-pink-500">
@@ -12,7 +11,7 @@ export const HeaderComponent = () => {
           VANIABASE
         </h1>
       </Link>
-      <div className="flex-1 flex justify-end">
+      <div className="flex-1 flex justify-end items-center gap-2">
         <MenuComponent />
       </div>
     </header>
