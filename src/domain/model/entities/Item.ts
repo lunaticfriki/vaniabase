@@ -58,4 +58,24 @@ export class Item {
       category
     );
   }
+
+  public static empty(): Item {
+    return new Item(
+      Id.empty(),
+      Title.empty(),
+      Description.empty(),
+      Author.empty(),
+      Cover.empty(),
+      Owner.empty(),
+      Tags.empty(),
+      Topic.empty(),
+      Format.empty(),
+      Created.empty(),
+      Completed.empty(),
+      Year.empty(),
+      Publisher.empty(),
+      Language.empty(),
+      Category.empty()
+    );
+  }
 }

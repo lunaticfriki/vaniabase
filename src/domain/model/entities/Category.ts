@@ -10,4 +10,8 @@ export class Category {
   public static create(id: Id, name: Title): Category {
     return new Category(id, name);
   }
+
+  public static empty(): Category {
+    return new Category(Id.empty(), Title.empty());
+  }
 }

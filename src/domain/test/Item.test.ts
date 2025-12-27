@@ -1,5 +1,4 @@
-import { describe, it, expect } from 'vitest';
-import { ItemMother } from './ItemMother';
+import { ItemMother } from "./ItemMother";
 import { Item } from '../model/entities/Item';
 
 describe('Item Entity', () => {
@@ -15,5 +14,19 @@ describe('Item Entity', () => {
 
     const initialTitle = item.title.value;
     expect(item.title.value).toBe(initialTitle);
+  });
+
+  it('should create an empty item', () => {
+    const item = ItemMother.empty();
+    expect(item).toBeInstanceOf(Item);
+    expect(item.id.value).toBe('');
+    expect(item.title.value).toBe('');
+  });
+
+  it('should create an item with random values', () => {
+    const item = ItemMother.createRandom();
+    expect(item).toBeInstanceOf(Item);
+    expect(item.id).toBeDefined();
+    expect(item.title).toBeDefined();
   });
 });

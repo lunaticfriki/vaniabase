@@ -13,4 +13,8 @@ export class Id extends ValueObject<string> {
   public static random(): Id {
     return new Id(uuidv4());
   }
+
+  public static empty(): Id {
+    return new Id('');
+  }
 }

@@ -15,7 +15,7 @@ if [ $? != 0 ]; then
   tmux split-window -h -t $SESSION:0.0
   tmux send-keys -t $SESSION:0.1 'pnpm test' C-m
   tmux split-window -v -t $SESSION:0.1
-  tmux select-pane -t $SESSION:0.0
+  tmux select-pane -t $SESSION:0.2
 fi
 
 tmux attach-session -t $SESSION
