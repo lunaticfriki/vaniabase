@@ -10,11 +10,11 @@ export class ItemSeed {
     console.log(`[ItemSeed] Generating ${count} items with ${categories.length} categories...`);
 
     for (let i = 0; i < count; i++) {
-        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-        const item = ItemMother.create({ category: randomCategory });
-        items.push(item);
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+      const item = ItemMother.create({ category: randomCategory });
+      items.push(item);
     }
-    
+
     console.log(`[ItemSeed] Generated ${items.length} items.`);
     return items;
   }

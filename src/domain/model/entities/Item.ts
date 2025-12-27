@@ -1,5 +1,15 @@
 import { Id } from '../value-objects/Id';
-import { Title, Description, Author, Cover, Owner, Topic, Format, Publisher, Language } from '../value-objects/StringValues';
+import {
+  Title,
+  Description,
+  Author,
+  Cover,
+  Owner,
+  Topic,
+  Format,
+  Publisher,
+  Language
+} from '../value-objects/StringValues';
 import { Tags } from '../value-objects/Tags';
 import { Created, Completed, Year } from '../value-objects/DateAndNumberValues';
 import { Category } from './Category';

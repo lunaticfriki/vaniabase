@@ -1,30 +1,42 @@
 import { faker } from '@faker-js/faker';
 import { Item } from '../model/entities/Item';
 import { Id } from '../model/value-objects/Id';
-import { Title, Description, Author, Cover, Owner, Topic, Format, Publisher, Language } from '../model/value-objects/StringValues';
+import {
+  Title,
+  Description,
+  Author,
+  Cover,
+  Owner,
+  Topic,
+  Format,
+  Publisher,
+  Language
+} from '../model/value-objects/StringValues';
 import { Tags } from '../model/value-objects/Tags';
 import { Created, Completed, Year } from '../model/value-objects/DateAndNumberValues';
 import { Category } from '../model/entities/Category';
 import { CategoryMother } from './CategoryMother';
 
 export class ItemMother {
-  static create(data?: Partial<{
-    id: Id;
-    title: Title;
-    description: Description;
-    author: Author;
-    cover: Cover;
-    owner: Owner;
-    tags: Tags;
-    topic: Topic;
-    format: Format;
-    created: Created;
-    completed: Completed;
-    year: Year;
-    publisher: Publisher;
-    language: Language;
-    category: Category;
-  }>): Item {
+  static create(
+    data?: Partial<{
+      id: Id;
+      title: Title;
+      description: Description;
+      author: Author;
+      cover: Cover;
+      owner: Owner;
+      tags: Tags;
+      topic: Topic;
+      format: Format;
+      created: Created;
+      completed: Completed;
+      year: Year;
+      publisher: Publisher;
+      language: Language;
+      category: Category;
+    }>
+  ): Item {
     return Item.create(
       data?.id ? data.id : Id.random(),
       data?.title ? data.title : Title.create(faker.commerce.productName()),
@@ -67,8 +79,7 @@ export class ItemMother {
   static createRandom() {
     const title = faker.commerce.productName();
     const encodedTitle = encodeURIComponent(title);
-    return this.create(
-     {
+    return this.create({
       id: Id.random(),
       title: Title.create(title),
       description: Description.create(faker.commerce.productDescription()),
@@ -84,7 +95,6 @@ export class ItemMother {
       publisher: Publisher.create(faker.company.name()),
       language: Language.create('English'),
       category: CategoryMother.create()
-     }
-    );
+    });
   }
 }

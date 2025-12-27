@@ -33,22 +33,22 @@ describe('Architecture Rules', () => {
   });
 
   it('domain model should not depend on seed', async () => {
-       const violations = await filesOfProject('./tsconfig.app.json')
+    const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/model')
       .shouldNot()
       .dependOnFiles()
       .inFolder('src/domain/seed')
       .check();
-       expect(violations).toEqual([]);
+    expect(violations).toEqual([]);
   });
 
-    it('domain model should not depend on test', async () => {
-       const violations = await filesOfProject('./tsconfig.app.json')
+  it('domain model should not depend on test', async () => {
+    const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/model')
       .shouldNot()
       .dependOnFiles()
       .inFolder('src/domain/test')
       .check();
-       expect(violations).toEqual([]);
+    expect(violations).toEqual([]);
   });
 });

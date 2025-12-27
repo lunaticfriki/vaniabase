@@ -5,15 +5,13 @@ import { ItemsRepository } from '../../domain/repositories/ItemsRepository';
 
 @injectable()
 export class ItemReadService {
-    constructor(
-        @inject(ItemsRepository) private repository: ItemsRepository
-    ) {}
+  constructor(@inject(ItemsRepository) private repository: ItemsRepository) {}
 
-    async findAll(): Promise<Item[]> {
-        return this.repository.findAll();
-    }
+  async findAll(): Promise<Item[]> {
+    return this.repository.findAll();
+  }
 
-    async findById(id: Id): Promise<Item | undefined> {
-        return this.repository.findById(id);
-    }
+  async findById(id: Id): Promise<Item | undefined> {
+    return this.repository.findById(id);
+  }
 }

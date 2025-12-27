@@ -8,12 +8,14 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "tmux": "bash scripts/tmux-dev.sh"
+    "tmux": "bash scripts/tmux-dev.sh",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@preact/signals": "^2.5.1",
     "inversify": "^7.10.8",
     "preact": "^10.27.2",
+    "preact-router": "^4.1.2",
     "reflect-metadata": "^0.2.2",
     "uuid": "^13.0.0"
   },
@@ -28,6 +30,7 @@
     "autoprefixer": "^10.4.23",
     "babel-plugin-transform-typescript-metadata": "^0.4.0",
     "postcss": "^8.5.6",
+    "prettier": "^3.7.4",
     "tailwindcss": "^4.1.18",
     "ts-mockito": "^2.6.1",
     "tsarch": "^5.4.1",

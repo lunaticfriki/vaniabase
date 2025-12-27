@@ -1,10 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --color-brand-violet: #2E004F;
-  --color-brand-magenta: #FF00FF;
-  --color-brand-yellow: #FFFF00;
-  
+  --color-brand-violet: #2e004f;
+  --color-brand-magenta: #ff00ff;
+  --color-brand-yellow: #ffff00;
+
   --font-sans: 'Inconsolata', system-ui, sans-serif;
 }
 

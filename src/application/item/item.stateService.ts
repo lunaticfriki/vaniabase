@@ -6,27 +6,61 @@ import { ItemWriteService } from './item.writeService';
 
 @injectable()
 export class ItemStateService {
-    items = signal<Item[]>([]);
+  items = signal<Item[]>([]);
+  isLoading = signal<boolean>(false);
 
-    constructor(
-        @inject(ItemReadService) private readService: ItemReadService,
-        @inject(ItemWriteService) private writeService: ItemWriteService
-    ) {}
+  constructor(
+    @inject(ItemReadService) private readService: ItemReadService,
+    @inject(ItemWriteService) private writeService: ItemWriteService
+  ) {}
 
-    async loadItems(): Promise<void> {
-        console.log('[ItemStateService] Loading items...');
-        const items = await this.readService.findAll();
-        console.log(`[ItemStateService] Loaded ${items.length} items.`);
-        this.items.value = items;
+  async loadItems(): Promise<void> {
+    this.isLoading.value = true;
+    try {
+      console.log('[ItemStateService] Loading items...');
+      const items = await this.readService.findAll();
+      console.log(`[ItemStateService] Loaded ${items.length} items.`);
+      this.items.value = items;
+    } finally {
+      this.isLoading.value = false;
+    }
+  }
+
+  async createItem(item: Item): Promise<void> {
+    this.isLoading.value = true;
+    try {
+      await this.writeService.create(item);
+      await this.loadItems();
+    } finally {
+      this.isLoading.value = false;
+    }
+  }
+
+  async updateItem(item: Item): Promise<void> {
+    this.isLoading.value = true;
+    try {
+      await this.writeService.update(item);
+      await this.loadItems();
+    } finally {
+      this.isLoading.value = false;
+    }
+  }
+
+  async getItem(id: string): Promise<Item | undefined> {
+
+    const existingIcon = this.items.value.find(i => i.id.value === id);
+    if (existingIcon) {
+      return existingIcon;
     }
 
-    async createItem(item: Item): Promise<void> {
-        await this.writeService.create(item);
-        await this.loadItems();
+
+
+
+    if (this.items.value.length === 0) {
+      await this.loadItems();
+      return this.items.value.find(i => i.id.value === id);
     }
-    
-    async updateItem(item: Item): Promise<void> {
-        await this.writeService.update(item);
-        await this.loadItems();
-    }
+
+    return undefined;
+  }
 }

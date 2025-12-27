@@ -1,4 +1,4 @@
-import { ItemMother } from "./ItemMother";
+import { ItemMother } from './ItemMother';
 import { Item } from '../model/entities/Item';
 
 describe('Item Entity', () => {

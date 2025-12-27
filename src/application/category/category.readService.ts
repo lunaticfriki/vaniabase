@@ -5,15 +5,13 @@ import { CategoriesRepository } from '../../domain/repositories/CategoriesReposi
 
 @injectable()
 export class CategoryReadService {
-    constructor(
-        @inject(CategoriesRepository) private repository: CategoriesRepository
-    ) {}
+  constructor(@inject(CategoriesRepository) private repository: CategoriesRepository) {}
 
-    async findAll(): Promise<Category[]> {
-        return this.repository.findAll();
-    }
+  async findAll(): Promise<Category[]> {
+    return this.repository.findAll();
+  }
 
-    async findById(id: Id): Promise<Category | undefined> {
-        return this.repository.findById(id);
-    }
+  async findById(id: Id): Promise<Category | undefined> {
+    return this.repository.findById(id);
+  }
 }
