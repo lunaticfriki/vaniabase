@@ -1,0 +1,32 @@
+{
+  "name": "vaniabase",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "tmux": "bash scripts/tmux-dev.sh"
+  },
+  "dependencies": {
+    "preact": "^10.27.2",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.1.0",
+    "@preact/preset-vite": "^2.10.2",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^24.10.1",
+    "@types/uuid": "^11.0.0",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "ts-mockito": "^2.6.1",
+    "tsarch": "^5.4.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vitest": "^4.0.16"
+  }
+}
