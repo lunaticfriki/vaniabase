@@ -4,7 +4,7 @@ import { computed } from '@preact/signals';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { PreviewCard } from '../components/PreviewCard';
-import { Pagination as PaginationDomain } from '../../domain/Pagination';
+import { PaginationViewModel } from '../viewModels/PaginationViewModel';
 import { Pagination } from '../components/Pagination';
 import { Loading } from '../components/Loading';
 
@@ -17,7 +17,7 @@ export function Collection({ path: _ }: Props) {
   const items = itemStateService.items;
   const isLoading = itemStateService.isLoading;
 
-  const pagination = useMemo(() => new PaginationDomain(12), []);
+  const pagination = useMemo(() => new PaginationViewModel(12), []);
 
   useEffect(() => {
     itemStateService.loadItems();

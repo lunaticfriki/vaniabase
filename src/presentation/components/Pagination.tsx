@@ -1,7 +1,7 @@
-import { Pagination as PaginationDomain } from '../../domain/Pagination';
+import { PaginationViewModel } from '../viewModels/PaginationViewModel';
 
 interface PaginationProps {
-  pagination: PaginationDomain;
+  pagination: PaginationViewModel;
 }
 
 export function Pagination({ pagination }: PaginationProps) {

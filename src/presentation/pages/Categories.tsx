@@ -6,7 +6,7 @@ import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { CategoryStateService } from '../../application/category/category.stateService';
 import { PreviewCard } from '../components/PreviewCard';
-import { Pagination as PaginationDomain } from '../../domain/Pagination';
+import { PaginationViewModel } from '../viewModels/PaginationViewModel';
 import { Pagination } from '../components/Pagination';
 import { Loading } from '../components/Loading';
 
@@ -27,7 +27,7 @@ export function Categories({ categoryName }: Props) {
 
   const activeCategoryName = (categoryName || 'books').toLowerCase();
 
-  const pagination = useMemo(() => new PaginationDomain(12), []);
+  const pagination = useMemo(() => new PaginationViewModel(12), []);
 
   useEffect(() => {
     itemStateService.loadItems();
