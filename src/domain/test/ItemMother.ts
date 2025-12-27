@@ -65,13 +65,15 @@ export class ItemMother {
   }
 
   static createRandom() {
+    const title = faker.commerce.productName();
+    const encodedTitle = encodeURIComponent(title);
     return this.create(
      {
       id: Id.random(),
-      title: Title.create(faker.commerce.productName()),
+      title: Title.create(title),
       description: Description.create(faker.commerce.productDescription()),
       author: Author.create(faker.person.fullName()),
-      cover: Cover.create(faker.image.url()),
+      cover: Cover.create(`https://placehold.co/400x600/2E004F/FF00FF?text=${encodedTitle}`),
       owner: Owner.create(faker.person.fullName()),
       tags: Tags.create([faker.word.sample()]),
       topic: Topic.create(faker.word.noun()),

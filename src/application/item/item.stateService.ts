@@ -14,7 +14,9 @@ export class ItemStateService {
     ) {}
 
     async loadItems(): Promise<void> {
+        console.log('[ItemStateService] Loading items...');
         const items = await this.readService.findAll();
+        console.log(`[ItemStateService] Loaded ${items.length} items.`);
         this.items.value = items;
     }
 

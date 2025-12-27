@@ -9,10 +9,13 @@ export class InMemoryItemsRepository implements ItemsRepository {
   private items: Map<string, Item> = new Map();
 
   constructor() {
+    console.log('[InMemoryItemsRepository] Initializing...');
     const seedItems = ItemSeed.generate();
+    console.log(`[InMemoryItemsRepository] Seeded with ${seedItems.length} items.`);
     seedItems.forEach(item => {
       this.items.set(item.id.value, item);
     });
+    console.log(`[InMemoryItemsRepository] Repository size: ${this.items.size}`);
   }
 
   async save(item: Item): Promise<void> {

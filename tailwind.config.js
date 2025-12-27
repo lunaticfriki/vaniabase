@@ -9,6 +9,11 @@ export default {
       fontFamily: {
         sans: ['Inconsolata', 'system-ui', 'sans-serif'],
       },
+      colors: {
+        'brand-violet': '#2E004F', // Dark Violet
+        'brand-magenta': '#FF00FF', // Magenta
+        'brand-yellow': '#FFFF00', // Yellow
+      },
     },
   },
   plugins: [],
