@@ -23,7 +23,7 @@ export function Menu() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                class="hover:text-brand-yellow transition-colors"
+                class="text-white! hover:text-brand-yellow! transition-colors"
                 activeClassName="text-brand-yellow"
               >
                 {link.label}
@@ -61,7 +61,7 @@ export function Menu() {
               <Link
                 key={link.href}
                 href={link.href}
-                class="py-3 hover:text-brand-yellow transition-colors border-b border-white/5 last:border-0"
+                class="text-white! py-3 hover:text-brand-yellow! transition-colors border-b border-white/5 last:border-0"
                 onClick={() => setIsMenuOpen(false)}
                 activeClassName="text-brand-yellow"
               >
