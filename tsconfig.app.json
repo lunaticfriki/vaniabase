@@ -26,6 +26,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
