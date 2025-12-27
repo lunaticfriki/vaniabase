@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { PaginationViewModel } from '../viewModels/PaginationViewModel';
 
 interface PaginationProps {
@@ -7,6 +8,40 @@ interface PaginationProps {
 export function Pagination({ pagination }: PaginationProps) {
   const currentPage = pagination.currentPage.value;
   const totalPages = pagination.totalPages.value;
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputValue, setInputValue] = useState(currentPage.toString());
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setInputValue(currentPage.toString());
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
+  const handleSubmit = () => {
+    setIsEditing(false);
+    const newPage = parseInt(inputValue, 10);
+    if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+      pagination.goToPage(newPage);
+    } else {
+      setInputValue(currentPage.toString());
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+      setInputValue(currentPage.toString());
+    }
+  };
 
   if (totalPages <= 1) return null;
 
@@ -20,8 +55,30 @@ export function Pagination({ pagination }: PaginationProps) {
         Previous
       </button>
 
-      <span class="text-white/60">
-        Page <span class="text-white font-bold">{currentPage}</span> of {totalPages}
+      <span class="text-white/60 flex items-baseline gap-1">
+        Page
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            type="number"
+            class="w-16 bg-white/10 border border-brand-magenta rounded text-white text-center font-bold px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-brand-magenta"
+            value={inputValue}
+            onInput={e => setInputValue(e.currentTarget.value)}
+            onBlur={handleSubmit}
+            onKeyDown={handleKeyDown}
+            min={1}
+            max={totalPages}
+          />
+        ) : (
+          <span
+            class="text-white font-bold cursor-pointer hover:text-brand-magenta transition-colors px-2"
+            onClick={() => setIsEditing(true)}
+            title="Click to jump to page"
+          >
+            {currentPage}
+          </span>
+        )}
+        of {totalPages}
       </span>
 
       <button
