@@ -3,7 +3,7 @@ import { ItemMother } from '../test/ItemMother';
 import { CategoryMother } from '../test/CategoryMother';
 
 export class ItemSeed {
-  public static generate(count: number = 30): Item[] {
+  public static generate(count: number = 100): Item[] {
     const categories = CategoryMother.all();
     const items: Item[] = [];
 

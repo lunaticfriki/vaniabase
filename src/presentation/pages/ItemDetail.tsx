@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'preact/hooks';
 import { route } from 'preact-router';
+import { Link as RouterLink } from 'preact-router/match';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { Item } from '../../domain/model/entities/Item';
 import { Loading } from '../components/Loading';
+import type { JSX } from 'preact';
+
+const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
 
 interface Props {
   id?: string;
@@ -90,7 +94,7 @@ export function ItemDetail({ id }: Props) {
         <div class="space-y-8">
           <div class="space-y-4">
             <div class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase bg-brand-violet/20 text-brand-magenta border border-brand-violet/30">
-              {item.category.name.value}
+              <Link href={`/categories/${item.category.name.value.toLowerCase()}`}>{item.category.name.value}</Link>
             </div>
 
             <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-white leading-tight">
@@ -138,9 +142,13 @@ export function ItemDetail({ id }: Props) {
               <div class="text-xs text-white/40 uppercase tracking-widest mb-3">Tags</div>
               <div class="flex flex-wrap gap-2">
                 {item.tags.value.map(tag => (
-                  <span key={tag} class="px-3 py-1 bg-white/5 rounded text-sm text-white/70">
+                  <Link
+                    key={tag}
+                    href={`/tags/${tag.toLowerCase()}`}
+                    class="px-3 py-1 bg-white/5 rounded text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+                  >
                     #{tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>
