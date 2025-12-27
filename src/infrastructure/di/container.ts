@@ -1,13 +1,13 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 
-// Repositories
+
 import { ItemsRepository } from '../../domain/repositories/ItemsRepository';
 import { InMemoryItemsRepository } from '../repositories/InMemoryItemsRepository';
 import { CategoriesRepository } from '../../domain/repositories/CategoriesRepository';
 import { InMemoryCategoriesRepository } from '../repositories/InMemoryCategoriesRepository';
 
-// Services
+
 import { ErrorManager } from '../../domain/services/ErrorManager';
 import { ConsoleErrorManager } from '../services/ConsoleErrorManager';
 import { NotificationService } from '../../domain/services/NotificationService';
@@ -23,15 +23,15 @@ import { CategoryStateService } from '../../application/category/category.stateS
 
 const container = new Container();
 
-// Bind Repositories
+
 container.bind(ItemsRepository).to(InMemoryItemsRepository).inSingletonScope();
 container.bind(CategoriesRepository).to(InMemoryCategoriesRepository).inSingletonScope();
 
-// Bind Infrastructure Services
+
 container.bind(ErrorManager).to(ConsoleErrorManager).inSingletonScope();
 container.bind(NotificationService).to(ConsoleNotificationService).inSingletonScope();
 
-// Bind Application Services
+
 container.bind(ItemReadService).toSelf().inSingletonScope();
 container.bind(ItemWriteService).toSelf().inSingletonScope();
 container.bind(ItemStateService).toSelf().inSingletonScope();

@@ -3,7 +3,7 @@ import { Item } from '../../domain/model/entities/Item';
 import { ItemsRepository } from '../../domain/repositories/ItemsRepository';
 import { ErrorManager } from '../../domain/services/ErrorManager';
 import { NotificationService } from '../../domain/services/NotificationService';
-import { Id } from '../../domain/model/value-objects/Id';
+
 
 @injectable()
 export class ItemWriteService {
@@ -25,7 +25,7 @@ export class ItemWriteService {
 
     async update(item: Item): Promise<void> {
         try {
-            // Depending on repository implementation, save might handle update
+            
             await this.repository.save(item);
             this.notificationService.notify('Item updated successfully');
         } catch (error) {
