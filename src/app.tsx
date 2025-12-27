@@ -1,22 +1,34 @@
 import { Router } from 'preact-router';
+import { useEffect } from 'preact/hooks';
 import { Layout } from './presentation/components/Layout';
-import { Home } from './presentation/pages/Home';
-import { Collection } from './presentation/pages/Collection';
-import { Categories } from './presentation/pages/Categories';
-import { Tags } from './presentation/pages/Tags';
-import { About } from './presentation/pages/About';
-import { ItemDetail } from './presentation/pages/ItemDetail';
+import { createLazy } from './presentation/components/LazyLoad';
+
+export const Home = createLazy(() => import('./presentation/pages/Home').then(m => m.Home));
+export const Collection = createLazy(() => import('./presentation/pages/Collection').then(m => m.Collection));
+export const Categories = createLazy(() => import('./presentation/pages/Categories').then(m => m.Categories));
+export const Tags = createLazy(() => import('./presentation/pages/Tags').then(m => m.Tags));
+export const ItemDetail = createLazy(() => import('./presentation/pages/ItemDetail').then(m => m.ItemDetail));
+export const About = createLazy(() => import('./presentation/pages/About').then(m => m.About));
 
 export function App() {
+  useEffect(() => {
+    Home.preload();
+    Collection.preload();
+    Categories.preload();
+    Tags.preload();
+    ItemDetail.preload();
+    About.preload();
+  }, []);
+
   return (
     <Layout>
       <Router>
-        <Home path="/" />
-        <Collection path="/collection" />
-        <Categories path="/categories/:categoryName?" />
-        <Tags path="/tags/:tagName?" />
-        <ItemDetail path="/item/:id" />
-        <About path="/about" />
+        <Home.Component path="/" />
+        <Collection.Component path="/collection" />
+        <Categories.Component path="/categories/:categoryName?" />
+        <Tags.Component path="/tags/:tagName?" />
+        <ItemDetail.Component path="/item/:id" />
+        <About.Component path="/about" />
       </Router>
     </Layout>
   );
