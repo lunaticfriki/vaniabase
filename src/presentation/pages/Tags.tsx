@@ -83,7 +83,9 @@ export function Tags({ tagName }: Props) {
             <h2 class="text-2xl font-bold text-white">
               {activeTagName ? `#${activeTagName.toUpperCase()}` : 'ALL ITEMS'}
             </h2>
-            <span class="text-brand-magenta font-mono text-xl">[{filteredItemsCount}]</span>
+            <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 relative -top-2">
+              [{filteredItemsCount}]
+            </span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -16,7 +16,7 @@ export function createLazy<T = any>(loader: () => Promise<ComponentType<T>>) {
   };
 
   const LazyComponent: FunctionalComponent<T> = props => {
-    const [Comp, setComp] = useState<ComponentType<T> | null>(CachedComponent);
+    const [Comp, setComp] = useState<ComponentType<T> | null>(() => CachedComponent);
 
     useEffect(() => {
       if (!Comp) {

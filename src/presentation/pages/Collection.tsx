@@ -6,7 +6,7 @@ import { ItemStateService } from '../../application/item/item.stateService';
 import { PreviewCard } from '../components/PreviewCard';
 import { PaginationViewModel } from '../viewModels/PaginationViewModel';
 import { Pagination } from '../components/Pagination';
-import { Loading } from '../components/Loading';
+import { SkeletonItem } from '../components/SkeletonItem';
 
 interface Props {
   path?: string;
@@ -34,7 +34,24 @@ export function Collection({ path: _ }: Props) {
   });
 
   if (isLoading.value && items.value.length === 0) {
-    return <Loading />;
+    return (
+      <div class="space-y-8">
+        <div class="space-y-2">
+          <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
+            TIMELINE COLLECTION{' '}
+            <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 align-top">
+              [...]
+            </span>
+          </h1>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <SkeletonItem key={i} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -42,7 +59,9 @@ export function Collection({ path: _ }: Props) {
       <div class="space-y-2">
         <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
           TIMELINE COLLECTION{' '}
-          <span class="text-2xl md:text-3xl text-white/30 ml-2 align-top">{items.value.length}</span>
+          <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 align-super">
+            [{items.value.length}]
+          </span>
         </h1>
       </div>
 

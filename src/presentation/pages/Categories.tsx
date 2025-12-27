@@ -84,8 +84,8 @@ export function Categories({ categoryName }: Props) {
               </Link>
             );
           })}
-          <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 align-top">
-            {filteredItems.value.length}
+          <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 relative -top-2">
+            [{filteredItems.value.length}]
           </span>
         </div>
       </div>
