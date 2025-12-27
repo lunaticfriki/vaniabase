@@ -65,7 +65,7 @@ export function Tags({ tagName }: Props) {
                     ${fontSizeClass}
                     ${
                       isActive
-                        ? 'text-brand-magenta font-black bg-white/10'
+                        ? 'text-white/70  bg-brand-magenta/50 hover:text-white/70'
                         : 'text-white/70 hover:text-white hover:bg-brand-magenta/50'
                     }
                   `}

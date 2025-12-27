@@ -1,64 +1,130 @@
 import 'reflect-metadata';
-import { container } from '../../infrastructure/di/container';
+import { mock, instance, when, verify, anyString } from 'ts-mockito';
 import { ItemStateService } from '../item/item.stateService';
 import { ItemReadService } from '../item/item.readService';
 import { ItemWriteService } from '../item/item.writeService';
 import { CategoryStateService } from '../category/category.stateService';
+import { CategoryReadService } from '../category/category.readService';
+import { CategoryWriteService } from '../category/category.writeService';
+import { ItemsRepository } from '../../domain/repositories/ItemsRepository';
+import { ErrorManager } from '../../domain/services/ErrorManager';
+import { NotificationService } from '../../domain/services/NotificationService';
 import { ItemMother } from '../../domain/test/ItemMother';
 import { CategoryMother } from '../../domain/test/CategoryMother';
 
-describe('Application Services & DI', () => {
-  describe('Item Services', () => {
-    let stateService: ItemStateService;
-    let readService: ItemReadService;
-    let writeService: ItemWriteService;
+describe('Application Services (Unit Tests)', () => {
+  describe('ItemReadService', () => {
+    it('should find all items using repository', async () => {
+      const mockRepo = mock<ItemsRepository>();
+      const expectedItems = [ItemMother.create()];
+      when(mockRepo.findAll()).thenResolve(expectedItems);
 
-    beforeEach(() => {
-      stateService = container.get(ItemStateService);
-      readService = container.get(ItemReadService);
-      writeService = container.get(ItemWriteService);
-    });
+      const service = new ItemReadService(instance(mockRepo));
+      const items = await service.findAll();
 
-    it('should resolve all services', () => {
-      expect(stateService).toBeDefined();
-      expect(readService).toBeDefined();
-      expect(writeService).toBeDefined();
-    });
-
-    it('should load initial items from seed', async () => {
-      await stateService.loadItems();
-      expect(stateService.items.value.length).toBeGreaterThan(0);
-    });
-
-    it('should create and update state', async () => {
-      const newItem = ItemMother.create();
-      await stateService.createItem(newItem);
-
-      const foundItem = stateService.items.value.find(i => i.id.value === newItem.id.value);
-      expect(foundItem).toBeDefined();
-      expect(foundItem?.title.value).toBe(newItem.title.value);
+      expect(items).toBe(expectedItems);
+      verify(mockRepo.findAll()).once();
     });
   });
 
-  describe('Category Services', () => {
-    let stateService: CategoryStateService;
+  describe('ItemWriteService', () => {
+    let mockRepo: ItemsRepository;
+    let mockErrorManager: ErrorManager;
+    let mockNotificationService: NotificationService;
+    let service: ItemWriteService;
 
     beforeEach(() => {
-      stateService = container.get(CategoryStateService);
+      mockRepo = mock<ItemsRepository>();
+      mockErrorManager = mock<ErrorManager>();
+      mockNotificationService = mock<NotificationService>();
+      service = new ItemWriteService(
+        instance(mockRepo),
+        instance(mockErrorManager),
+        instance(mockNotificationService)
+      );
     });
 
-    it('should resolve and load categories', async () => {
-      expect(stateService).toBeDefined();
-      await stateService.loadCategories();
-      expect(stateService.categories.value.length).toBeGreaterThan(0);
+    it('should create item and notify success', async () => {
+      const item = ItemMother.create();
+      when(mockRepo.save(item)).thenResolve();
+
+      await service.create(item);
+
+      verify(mockRepo.save(item)).once();
+      verify(mockNotificationService.notify(anyString())).once();
     });
 
-    it('should create a new category', async () => {
-      const newCategory = CategoryMother.create();
-      await stateService.createCategory(newCategory);
+    it('should handle error when creation fails', async () => {
+      const item = ItemMother.create();
+      const error = new Error('Failed');
+      when(mockRepo.save(item)).thenReject(error);
 
-      const foundCategory = stateService.categories.value.find(c => c.id.value === newCategory.id.value);
-      expect(foundCategory).toBeDefined();
+      await expect(service.create(item)).rejects.toThrow(error);
+
+      verify(mockRepo.save(item)).once();
+      verify(mockErrorManager.handleError(error)).once();
+    });
+  });
+
+  describe('ItemStateService', () => {
+    let mockReadService: ItemReadService;
+    let mockWriteService: ItemWriteService;
+    let service: ItemStateService;
+
+    beforeEach(() => {
+      mockReadService = mock(ItemReadService);
+      mockWriteService = mock(ItemWriteService);
+      service = new ItemStateService(
+        instance(mockReadService),
+        instance(mockWriteService)
+      );
+    });
+
+    it('should load items and update signal', async () => {
+      const items = [ItemMother.create()];
+      when(mockReadService.findAll()).thenResolve(items);
+
+      await service.loadItems();
+
+      expect(service.items.value).toEqual(items);
+      verify(mockReadService.findAll()).once();
+    });
+
+    it('should create item and reload', async () => {
+      const item = ItemMother.create();
+      when(mockWriteService.create(item)).thenResolve();
+      when(mockReadService.findAll()).thenResolve([item]);
+
+      await service.createItem(item);
+
+      verify(mockWriteService.create(item)).once();
+      verify(mockReadService.findAll()).once();
+      expect(service.items.value).toEqual([item]);
+    });
+  });
+
+  describe('CategoryStateService', () => {
+    let mockReadService: CategoryReadService;
+    let mockWriteService: CategoryWriteService;
+    let service: CategoryStateService;
+
+    beforeEach(() => {
+      mockReadService = mock(CategoryReadService);
+      mockWriteService = mock(CategoryWriteService);
+      service = new CategoryStateService(
+        instance(mockReadService),
+        instance(mockWriteService)
+      );
+    });
+
+    it('should load categories', async () => {
+      const categories = [CategoryMother.create()];
+      when(mockReadService.findAll()).thenResolve(categories);
+
+      await service.loadCategories();
+
+      expect(service.categories.value).toEqual(categories);
+      verify(mockReadService.findAll()).once();
     });
   });
 });
