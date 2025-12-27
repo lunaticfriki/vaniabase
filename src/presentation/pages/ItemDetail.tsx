@@ -86,7 +86,7 @@ export function ItemDetail({ id }: Props) {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         <div class="space-y-6">
-          <div class="aspect-2/3 rounded-xl overflow-hidden bg-zinc-900 border border-brand-violet/30 shadow-[0_0_50px_rgba(46,0,79,0.3)]">
+          <div class="aspect-2/3 rounded-sm overflow-hidden bg-zinc-900 border border-brand-violet/30 shadow-[0_0_50px_rgba(46,0,79,0.3)]">
             <img src={item.cover.value} alt={`Cover for ${item.title.value}`} class="w-full h-full object-cover" />
           </div>
         </div>
