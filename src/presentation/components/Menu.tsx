@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import { Link as RouterLink } from 'preact-router/match';
 import type { JSX } from 'preact';
 
@@ -6,8 +6,29 @@ const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { act
 
 export function Menu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMenuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const navLinks = [
     { href: '/', label: 'HOME' },
@@ -34,6 +55,7 @@ export function Menu() {
       </nav>
 
       <button
+        ref={buttonRef}
         class="md:hidden p-2 text-white hover:text-brand-magenta transition-colors focus:outline-none"
         onClick={toggleMenu}
         aria-label="Toggle menu"
@@ -55,7 +77,10 @@ export function Menu() {
       </button>
 
       {isMenuOpen && (
-        <div class="md:hidden bg-[#242424] border-t border-white/10 absolute w-full left-0 top-16 shadow-2xl animate-in slide-in-from-top-2 z-40">
+        <div
+          ref={menuRef}
+          class="md:hidden bg-[#242424] border-t border-white/10 absolute w-full left-0 top-16 shadow-2xl animate-in slide-in-from-top-2 z-40"
+        >
           <nav class="flex flex-col p-4">
             {navLinks.map(link => (
               <Link

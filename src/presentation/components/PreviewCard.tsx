@@ -8,7 +8,7 @@ export function PreviewCard({ item }: PreviewCardProps) {
   return (
     <a
       href={`/item/${item.id.value}`}
-      class="block group relative bg-zinc-900 border border-brand-violet rounded-sm overflow-hidden  transition-all duration-300 hover:-translate-y-1"
+      class="block group relative bg-zinc-900 rounded-sm overflow-hidden  transition-all duration-300 hover:-translate-y-1"
     >
       <div class="aspect-2/3 overflow-hidden bg-black/20 relative">
         <img
