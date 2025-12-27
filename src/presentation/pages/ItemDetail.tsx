@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'preact/hooks';
-import { route } from 'preact-router';
 import { Link as RouterLink } from 'preact-router/match';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
@@ -37,7 +36,7 @@ export function ItemDetail({ id }: Props) {
   }, [id]);
 
   const handleBack = () => {
-    route('/collection');
+    history.go(-1);
   };
 
   if (loading) {
@@ -52,7 +51,7 @@ export function ItemDetail({ id }: Props) {
           onClick={handleBack}
           class="px-6 py-2 bg-brand-violet text-white rounded hover:bg-brand-violet/80 transition-colors"
         >
-          Back to Collection
+          Back
         </button>
       </div>
     );
@@ -80,7 +79,7 @@ export function ItemDetail({ id }: Props) {
             <path d="M19 12H5" />
             <path d="M12 19l-7-7 7-7" />
           </svg>
-          Back to Collection
+          Back
         </button>
       </div>
 
