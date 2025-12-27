@@ -9,6 +9,8 @@ export const Categories = createLazy(() => import('./presentation/pages/Categori
 export const Tags = createLazy(() => import('./presentation/pages/Tags').then(m => m.Tags));
 export const ItemDetail = createLazy(() => import('./presentation/pages/ItemDetail').then(m => m.ItemDetail));
 export const About = createLazy(() => import('./presentation/pages/About').then(m => m.About));
+export const CreateItem = createLazy(() => import('./presentation/pages/CreateItem').then(m => m.CreateItem));
+export const Search = createLazy(() => import('./presentation/pages/Search').then(m => m.Search));
 
 export function App() {
   useEffect(() => {
@@ -18,6 +20,8 @@ export function App() {
     Tags.preload();
     ItemDetail.preload();
     About.preload();
+    CreateItem.preload();
+    Search.preload();
   }, []);
 
   return (
@@ -29,6 +33,8 @@ export function App() {
         <Tags.Component path="/tags/:tagName?" />
         <ItemDetail.Component path="/item/:id" />
         <About.Component path="/about" />
+        <CreateItem.Component path="/create" />
+        <Search.Component path="/search" />
       </Router>
     </Layout>
   );

@@ -63,4 +63,16 @@ export class ItemStateService {
 
     return undefined;
   }
+
+  searchResults = signal<Item[]>([]);
+
+  async searchItems(query: string): Promise<void> {
+    this.isLoading.value = true;
+    try {
+      const results = await this.readService.search(query);
+      this.searchResults.value = results;
+    } finally {
+      this.isLoading.value = false;
+    }
+  }
 }

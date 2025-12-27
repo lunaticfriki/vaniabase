@@ -9,7 +9,7 @@ import { InMemoryCategoriesRepository } from '../repositories/InMemoryCategories
 import { ErrorManager } from '../../domain/services/ErrorManager';
 import { ConsoleErrorManager } from '../services/ConsoleErrorManager';
 import { NotificationService } from '../../domain/services/NotificationService';
-import { ConsoleNotificationService } from '../services/ConsoleNotificationService';
+import { ToastNotificationService } from '../services/ToastNotificationService';
 
 import { ItemReadService } from '../../application/item/item.readService';
 import { ItemWriteService } from '../../application/item/item.writeService';
@@ -25,7 +25,7 @@ container.bind(ItemsRepository).to(InMemoryItemsRepository).inSingletonScope();
 container.bind(CategoriesRepository).to(InMemoryCategoriesRepository).inSingletonScope();
 
 container.bind(ErrorManager).to(ConsoleErrorManager).inSingletonScope();
-container.bind(NotificationService).to(ConsoleNotificationService).inSingletonScope();
+container.bind(NotificationService).to(ToastNotificationService).inSingletonScope();
 
 container.bind(ItemReadService).toSelf().inSingletonScope();
 container.bind(ItemWriteService).toSelf().inSingletonScope();

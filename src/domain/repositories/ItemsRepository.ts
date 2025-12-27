@@ -5,4 +5,5 @@ export abstract class ItemsRepository {
   abstract save(item: Item): Promise<void>;
   abstract findAll(): Promise<Item[]>;
   abstract findById(id: Id): Promise<Item | undefined>;
+  abstract search(query: string): Promise<Item[]>;
 }

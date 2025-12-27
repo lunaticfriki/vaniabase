@@ -14,4 +14,8 @@ export class ItemReadService {
   async findById(id: Id): Promise<Item | undefined> {
     return this.repository.findById(id);
   }
+
+  async search(query: string): Promise<Item[]> {
+    return this.repository.search(query);
+  }
 }

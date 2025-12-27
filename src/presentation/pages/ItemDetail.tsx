@@ -134,6 +134,11 @@ export function ItemDetail({ id }: Props) {
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Owner</div>
               <div class="text-lg font-medium">{item.owner.value || '-'}</div>
             </div>
+
+            <div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Topic</div>
+              <div class="text-lg font-medium">{item.topic.value || '-'}</div>
+            </div>
           </div>
 
           {item.tags.value.length > 0 ? (

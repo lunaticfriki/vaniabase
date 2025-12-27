@@ -35,6 +35,8 @@ export function Menu() {
     { href: '/collection', label: 'COLLECTION', matcher: undefined },
     { href: '/categories/books', label: 'CATEGORIES', matcher: '/categories/:rest*' },
     { href: '/tags', label: 'TAGS', matcher: '/tags/:rest*' },
+    { href: '/search', label: 'SEARCH', matcher: undefined },
+    { href: '/create', label: 'CREATE', matcher: undefined },
     { href: '/about', label: 'ABOUT', matcher: undefined }
   ];
 

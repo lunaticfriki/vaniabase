@@ -66,6 +66,24 @@ export class FirebaseItemsRepository implements ItemsRepository {
         return undefined;
     }
 
+    async search(query: string): Promise<Item[]> {
+        const allItems = await this.findAll();
+        const lowerQuery = query.toLowerCase();
+        
+        return allItems.filter(item =>
+            item.title.value.toLowerCase().includes(lowerQuery) ||
+            item.author.value.toLowerCase().includes(lowerQuery) ||
+            item.description.value.toLowerCase().includes(lowerQuery) ||
+            item.publisher.value.toLowerCase().includes(lowerQuery) ||
+            item.owner.value.toLowerCase().includes(lowerQuery) ||
+            item.topic.value.toLowerCase().includes(lowerQuery) ||
+            item.format.value.toLowerCase().includes(lowerQuery) ||
+            item.language.value.toLowerCase().includes(lowerQuery) ||
+            item.tags.value.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
+            item.category.name.value.toLowerCase().includes(lowerQuery)
+        );
+    }
+
     private mapToItem(id: string, data: any): Item {
         const createdDate = data.created instanceof Timestamp ? data.created.toDate() : (data.created instanceof Date ? data.created : new Date(data.created));
         const completedDate = data.completed ? (data.completed instanceof Timestamp ? data.completed.toDate() : (data.completed instanceof Date ? data.completed : new Date(data.completed))) : null;
