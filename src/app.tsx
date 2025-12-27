@@ -11,6 +11,8 @@ export const ItemDetail = createLazy(() => import('./presentation/pages/ItemDeta
 export const About = createLazy(() => import('./presentation/pages/About').then(m => m.About));
 export const CreateItem = createLazy(() => import('./presentation/pages/CreateItem').then(m => m.CreateItem));
 export const Search = createLazy(() => import('./presentation/pages/Search').then(m => m.Search));
+export const Topics = createLazy(() => import('./presentation/pages/Topics').then(m => m.Topics));
+export const Formats = createLazy(() => import('./presentation/pages/Formats').then(m => m.Formats));
 
 export function App() {
   useEffect(() => {
@@ -22,6 +24,8 @@ export function App() {
     About.preload();
     CreateItem.preload();
     Search.preload();
+    Topics.preload();
+    Formats.preload();
   }, []);
 
   return (
@@ -35,6 +39,8 @@ export function App() {
         <About.Component path="/about" />
         <CreateItem.Component path="/create" />
         <Search.Component path="/search" />
+        <Topics.Component path="/topics/:topicName?" />
+        <Formats.Component path="/formats/:formatName?" />
       </Router>
     </Layout>
   );
