@@ -1,6 +1,6 @@
 
 import 'reflect-metadata';
-import { mock, instance, when, verify, resetCalls } from 'ts-mockito';
+import { mock, instance, when, verify, resetCalls, anything } from 'ts-mockito';
 import { DashboardViewModel } from '../dashboard.viewModel';
 import { AuthService } from '../../../application/auth/auth.service';
 import { ItemsRepository } from '../../../domain/repositories/items.repository';
@@ -23,7 +23,7 @@ describe('DashboardViewModel', () => {
     const user = UserMother.create();
     when(mockAuthService.currentUser).thenReturn(signal(user));
 
-    when(mockItemsRepository.findAll()).thenResolve([]);
+    when(mockItemsRepository.findAll(anything())).thenResolve([]);
 
     viewModel = new DashboardViewModel(
       instance(mockItemsRepository),
@@ -42,12 +42,12 @@ describe('DashboardViewModel', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(viewModel.totalItems.value).toBe(0);
-    verify(mockItemsRepository.findAll()).never();
+    verify(mockItemsRepository.findAll(anything())).never();
   });
 
   it('should load data when initialized with logged in user', async () => {
     const items = [ItemMother.create()];
-    when(mockItemsRepository.findAll()).thenResolve(items);
+    when(mockItemsRepository.findAll(anything())).thenResolve(items);
     
     resetCalls(mockItemsRepository);
 
@@ -59,12 +59,12 @@ describe('DashboardViewModel', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); 
 
     expect(viewModel.totalItems.value).toBe(1);
-    verify(mockItemsRepository.findAll()).once();
+    verify(mockItemsRepository.findAll(anything())).once();
   });
 
   it('should calculate total items correctly', async () => {
     const items = [ItemMother.create(), ItemMother.create()];
-    when(mockItemsRepository.findAll()).thenResolve(items);
+    when(mockItemsRepository.findAll(anything())).thenResolve(items);
     
     await viewModel.loadData();
     
@@ -79,7 +79,7 @@ describe('DashboardViewModel', () => {
     const item2 = ItemMother.create({ category: cat1 }); 
     const item3 = ItemMother.create({ category: cat2 });
 
-    when(mockItemsRepository.findAll()).thenResolve([item1, item2, item3]);
+    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
     
     await viewModel.loadData();
     
@@ -98,13 +98,15 @@ describe('DashboardViewModel', () => {
     const item1 = ItemMother.create({ tags: Tags.create(['tag1', 'tag2']) });
     const item2 = ItemMother.create({ tags: Tags.create(['tag2', 'tag3']) });
     
-    when(mockItemsRepository.findAll()).thenResolve([item1, item2]);
+    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2]);
     
     await viewModel.loadData();
     
     const tags = viewModel.tags.value;
     expect(tags).toHaveLength(3); 
-    expect(tags).toEqual(['tag1', 'tag2', 'tag3']); 
+    expect(tags[0]).toEqual({ name: 'tag2', count: 2 });
+    expect(tags[1]).toEqual({ name: 'tag1', count: 1 });
+    expect(tags[2]).toEqual({ name: 'tag3', count: 1 });
     expect(viewModel.totalTags.value).toBe(3);
   });
 
@@ -113,13 +115,14 @@ describe('DashboardViewModel', () => {
     const item2 = ItemMother.create({ topic: Topic.create('Topic B') });
     const item3 = ItemMother.create({ topic: Topic.create('Topic A') }); 
     
-    when(mockItemsRepository.findAll()).thenResolve([item1, item2, item3]);
+    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
     
     await viewModel.loadData();
     
     const topics = viewModel.topics.value;
     expect(topics).toHaveLength(2);
-    expect(topics).toEqual(['Topic A', 'Topic B']); 
+    expect(topics[0]).toEqual({ name: 'Topic A', count: 2 });
+    expect(topics[1]).toEqual({ name: 'Topic B', count: 1 });
     expect(viewModel.totalTopics.value).toBe(2);
   });
 
@@ -128,13 +131,14 @@ describe('DashboardViewModel', () => {
     const item2 = ItemMother.create({ format: Format.create('Physical') });
     const item3 = ItemMother.create({ format: Format.create('Digital') }); 
     
-    when(mockItemsRepository.findAll()).thenResolve([item1, item2, item3]);
+    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
     
     await viewModel.loadData();
     
     const formats = viewModel.formats.value;
     expect(formats).toHaveLength(2);
-    expect(formats).toEqual(['Digital', 'Physical']); 
+    expect(formats[0]).toEqual({ name: 'Digital', count: 2 });
+    expect(formats[1]).toEqual({ name: 'Physical', count: 1 });
     expect(viewModel.totalFormats.value).toBe(2);
   });
 });

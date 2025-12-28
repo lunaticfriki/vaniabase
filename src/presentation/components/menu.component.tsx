@@ -71,7 +71,7 @@ export function Menu() {
 
   return (
     <>
-      <nav class="hidden md:block">
+      <nav class="hidden xl:block">
         <div class="flex items-center gap-6">
           <Link href="/dashboard" class="flex items-center gap-3 cursor-pointer group relative">
             <img
@@ -118,7 +118,7 @@ export function Menu() {
 
       <button
         ref={buttonRef}
-        class="md:hidden p-2 text-white hover:text-brand-magenta transition-colors focus:outline-none"
+        class="xl:hidden p-2 text-white hover:text-brand-magenta transition-colors focus:outline-none"
         onClick={toggleMenu}
         aria-label="Toggle menu"
       >
@@ -141,7 +141,7 @@ export function Menu() {
       {isMenuOpen && (
         <div
           ref={menuRef}
-          class="md:hidden bg-[#242424] border-t border-white/10 absolute w-full left-0 top-16 shadow-2xl animate-in slide-in-from-top-2 z-40"
+          class="xl:hidden bg-[#242424] border-t border-white/10 absolute w-full left-0 top-16 shadow-2xl animate-in slide-in-from-top-2 z-40"
         >
           <nav class="flex flex-col p-4">
             <Link

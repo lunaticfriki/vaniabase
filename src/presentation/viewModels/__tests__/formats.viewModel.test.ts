@@ -1,6 +1,6 @@
 
 import 'reflect-metadata';
-import { mock, instance, when, anything, verify } from 'ts-mockito';
+import { mock, instance, when, anything } from 'ts-mockito';
 import { FormatsViewModel } from '../formats.viewModel';
 import { ItemStateService } from '../../../application/item/item.stateService';
 import { AuthService } from '../../../application/auth/auth.service';
@@ -11,7 +11,7 @@ import { ItemMother } from '../../../domain/__tests__/item.mother';
 import { Format } from '../../../domain/model/value-objects/stringValues.valueObject';
 
 describe('FormatsViewModel', () => {
-    let mockItemStateService: ItemStateService;
+
     let mockReadService: ItemReadService;
     let mockWriteService: ItemWriteService;
     let mockAuthService: AuthService;

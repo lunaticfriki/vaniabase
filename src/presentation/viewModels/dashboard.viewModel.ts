@@ -21,7 +21,7 @@ export class DashboardViewModel {
     try {
       const currentUser = this.authService.currentUser.value;
       if (currentUser) {
-        this._items.value = await this.itemsRepository.findAll();
+        this._items.value = await this.itemsRepository.findAll(currentUser.id);
       }
     } finally {
       this._isLoading.value = false;
@@ -43,29 +43,54 @@ export class DashboardViewModel {
 
     return Array.from(counts.entries())
       .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   });
 
   totalCategories = computed(() => this.categories.value.length);
 
   tags = computed(() => {
-    const allTags = this._items.value.flatMap(i => i.tags.value);
-    const uniqueTags = new Set(allTags);
-    return Array.from(uniqueTags).sort();
+    const counts = new Map<string, number>();
+    this._items.value.forEach(item => {
+      item.tags.value.forEach(tag => {
+        counts.set(tag, (counts.get(tag) || 0) + 1);
+      });
+    });
+
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   });
 
   totalTags = computed(() => this.tags.value.length);
 
   topics = computed(() => {
-    const uniqueTopics = new Set(this._items.value.map(i => i.topic.value).filter(t => t));
-    return Array.from(uniqueTopics).sort();
+    const counts = new Map<string, number>();
+    this._items.value.forEach(item => {
+      const topic = item.topic.value;
+      if (topic) {
+        counts.set(topic, (counts.get(topic) || 0) + 1);
+      }
+    });
+
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   });
 
   totalTopics = computed(() => this.topics.value.length);
 
   formats = computed(() => {
-    const uniqueFormats = new Set(this._items.value.map(i => i.format.value).filter(f => f));
-    return Array.from(uniqueFormats).sort();
+    const counts = new Map<string, number>();
+    this._items.value.forEach(item => {
+      const format = item.format.value;
+      if (format) {
+        counts.set(format, (counts.get(format) || 0) + 1);
+      }
+    });
+
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   });
 
   totalFormats = computed(() => this.formats.value.length);
