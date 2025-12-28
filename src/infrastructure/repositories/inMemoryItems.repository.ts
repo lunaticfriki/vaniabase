@@ -22,6 +22,12 @@ export class InMemoryItemsRepository implements ItemsRepository {
     this.items.set(item.id.value, item);
   }
 
+  async saveAll(items: Item[]): Promise<void> {
+    items.forEach(item => {
+      this.items.set(item.id.value, item);
+    });
+  }
+
   async findAll(ownerId?: Id): Promise<Item[]> {
     const allItems = Array.from(this.items.values());
     if (ownerId) {

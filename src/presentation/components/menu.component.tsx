@@ -14,7 +14,8 @@ import {
   SearchIcon,
   CreateIcon,
   AboutIcon,
-  LogoutIcon
+  LogoutIcon,
+  CompletedIcon
 } from './pixel-icons';
 
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
@@ -56,6 +57,7 @@ export function Menu() {
   const navLinks = [
     { href: '/', label: 'HOME', icon: HomeIcon, matcher: undefined },
     { href: '/collection', label: 'COLLECTION', icon: CollectionIcon, matcher: undefined },
+    { href: '/completed', label: 'COMPLETED', icon: CompletedIcon, matcher: undefined },
     { href: '/categories/books', label: 'CATEGORIES', icon: CategoriesIcon, matcher: '/categories/:rest*' },
     { href: '/tags', label: 'TAGS', icon: TagsIcon, matcher: '/tags/:rest*' },
     { href: '/topics', label: 'TOPICS', icon: TopicsIcon, matcher: '/topics/:rest*' },

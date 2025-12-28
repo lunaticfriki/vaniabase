@@ -76,6 +76,12 @@ export const AboutIcon = (props: IconProps) => (
   </PixelIcon>
 );
 
+export const CompletedIcon = (props: IconProps) => (
+  <PixelIcon {...props}>
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+  </PixelIcon>
+);
+
 export const LogoutIcon = (props: IconProps) => (
   <PixelIcon {...props}>
     <path d="M4 4h2v16H4V4zm4 0h8v2H8V4zm8 0h2v4h-2V4zm-2 6h4v2h-4v-2zm-2 8h-2v-2h2v2zm2 0h4v-2h-4v2zm4-4h2v4h-2v-4zm-4-4h2v2h-2v-2zm-2 0h-2v2h2V10z" />

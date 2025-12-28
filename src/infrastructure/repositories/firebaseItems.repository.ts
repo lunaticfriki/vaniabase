@@ -52,6 +52,10 @@ export class FirebaseItemsRepository implements ItemsRepository {
         await setDoc(itemRef, data);
     }
 
+    async saveAll(items: Item[]): Promise<void> {
+        await Promise.all(items.map(item => this.save(item)));
+    }
+
     async findAll(): Promise<Item[]> {
         const querySnapshot = await getDocs(collection(db, this.collectionName));
         return querySnapshot.docs.map(doc => this.mapToItem(doc.id, doc.data()));
@@ -87,7 +91,7 @@ export class FirebaseItemsRepository implements ItemsRepository {
 
     private mapToItem(id: string, data: any): Item {
         const createdDate = data.created instanceof Timestamp ? data.created.toDate() : (data.created instanceof Date ? data.created : new Date(data.created));
-        const completedDate = data.completed ? (data.completed instanceof Timestamp ? data.completed.toDate() : (data.completed instanceof Date ? data.completed : new Date(data.completed))) : null;
+        const completed = !!data.completed;
 
 
         return Item.create(
@@ -101,7 +105,7 @@ export class FirebaseItemsRepository implements ItemsRepository {
             Topic.create(data.topic),
             Format.create(data.format),
             Created.create(createdDate),
-            Completed.create(completedDate),
+            Completed.create(completed),
             Year.create(data.year),
             Publisher.create(data.publisher),
             Language.create(data.language),

@@ -61,8 +61,9 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
         <StatCard label="Total Items" value={totalItems.value} color="text-brand-yellow" />
+        <StatCard label="Completed" value={viewModel.totalCompleted.value} color="text-green-500" />
         <StatCard label="Categories" value={totalCategories.value} color="text-brand-magenta" />
         <StatCard label="Tags" value={totalTags.value} color="text-cyan-400" />
         <StatCard label="Topics" value={totalTopics.value} color="text-purple-400" />
@@ -79,8 +80,52 @@ export function Dashboard() {
         <ListSection title="Tags" items={tags.value} linkPrefix="/tags" color="border-cyan-400" />
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ListSection title="Formats" items={formats.value} linkPrefix="/formats" color="border-brand-yellow" />
+        <div class="space-y-4">
+          <h2 class="text-xl font-bold text-white border-l-4 border-green-500 pl-4">Recently Completed</h2>
+          <div class="bg-white/5 border border-white/10 rounded-lg p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+            {viewModel.completedItems.value.length === 0 ? (
+              <p class="text-white/30 italic">No completed items yet.</p>
+            ) : (
+              <ul class="space-y-2">
+                {viewModel.completedItems.value.map(item => (
+                  <li key={item.id.value}>
+                    <Link
+                      href={`/item/${item.id.value}`}
+                      class="text-white/70 hover:text-brand-yellow hover:bg-white/5 px-3 py-2 rounded transition-colors truncate flex justify-between items-center"
+                    >
+                      <span>{item.title.value}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div class="pt-4 border-t border-white/10 mt-4">
+              <Link
+                href="/completed"
+                class="text-green-400 hover:text-green-300 text-sm font-bold uppercase tracking-widest flex items-center gap-2 group"
+              >
+                View All Completed
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="group-hover:translate-x-1 transition-transform"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

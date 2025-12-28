@@ -15,18 +15,18 @@ export class Created extends ValueObject<Date> {
   }
 }
 
-export class Completed extends ValueObject<Date | null> {
-  private constructor(value: Date | null) {
+export class Completed extends ValueObject<boolean> {
+  private constructor(value: boolean) {
     super(value);
   }
-  public static create(value: Date | null): Completed {
+  public static create(value: boolean): Completed {
     return new Completed(value);
   }
   public static notCompleted(): Completed {
-    return new Completed(null);
+    return new Completed(false);
   }
   public static empty(): Completed {
-    return new Completed(null);
+    return new Completed(false);
   }
 }
 

@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'preact-router/match';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { Item } from '../../domain/model/entities/item.entity';
+import { Completed } from '../../domain/model/value-objects/dateAndNumberValues.valueObject';
 import { Loading } from '../components/loading.component';
 import type { JSX } from 'preact';
 
@@ -34,6 +35,34 @@ export function ItemDetail({ id }: Props) {
 
     loadItem();
   }, [id]);
+
+  const handleToggleComplete = async () => {
+    if (!item) return;
+
+    const newStatus = Completed.create(!item.completed.value);
+
+    const updatedItem = Item.create(
+      item.id,
+      item.title,
+      item.description,
+      item.author,
+      item.cover,
+      item.owner,
+      item.tags,
+      item.topic,
+      item.format,
+      item.created,
+      newStatus,
+      item.year,
+      item.publisher,
+      item.language,
+      item.category,
+      item.ownerId
+    );
+
+    await itemStateService.updateItem(updatedItem);
+    setItem(updatedItem);
+  };
 
   const handleBack = () => {
     history.go(-1);
@@ -99,7 +128,10 @@ export function ItemDetail({ id }: Props) {
 
         <div class="space-y-8">
           <div class="space-y-4">
-            <div class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase bg-brand-violet/20 text-brand-magenta border border-brand-violet/30">
+            <div
+              class="inline-block px-4 py-1 text-xs font-bold tracking-widest uppercase bg-brand-violet/20 text-brand-magenta border-l-2 border-brand-violet"
+              style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
+            >
               <Link href={`/categories/${item.category.name.value.toLowerCase()}`}>{item.category.name.value}</Link>
             </div>
 
@@ -114,6 +146,23 @@ export function ItemDetail({ id }: Props) {
 
           <div class="prose prose-invert prose-lg text-white/80">
             <p>{item.description.value}</p>
+          </div>
+
+          <div class="pt-4">
+            <button
+              onClick={handleToggleComplete}
+              style="clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);"
+              class={`
+                w-full md:w-auto px-8 py-4 font-black uppercase tracking-widest transition-all
+                ${
+                  item.completed.value
+                    ? 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white'
+                    : 'bg-green-500 text-black hover:bg-green-400 hover:scale-[1.02] shadow-[0_0_20px_rgba(34,197,94,0.3)]'
+                }
+              `}
+            >
+              {item.completed.value ? 'Mark as Uncompleted' : 'Mark as Completed'}
+            </button>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8 border-t border-white/10">
@@ -145,6 +194,11 @@ export function ItemDetail({ id }: Props) {
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Topic</div>
               <div class="text-lg font-medium">{item.topic.value || '-'}</div>
+            </div>
+
+            <div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Completed</div>
+              <div class="text-lg font-medium">{item.completed.value ? 'Yes' : 'No'}</div>
             </div>
           </div>
 

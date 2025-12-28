@@ -94,4 +94,12 @@ export class DashboardViewModel {
   });
 
   totalFormats = computed(() => this.formats.value.length);
+  
+  completedItems = computed(() => {
+    return this._items.value
+      .filter(item => item.completed.value === true)
+      .sort((a, b) => b.created.value.getTime() - a.created.value.getTime());
+  });
+
+  totalCompleted = computed(() => this.completedItems.value.length);
 }

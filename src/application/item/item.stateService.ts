@@ -42,6 +42,17 @@ export class ItemStateService {
     }
   }
 
+  async createItems(items: Item[]): Promise<void> {
+    this.isLoading.value = true;
+    try {
+      await this.writeService.createAll(items);
+      await this.loadItems();
+      this.notificationService.success(`${items.length} items created successfully`);
+    } finally {
+      this.isLoading.value = false;
+    }
+  }
+
   async updateItem(item: Item): Promise<void> {
     this.isLoading.value = true;
     try {

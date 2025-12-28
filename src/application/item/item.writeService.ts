@@ -19,6 +19,15 @@ export class ItemWriteService {
     }
   }
 
+  async createAll(items: Item[]): Promise<void> {
+    try {
+      await this.repository.saveAll(items);
+    } catch (error) {
+      this.errorManager.handleError(error);
+      throw error;
+    }
+  }
+
   async update(item: Item): Promise<void> {
     try {
       await this.repository.save(item);

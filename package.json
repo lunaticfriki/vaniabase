@@ -18,7 +18,8 @@
     "preact": "^10.27.2",
     "preact-router": "^4.1.2",
     "reflect-metadata": "^0.2.2",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",
