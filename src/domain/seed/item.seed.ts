@@ -1,6 +1,6 @@
 import { Item } from '../model/entities/item.entity';
-import { ItemMother } from '../test/item.mother';
-import { CategoryMother } from '../test/category.mother';
+import { ItemMother } from '../__tests__/item.mother';
+import { CategoryMother } from '../__tests__/category.mother';
 import { UserSeed } from './user.seed';
 
 export class ItemSeed {

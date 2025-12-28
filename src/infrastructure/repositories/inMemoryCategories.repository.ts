@@ -2,7 +2,7 @@ import { injectable } from 'inversify';
 import { Category } from '../../domain/model/entities/category.entity';
 import { Id } from '../../domain/model/value-objects/id.valueObject';
 import { CategoriesRepository } from '../../domain/repositories/categories.repository';
-import { CategoryMother } from '../../domain/test/category.mother';
+import { CategoryMother } from '../../domain/__tests__/category.mother';
 
 @injectable()
 export class InMemoryCategoriesRepository implements CategoriesRepository {
