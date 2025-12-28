@@ -1,9 +1,9 @@
 import { injectable, inject } from 'inversify';
 import { signal } from '@preact/signals';
-import { Item } from '../../domain/model/entities/Item';
+import { Item } from '../../domain/model/entities/item.entity';
 import { ItemReadService } from './item.readService';
 import { ItemWriteService } from './item.writeService';
-import { AuthService } from '../auth/AuthService';
+import { AuthService } from '../auth/auth.service';
 
 @injectable()
 export class ItemStateService {

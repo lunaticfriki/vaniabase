@@ -1,21 +1,21 @@
 import { Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
-import { Layout } from './presentation/components/Layout';
-import { createLazy } from './presentation/components/LazyLoad';
-import { LandingPage } from './presentation/pages/LandingPage';
+import { Layout } from './presentation/components/layout.component';
+import { createLazy } from './presentation/components/lazyLoad.component';
+import { LandingPage } from './presentation/pages/landingPage.page';
 import { container } from './infrastructure/di/container';
-import { AuthService } from './application/auth/AuthService';
+import { AuthService } from './application/auth/auth.service';
 
-export const Home = createLazy(() => import('./presentation/pages/Home').then(m => m.Home));
-export const Collection = createLazy(() => import('./presentation/pages/Collection').then(m => m.Collection));
-export const Categories = createLazy(() => import('./presentation/pages/Categories').then(m => m.Categories));
-export const Tags = createLazy(() => import('./presentation/pages/Tags').then(m => m.Tags));
-export const ItemDetail = createLazy(() => import('./presentation/pages/ItemDetail').then(m => m.ItemDetail));
-export const About = createLazy(() => import('./presentation/pages/About').then(m => m.About));
-export const CreateItem = createLazy(() => import('./presentation/pages/CreateItem').then(m => m.CreateItem));
-export const Search = createLazy(() => import('./presentation/pages/Search').then(m => m.Search));
-export const Topics = createLazy(() => import('./presentation/pages/Topics').then(m => m.Topics));
-export const Formats = createLazy(() => import('./presentation/pages/Formats').then(m => m.Formats));
+export const Home = createLazy(() => import('./presentation/pages/home.page').then(m => m.Home));
+export const Collection = createLazy(() => import('./presentation/pages/collection.page').then(m => m.Collection));
+export const Categories = createLazy(() => import('./presentation/pages/categories.page').then(m => m.Categories));
+export const Tags = createLazy(() => import('./presentation/pages/tags.page').then(m => m.Tags));
+export const ItemDetail = createLazy(() => import('./presentation/pages/itemDetail.page').then(m => m.ItemDetail));
+export const About = createLazy(() => import('./presentation/pages/about.page').then(m => m.About));
+export const CreateItem = createLazy(() => import('./presentation/pages/createItem.page').then(m => m.CreateItem));
+export const Search = createLazy(() => import('./presentation/pages/search.page').then(m => m.Search));
+export const Topics = createLazy(() => import('./presentation/pages/topics.page').then(m => m.Topics));
+export const Formats = createLazy(() => import('./presentation/pages/formats.page').then(m => m.Formats));
 
 export function App() {
   useEffect(() => {

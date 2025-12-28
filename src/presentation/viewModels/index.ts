@@ -1,1 +1,1 @@
-export * from './PaginationViewModel';
+export * from './pagination.viewModel';

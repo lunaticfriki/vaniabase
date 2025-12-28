@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
-import { Category } from '../../domain/model/entities/Category';
-import { Id } from '../../domain/model/value-objects/Id';
-import { CategoriesRepository } from '../../domain/repositories/CategoriesRepository';
+import { Category } from '../../domain/model/entities/category.entity';
+import { Id } from '../../domain/model/value-objects/id.valueObject';
+import { CategoriesRepository } from '../../domain/repositories/categories.repository';
 
 @injectable()
 export class CategoryReadService {

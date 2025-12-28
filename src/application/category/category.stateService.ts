@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { signal } from '@preact/signals';
-import { Category } from '../../domain/model/entities/Category';
+import { Category } from '../../domain/model/entities/category.entity';
 import { CategoryReadService } from './category.readService';
 import { CategoryWriteService } from './category.writeService';
 

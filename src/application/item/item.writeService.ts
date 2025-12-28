@@ -1,8 +1,8 @@
 import { injectable, inject } from 'inversify';
-import { Item } from '../../domain/model/entities/Item';
-import { ItemsRepository } from '../../domain/repositories/ItemsRepository';
-import { ErrorManager } from '../../domain/services/ErrorManager';
-import { NotificationService } from '../../domain/services/NotificationService';
+import { Item } from '../../domain/model/entities/item.entity';
+import { ItemsRepository } from '../../domain/repositories/items.repository';
+import { ErrorManager } from '../../domain/services/errorManager.service';
+import { NotificationService } from '../../domain/services/notification.service';
 
 @injectable()
 export class ItemWriteService {

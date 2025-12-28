@@ -1,18 +1,18 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
 
-import { ItemsRepository } from '../../domain/repositories/ItemsRepository';
-import { InMemoryItemsRepository } from '../repositories/InMemoryItemsRepository';
-import { CategoriesRepository } from '../../domain/repositories/CategoriesRepository';
-import { InMemoryCategoriesRepository } from '../repositories/InMemoryCategoriesRepository';
+import { ItemsRepository } from '../../domain/repositories/items.repository';
+import { InMemoryItemsRepository } from '../repositories/inMemoryItems.repository';
+import { CategoriesRepository } from '../../domain/repositories/categories.repository';
+import { InMemoryCategoriesRepository } from '../repositories/inMemoryCategories.repository';
 
-import { ErrorManager } from '../../domain/services/ErrorManager';
-import { ConsoleErrorManager } from '../services/ConsoleErrorManager';
-import { NotificationService } from '../../domain/services/NotificationService';
-import { ToastNotificationService } from '../services/ToastNotificationService';
+import { ErrorManager } from '../../domain/services/errorManager.service';
+import { ConsoleErrorManager } from '../services/consoleErrorManager.service';
+import { NotificationService } from '../../domain/services/notification.service';
+import { ToastNotificationService } from '../services/toastNotification.service';
 
-import { AuthService } from '../../application/auth/AuthService';
-import { MockAuthService } from '../auth/MockAuthService';
+import { AuthService } from '../../application/auth/auth.service';
+import { MockAuthService } from '../auth/mockAuth.service';
 
 import { ItemReadService } from '../../application/item/item.readService';
 import { ItemWriteService } from '../../application/item/item.writeService';

@@ -1,8 +1,8 @@
 import { injectable, inject } from 'inversify';
-import { Category } from '../../domain/model/entities/Category';
-import { CategoriesRepository } from '../../domain/repositories/CategoriesRepository';
-import { ErrorManager } from '../../domain/services/ErrorManager';
-import { NotificationService } from '../../domain/services/NotificationService';
+import { Category } from '../../domain/model/entities/category.entity';
+import { CategoriesRepository } from '../../domain/repositories/categories.repository';
+import { ErrorManager } from '../../domain/services/errorManager.service';
+import { NotificationService } from '../../domain/services/notification.service';
 
 @injectable()
 export class CategoryWriteService {
