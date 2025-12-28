@@ -16,6 +16,7 @@ import { Tags } from '../model/value-objects/tags.valueObject';
 import { Created, Completed, Year } from '../model/value-objects/dateAndNumberValues.valueObject';
 import { Category } from '../model/entities/category.entity';
 import { CategoryMother } from './category.mother';
+import { ImageLookupService } from '../../infrastructure/services/imageLookupService';
 
 export class ItemMother {
   static create(
@@ -80,14 +81,15 @@ export class ItemMother {
   }
 
   static createRandom() {
+    const id = Id.random();
     const title = faker.commerce.productName();
-    const encodedTitle = encodeURIComponent(title);
+    
     return this.create({
-      id: Id.random(),
+      id,
       title: Title.create(title),
       description: Description.create(faker.commerce.productDescription()),
       author: Author.create(faker.person.fullName()),
-      cover: Cover.create(`https://placehold.co/400x600/2E004F/FF00FF?text=${encodedTitle}`),
+      cover: Cover.create(ImageLookupService.getCoverFor(id)),
       owner: Owner.create(faker.person.fullName()),
       tags: Tags.create([faker.word.sample()]),
       topic: Topic.create(faker.word.noun()),

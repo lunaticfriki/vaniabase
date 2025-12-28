@@ -16,6 +16,7 @@ export const CreateItem = createLazy(() => import('./presentation/pages/createIt
 export const Search = createLazy(() => import('./presentation/pages/search.page').then(m => m.Search));
 export const Topics = createLazy(() => import('./presentation/pages/topics.page').then(m => m.Topics));
 export const Formats = createLazy(() => import('./presentation/pages/formats.page').then(m => m.Formats));
+export const Dashboard = createLazy(() => import('./presentation/pages/dashboard.page').then(m => m.Dashboard));
 
 export function App() {
   useEffect(() => {
@@ -29,6 +30,7 @@ export function App() {
     Search.preload();
     Topics.preload();
     Formats.preload();
+    Dashboard.preload();
   }, []);
 
   const authService = container.get(AuthService);
@@ -46,6 +48,7 @@ export function App() {
         {authService.currentUser.value && <Search.Component path="/search" />}
         {authService.currentUser.value && <Topics.Component path="/topics/:topicName?" />}
         {authService.currentUser.value && <Formats.Component path="/formats/:formatName?" />}
+        {authService.currentUser.value && <Dashboard.Component path="/dashboard" />}
         {!authService.currentUser.value && <LandingPage path="/:rest*" />}
       </Router>
     </Layout>

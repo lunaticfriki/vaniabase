@@ -61,7 +61,7 @@ export function Menu() {
     <>
       <nav class="hidden md:block">
         <div class="flex items-center gap-6">
-          <div class="flex items-center gap-3 cursor-pointer group relative">
+          <Link href="/dashboard" class="flex items-center gap-3 cursor-pointer group relative">
             <img
               src={currentUser.avatar}
               alt={`${currentUser.name}'s avatar`}
@@ -71,7 +71,7 @@ export function Menu() {
             <span class="text-brand-magenta font-bold group-hover:text-brand-yellow transition-colors">
               Hello, {currentUser.name}!
             </span>
-          </div>
+          </Link>
           <ul class="flex gap-6 text-sm font-medium">
             {navLinks.map(link => (
               <li key={link.href}>
@@ -130,7 +130,11 @@ export function Menu() {
           class="md:hidden bg-[#242424] border-t border-white/10 absolute w-full left-0 top-16 shadow-2xl animate-in slide-in-from-top-2 z-40"
         >
           <nav class="flex flex-col p-4">
-            <div class="flex items-center gap-3 py-3 border-b border-white/5">
+            <Link
+              href="/dashboard"
+              class="flex items-center gap-3 py-3 border-b border-white/5"
+              onClick={() => setIsMenuOpen(false)}
+            >
               <img
                 src={currentUser.avatar}
                 alt={`${currentUser.name}'s avatar`}
@@ -138,7 +142,7 @@ export function Menu() {
                 style="image-rendering: pixelated;"
               />
               <span class="text-brand-magenta font-bold">Hello, {currentUser.name}!</span>
-            </div>
+            </Link>
             {navLinks.map(link => (
               <Match key={link.href} path={link.matcher || link.href}>
                 {({ matches }: { matches: boolean }) => {
