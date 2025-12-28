@@ -11,6 +11,9 @@ import { ConsoleErrorManager } from '../services/ConsoleErrorManager';
 import { NotificationService } from '../../domain/services/NotificationService';
 import { ToastNotificationService } from '../services/ToastNotificationService';
 
+import { AuthService } from '../../application/auth/AuthService';
+import { MockAuthService } from '../auth/MockAuthService';
+
 import { ItemReadService } from '../../application/item/item.readService';
 import { ItemWriteService } from '../../application/item/item.writeService';
 import { ItemStateService } from '../../application/item/item.stateService';
@@ -26,6 +29,7 @@ container.bind(CategoriesRepository).to(InMemoryCategoriesRepository).inSingleto
 
 container.bind(ErrorManager).to(ConsoleErrorManager).inSingletonScope();
 container.bind(NotificationService).to(ToastNotificationService).inSingletonScope();
+container.bind(AuthService).to(MockAuthService).inSingletonScope();
 
 container.bind(ItemReadService).toSelf().inSingletonScope();
 container.bind(ItemWriteService).toSelf().inSingletonScope();

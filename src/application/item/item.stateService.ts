@@ -3,6 +3,7 @@ import { signal } from '@preact/signals';
 import { Item } from '../../domain/model/entities/Item';
 import { ItemReadService } from './item.readService';
 import { ItemWriteService } from './item.writeService';
+import { AuthService } from '../auth/AuthService';
 
 @injectable()
 export class ItemStateService {
@@ -11,14 +12,16 @@ export class ItemStateService {
 
   constructor(
     @inject(ItemReadService) private readService: ItemReadService,
-    @inject(ItemWriteService) private writeService: ItemWriteService
+    @inject(ItemWriteService) private writeService: ItemWriteService,
+    @inject(AuthService) private authService: AuthService
   ) {}
 
   async loadItems(): Promise<void> {
     this.isLoading.value = true;
     try {
       console.log('[ItemStateService] Loading items...');
-      const items = await this.readService.findAll();
+      const currentUser = this.authService.currentUser.value;
+      const items = await this.readService.findAll(currentUser?.id);
       console.log(`[ItemStateService] Loaded ${items.length} items.`);
       this.items.value = items;
     } finally {

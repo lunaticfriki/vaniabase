@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { Link as RouterLink, Match } from 'preact-router/match';
+import { route } from 'preact-router';
 import type { JSX } from 'preact';
+import { container } from '../../infrastructure/di/container';
+import { AuthService } from '../../application/auth/AuthService';
 
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
 
@@ -9,7 +12,15 @@ export function Menu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  const authService = container.get(AuthService);
+  const currentUser = authService.currentUser.value;
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleLogout = async () => {
+    await authService.logout();
+    route('/', true);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,28 +53,43 @@ export function Menu() {
     { href: '/about', label: 'ABOUT', matcher: undefined }
   ];
 
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <>
       <nav class="hidden md:block">
-        <ul class="flex gap-6 text-sm font-medium">
-          {navLinks.map(link => (
-            <li key={link.href}>
-              <Match path={link.matcher || link.href}>
-                {({ matches }: { matches: boolean }) => {
-                  const isActive = matches;
-                  return (
-                    <Link
-                      href={link.href}
-                      class={`${isActive ? 'text-brand-yellow' : 'text-white'} hover:text-brand-yellow transition-colors cursor-pointer`}
-                    >
-                      {link.label}
-                    </Link>
-                  );
-                }}
-              </Match>
+        <div class="flex items-center gap-6">
+          <span class="text-brand-magenta font-bold">Hello, {currentUser.name}!</span>
+          <ul class="flex gap-6 text-sm font-medium">
+            {navLinks.map(link => (
+              <li key={link.href}>
+                <Match path={link.matcher || link.href}>
+                  {({ matches }: { matches: boolean }) => {
+                    const isActive = matches;
+                    return (
+                      <Link
+                        href={link.href}
+                        class={`${isActive ? 'text-brand-yellow' : 'text-white'} hover:text-brand-yellow transition-colors cursor-pointer`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  }}
+                </Match>
+              </li>
+            ))}
+            <li>
+              <button
+                onClick={handleLogout}
+                class="text-white hover:text-brand-yellow transition-colors cursor-pointer"
+              >
+                LOGOUT
+              </button>
             </li>
-          ))}
-        </ul>
+          </ul>
+        </div>
       </nav>
 
       <button
@@ -94,6 +120,9 @@ export function Menu() {
           class="md:hidden bg-[#242424] border-t border-white/10 absolute w-full left-0 top-16 shadow-2xl animate-in slide-in-from-top-2 z-40"
         >
           <nav class="flex flex-col p-4">
+            <span class="text-brand-magenta font-bold py-3 block border-b border-white/5">
+              Hello, {currentUser.name}!
+            </span>
             {navLinks.map(link => (
               <Match key={link.href} path={link.matcher || link.href}>
                 {({ matches }: { matches: boolean }) => {
@@ -101,7 +130,7 @@ export function Menu() {
                   return (
                     <Link
                       href={link.href}
-                      class={`${isActive ? 'text-brand-yellow' : 'text-white'} py-3 hover:text-brand-yellow transition-colors border-b border-white/5 last:border-0 block`}
+                      class={`${isActive ? 'text-brand-yellow' : 'text-white'} py-3 hover:text-brand-yellow transition-colors border-b border-white/5 block`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {link.label}
@@ -110,6 +139,15 @@ export function Menu() {
                 }}
               </Match>
             ))}
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsMenuOpen(false);
+              }}
+              class="text-white py-3 hover:text-brand-yellow transition-colors block w-full text-left"
+            >
+              LOGOUT
+            </button>
           </nav>
         </div>
       )}

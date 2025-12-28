@@ -30,7 +30,8 @@ export class Item {
     public readonly year: Year,
     public readonly publisher: Publisher,
     public readonly language: Language,
-    public readonly category: Category
+    public readonly category: Category,
+    public readonly ownerId: Id
   ) {}
 
   public static create(
@@ -48,7 +49,8 @@ export class Item {
     year: Year,
     publisher: Publisher,
     language: Language,
-    category: Category
+    category: Category,
+    ownerId: Id
   ): Item {
     return new Item(
       id,
@@ -65,7 +67,8 @@ export class Item {
       year,
       publisher,
       language,
-      category
+      category,
+      ownerId
     );
   }
 
@@ -85,7 +88,8 @@ export class Item {
       Year.empty(),
       Publisher.empty(),
       Language.empty(),
-      Category.empty()
+      Category.empty(),
+      Id.empty()
     );
   }
 }

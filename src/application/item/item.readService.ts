@@ -7,8 +7,8 @@ import { ItemsRepository } from '../../domain/repositories/ItemsRepository';
 export class ItemReadService {
   constructor(@inject(ItemsRepository) private repository: ItemsRepository) {}
 
-  async findAll(): Promise<Item[]> {
-    return this.repository.findAll();
+  async findAll(ownerId?: Id): Promise<Item[]> {
+    return this.repository.findAll(ownerId);
   }
 
   async findById(id: Id): Promise<Item | undefined> {

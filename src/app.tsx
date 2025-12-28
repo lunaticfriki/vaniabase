@@ -2,6 +2,9 @@ import { Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
 import { Layout } from './presentation/components/Layout';
 import { createLazy } from './presentation/components/LazyLoad';
+import { LandingPage } from './presentation/pages/LandingPage';
+import { container } from './infrastructure/di/container';
+import { AuthService } from './application/auth/AuthService';
 
 export const Home = createLazy(() => import('./presentation/pages/Home').then(m => m.Home));
 export const Collection = createLazy(() => import('./presentation/pages/Collection').then(m => m.Collection));
@@ -28,19 +31,22 @@ export function App() {
     Formats.preload();
   }, []);
 
+  const authService = container.get(AuthService);
+
   return (
     <Layout>
       <Router>
-        <Home.Component path="/" />
-        <Collection.Component path="/collection" />
-        <Categories.Component path="/categories/:categoryName?" />
-        <Tags.Component path="/tags/:tagName?" />
-        <ItemDetail.Component path="/item/:id" />
-        <About.Component path="/about" />
-        <CreateItem.Component path="/create" />
-        <Search.Component path="/search" />
-        <Topics.Component path="/topics/:topicName?" />
-        <Formats.Component path="/formats/:formatName?" />
+        {authService.currentUser.value && <Home.Component path="/" />}
+        {authService.currentUser.value && <Collection.Component path="/collection" />}
+        {authService.currentUser.value && <Categories.Component path="/categories/:categoryName?" />}
+        {authService.currentUser.value && <Tags.Component path="/tags/:tagName?" />}
+        {authService.currentUser.value && <ItemDetail.Component path="/item/:id" />}
+        {authService.currentUser.value && <About.Component path="/about" />}
+        {authService.currentUser.value && <CreateItem.Component path="/create" />}
+        {authService.currentUser.value && <Search.Component path="/search" />}
+        {authService.currentUser.value && <Topics.Component path="/topics/:topicName?" />}
+        {authService.currentUser.value && <Formats.Component path="/formats/:formatName?" />}
+        {!authService.currentUser.value && <LandingPage path="/:rest*" />}
       </Router>
     </Layout>
   );

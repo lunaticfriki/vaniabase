@@ -22,8 +22,12 @@ export class InMemoryItemsRepository implements ItemsRepository {
     this.items.set(item.id.value, item);
   }
 
-  async findAll(): Promise<Item[]> {
-    return Array.from(this.items.values());
+  async findAll(ownerId?: Id): Promise<Item[]> {
+    const allItems = Array.from(this.items.values());
+    if (ownerId) {
+      return allItems.filter(item => item.ownerId.equals(ownerId));
+    }
+    return allItems;
   }
 
   async findById(id: Id): Promise<Item | undefined> {
