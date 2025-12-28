@@ -4,6 +4,7 @@ import { Item } from '../../domain/model/entities/item.entity';
 import { ItemReadService } from './item.readService';
 import { ItemWriteService } from './item.writeService';
 import { AuthService } from '../auth/auth.service';
+import { NotificationService } from '../../domain/services/notification.service';
 
 @injectable()
 export class ItemStateService {
@@ -13,7 +14,8 @@ export class ItemStateService {
   constructor(
     @inject(ItemReadService) private readService: ItemReadService,
     @inject(ItemWriteService) private writeService: ItemWriteService,
-    @inject(AuthService) private authService: AuthService
+    @inject(AuthService) private authService: AuthService,
+    @inject(NotificationService) private notificationService: NotificationService
   ) {}
 
   async loadItems(): Promise<void> {
@@ -34,6 +36,7 @@ export class ItemStateService {
     try {
       await this.writeService.create(item);
       await this.loadItems();
+      this.notificationService.success('Item created successfully');
     } finally {
       this.isLoading.value = false;
     }
@@ -44,6 +47,7 @@ export class ItemStateService {
     try {
       await this.writeService.update(item);
       await this.loadItems();
+      this.notificationService.success('Item updated successfully');
     } finally {
       this.isLoading.value = false;
     }

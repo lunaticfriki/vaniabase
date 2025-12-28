@@ -32,17 +32,14 @@ describe('Application Services (Unit Tests)', () => {
   describe('ItemWriteService', () => {
     let mockRepo: ItemsRepository;
     let mockErrorManager: ErrorManager;
-    let mockNotificationService: NotificationService;
     let service: ItemWriteService;
 
     beforeEach(() => {
       mockRepo = mock<ItemsRepository>();
       mockErrorManager = mock<ErrorManager>();
-      mockNotificationService = mock<NotificationService>();
       service = new ItemWriteService(
         instance(mockRepo),
         instance(mockErrorManager),
-        instance(mockNotificationService)
       );
     });
 
@@ -53,7 +50,6 @@ describe('Application Services (Unit Tests)', () => {
       await service.create(item);
 
       verify(mockRepo.save(item)).once();
-      verify(mockNotificationService.notify(anyString())).once();
     });
 
     it('should handle error when creation fails', async () => {
@@ -73,15 +69,18 @@ describe('Application Services (Unit Tests)', () => {
     let mockWriteService: ItemWriteService;
     let mockAuthService: AuthService;
     let service: ItemStateService;
+    let mockNotificationService: NotificationService;
 
     beforeEach(() => {
       mockReadService = mock(ItemReadService);
       mockWriteService = mock(ItemWriteService);
       mockAuthService = mock(AuthService);
+      mockNotificationService = mock(NotificationService);
       service = new ItemStateService(
         instance(mockReadService),
         instance(mockWriteService),
-        instance(mockAuthService)
+        instance(mockAuthService),
+        instance(mockNotificationService)
       );
 
       when(mockAuthService.currentUser).thenReturn(signal(null));
@@ -106,6 +105,7 @@ describe('Application Services (Unit Tests)', () => {
 
       verify(mockWriteService.create(item)).once();
       verify(mockReadService.findAll(anything())).once();
+      verify(mockNotificationService.success(anyString())).once();
       expect(service.items.value).toEqual([item]);
     });
   });

@@ -6,9 +6,9 @@ export interface Notification {
 }
 
 export abstract class NotificationService {
-  abstract notify(message: string, type?: Notification['type']): void;
-  abstract success(message: string): void;
-  abstract error(message: string): void;
-  abstract info(message: string): void;
-  abstract warning(message: string): void;
+  notify(_message: string, _type?: Notification['type']): void {}
+  success(_message: string): void {}
+  error(_message: string): void {}
+  info(_message: string): void {}
+  warning(_message: string): void {}
 }

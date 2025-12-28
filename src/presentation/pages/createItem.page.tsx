@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { route } from 'preact-router';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
+import { AuthService } from '../../application/auth/auth.service';
 import { NotificationService } from '../../domain/services/notification.service';
 import { Item } from '../../domain/model/entities/item.entity';
 import { Category } from '../../domain/model/entities/category.entity';
@@ -31,13 +32,13 @@ const getRandomCover = () => {
 export function CreateItem() {
   const itemStateService = container.get(ItemStateService);
   const notificationService = container.get(NotificationService);
+  const authService = container.get(AuthService);
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     author: '',
     cover: getRandomCover(),
-    owner: '',
     tags: '',
     topic: '',
     format: '',
@@ -63,6 +64,8 @@ export function CreateItem() {
         .map(t => t.trim())
         .filter(Boolean);
 
+      const currentUser = authService.currentUser.value;
+
       await itemStateService.createItem(
         Item.create(
           Id.create(uuidv4()),
@@ -70,7 +73,7 @@ export function CreateItem() {
           Description.create(formData.description),
           Author.create(formData.author),
           Cover.create(formData.cover),
-          Owner.create(formData.owner),
+          Owner.create(currentUser ? currentUser.name : ''),
           Tags.create(tagsArray),
           Topic.create(formData.topic),
           Format.create(formData.format),
@@ -80,11 +83,10 @@ export function CreateItem() {
           Publisher.create(formData.publisher),
           Language.create(formData.language),
           Category.create(Id.create(uuidv4()), Title.create(formData.category)),
-          Id.empty()
+          currentUser ? currentUser.id : Id.empty()
         )
       );
 
-      notificationService.success('Item created successfully!');
       route('/');
     } catch (error) {
       notificationService.error('Failed to create item');
@@ -203,16 +205,6 @@ export function CreateItem() {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Owner</label>
-            <input
-              type="text"
-              name="owner"
-              value={formData.owner}
-              onInput={handleInput}
-              class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors"
-            />
-          </div>
           <div class="space-y-2">
             <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Topic</label>
             <input
