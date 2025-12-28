@@ -85,8 +85,13 @@ export function ItemDetail({ id }: Props) {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
         <div class="space-y-6">
-          <div class="aspect-2/3 rounded-sm overflow-hidden bg-zinc-900 border border-brand-violet/30 shadow-[0_0_50px_rgba(46,0,79,0.3)]">
-            <img src={item.cover.value} alt={`Cover for ${item.title.value}`} class="w-full h-full object-cover" />
+          <div style="filter: drop-shadow(4px 4px 0px rgba(255, 0, 255, 0.5));">
+            <div
+              class="aspect-2/3 overflow-hidden bg-zinc-900"
+              style="clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);"
+            >
+              <img src={item.cover.value} alt={`Cover for ${item.title.value}`} class="w-full h-full object-cover" />
+            </div>
           </div>
         </div>
 
