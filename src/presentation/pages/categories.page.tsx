@@ -68,20 +68,22 @@ export function Categories({ categoryName }: Props) {
           {categories.value.map(category => {
             const isActive = category.name.value.toLowerCase() === activeCategoryName;
             return (
-              <Link
-                key={category.id.value}
-                href={`/categories/${category.name.value.toLowerCase()}`}
-                class={`
-                  px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide transition-all duration-300
-                  ${
-                    isActive
-                      ? 'bg-brand-magenta text-white shadow-lg shadow-brand-magenta/30 scale-105'
-                      : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
-                  }
-                `}
-              >
-                {category.name.value}
-              </Link>
+              <div key={category.id.value} style="filter: drop-shadow(2px 2px 0px rgba(255, 0, 255, 0.5));">
+                <Link
+                  href={`/categories/${category.name.value.toLowerCase()}`}
+                  class={`
+                    block px-6 py-2 text-sm font-bold uppercase tracking-wide transition-all duration-300
+                    ${
+                      isActive
+                        ? 'bg-brand-magenta text-white scale-105'
+                        : 'bg-zinc-800 text-white/60 hover:bg-zinc-700 hover:text-white'
+                    }
+                  `}
+                  style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
+                >
+                  {category.name.value}
+                </Link>
+              </div>
             );
           })}
           <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 relative -top-2">
