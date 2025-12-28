@@ -49,18 +49,22 @@ export function Formats({ formatName }: Props) {
       </h1>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        <div class="lg:col-span-1 border-2 border-brand-magenta p-6 min-h-[500px]">
-          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2 content-start">
-            {formatData.formats.map(format => {
-              const count = formatData.counts[format];
-              const isActive = format.toLowerCase() === activeFormatName;
-              const fontSizeClass = viewModel.getFontSizeClass(count);
+        <div class="lg:col-span-1" style="filter: drop-shadow(4px 4px 0px rgba(255, 0, 255, 0.5));">
+          <div
+            class="p-6 min-h-[500px] bg-zinc-900"
+            style="clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);"
+          >
+            <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2 content-start">
+              {formatData.formats.map(format => {
+                const count = formatData.counts[format];
+                const isActive = format.toLowerCase() === activeFormatName;
+                const fontSizeClass = viewModel.getFontSizeClass(count);
 
-              return (
-                <Link
-                  key={format}
-                  href={`/formats/${format.toLowerCase()}`}
-                  class={`
+                return (
+                  <Link
+                    key={format}
+                    href={`/formats/${format.toLowerCase()}`}
+                    class={`
                     leading-none transition-all duration-300 rounded px-1
                     ${fontSizeClass}
                     ${
@@ -69,12 +73,13 @@ export function Formats({ formatName }: Props) {
                         : 'text-white/70 hover:text-white hover:bg-brand-magenta/50'
                     }
                   `}
-                  title={`${count} items`}
-                >
-                  {format}
-                </Link>
-              );
-            })}
+                    title={`${count} items`}
+                  >
+                    {format}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
 
