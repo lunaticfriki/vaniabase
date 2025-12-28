@@ -247,6 +247,17 @@ export function CreateItem() {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Tags (comma separated)</label>
+            <input
+              type="text"
+              name="tags"
+              value={formData.tags}
+              onInput={handleInput}
+              placeholder="scifi, classic, bestseller"
+              class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors"
+            />
+          </div>
+          <div class="space-y-2">
             <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Topic</label>
             <input
               type="text"
@@ -256,17 +267,6 @@ export function CreateItem() {
               class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors"
             />
           </div>
-        </div>
-        <div class="space-y-2">
-          <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Tags (comma separated)</label>
-          <input
-            type="text"
-            name="tags"
-            value={formData.tags}
-            onInput={handleInput}
-            placeholder="scifi, classic, bestseller"
-            class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors"
-          />
         </div>
         <div class="space-y-2">
           <label class="text-xs font-bold uppercase tracking-widest text-white/40">Cover Image (Auto-generated)</label>
@@ -279,25 +279,27 @@ export function CreateItem() {
           />
           <p class="text-xs text-white/30">A random image will be assigned on creation.</p>
         </div>
-        <div class="space-y-2 flex items-center gap-3 pt-6">
-          <input
-            type="checkbox"
-            id="completed"
-            checked={!!formData.completed}
-            onChange={(e: any) => {
+        <div class="space-y-2 pt-6">
+          <button
+            type="button"
+            onClick={() => {
               setFormData(prev => ({
                 ...prev,
-                completed: e.target.checked
+                completed: !prev.completed
               }));
             }}
-            class="w-5 h-5 bg-zinc-900 border border-white/10 rounded focus:ring-brand-magenta text-brand-magenta transition-colors cursor-pointer"
-          />
-          <label
-            htmlFor="completed"
-            class="text-xs font-bold uppercase tracking-widest text-brand-magenta cursor-pointer select-none"
+            style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
+            class={`
+              w-full md:w-auto px-6 py-3 font-bold uppercase tracking-widest transition-all text-sm
+              ${
+                formData.completed
+                  ? 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white'
+                  : 'bg-green-500 text-black hover:bg-green-400 hover:scale-[1.02] shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+              }
+                `}
           >
-            Mark as Completed
-          </label>
+            {formData.completed ? 'Mark as Uncompleted' : 'Mark as Completed'}
+          </button>
         </div>
         <div class="pt-4">
           <button
