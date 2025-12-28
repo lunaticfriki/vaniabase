@@ -9,10 +9,10 @@ import { CategoryWriteService } from '../category/category.writeService';
 import { ItemsRepository } from '../../domain/repositories/items.repository';
 import { ErrorManager } from '../../domain/services/errorManager.service';
 import { NotificationService } from '../../domain/services/notification.service';
-import { ItemMother } from '../../domain/test/item.mother';
 import { AuthService } from '../auth/auth.service';
 import { signal } from '@preact/signals';
-import { CategoryMother } from '../../domain/test/category.mother';
+import { ItemMother } from '../../domain/__tests__/item.mother';
+import { CategoryMother } from '../../domain/__tests__/category.mother';
 
 describe('Application Services (Unit Tests)', () => {
   describe('ItemReadService', () => {

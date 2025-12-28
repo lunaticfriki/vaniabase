@@ -1,7 +1,7 @@
 import { InMemoryItemsRepository } from '../inMemoryItems.repository';
 import { InMemoryCategoriesRepository } from '../inMemoryCategories.repository';
-import { ItemMother } from '../../../domain/test/item.mother';
-import { CategoryMother } from '../../../domain/test/category.mother';
+import { ItemMother } from '../../../domain/__tests__/item.mother';
+import { CategoryMother } from '../../../domain/__tests__/category.mother';
 
 describe('InMemoryRepositories', () => {
   describe('InMemoryItemsRepository', () => {

@@ -6,8 +6,8 @@ import { ItemStateService } from '../../../application/item/item.stateService';
 import { ItemReadService } from '../../../application/item/item.readService';
 import { ItemWriteService } from '../../../application/item/item.writeService';
 import { signal } from '@preact/signals';
-import { ItemMother } from '../../../domain/test/item.mother';
 import { Tags } from '../../../domain/model/value-objects/tags.valueObject';
+import { ItemMother } from '../../../domain/__tests__/item.mother';
 
 describe('TagsViewModel', () => {
   let mockReadService: ItemReadService;
