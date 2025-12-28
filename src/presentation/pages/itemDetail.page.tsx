@@ -41,24 +41,24 @@ export function ItemDetail({ id }: Props) {
 
     const newStatus = Completed.create(!item.completed.value);
 
-    const updatedItem = Item.create(
-      item.id,
-      item.title,
-      item.description,
-      item.author,
-      item.cover,
-      item.owner,
-      item.tags,
-      item.topic,
-      item.format,
-      item.created,
-      newStatus,
-      item.year,
-      item.publisher,
-      item.language,
-      item.category,
-      item.ownerId
-    );
+    const updatedItem = Item.create({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      author: item.author,
+      cover: item.cover,
+      owner: item.owner,
+      tags: item.tags,
+      topic: item.topic,
+      format: item.format,
+      created: item.created,
+      completed: newStatus,
+      year: item.year,
+      publisher: item.publisher,
+      language: item.language,
+      category: item.category,
+      ownerId: item.ownerId
+    });
 
     await itemStateService.updateItem(updatedItem);
     setItem(updatedItem);

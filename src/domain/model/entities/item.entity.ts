@@ -34,41 +34,41 @@ export class Item {
     public readonly ownerId: Id
   ) {}
 
-  public static create(
-    id: Id,
-    title: Title,
-    description: Description,
-    author: Author,
-    cover: Cover,
-    owner: Owner,
-    tags: Tags,
-    topic: Topic,
-    format: Format,
-    created: Created,
-    completed: Completed,
-    year: Year,
-    publisher: Publisher,
-    language: Language,
-    category: Category,
-    ownerId: Id
-  ): Item {
+  public static create(props: {
+    id: Id;
+    title: Title;
+    description: Description;
+    author: Author;
+    cover: Cover;
+    owner: Owner;
+    tags: Tags;
+    topic: Topic;
+    format: Format;
+    created: Created;
+    completed: Completed;
+    year: Year;
+    publisher: Publisher;
+    language: Language;
+    category: Category;
+    ownerId: Id;
+  }): Item {
     return new Item(
-      id,
-      title,
-      description,
-      author,
-      cover,
-      owner,
-      tags,
-      topic,
-      format,
-      created,
-      completed,
-      year,
-      publisher,
-      language,
-      category,
-      ownerId
+      props.id,
+      props.title,
+      props.description,
+      props.author,
+      props.cover,
+      props.owner,
+      props.tags,
+      props.topic,
+      props.format,
+      props.created,
+      props.completed,
+      props.year,
+      props.publisher,
+      props.language,
+      props.category,
+      props.ownerId
     );
   }
 

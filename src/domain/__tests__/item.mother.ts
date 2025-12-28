@@ -39,45 +39,45 @@ export class ItemMother {
       ownerId: Id;
     }>
   ): Item {
-    return Item.create(
-      data?.id ? data.id : Id.random(),
-      data?.title ? data.title : Title.create(faker.commerce.productName()),
-      data?.description ? data.description : Description.create(faker.commerce.productDescription()),
-      data?.author ? data.author : Author.create(faker.person.fullName()),
-      data?.cover ? data.cover : Cover.create(faker.image.url()),
-      data?.owner ? data.owner : Owner.create(faker.person.fullName()),
-      data?.tags ? data.tags : Tags.create([faker.word.sample()]),
-      data?.topic ? data.topic : Topic.create(faker.word.noun()),
-      data?.format ? data.format : Format.create('Digital'),
-      data?.created ? data.created : Created.create(faker.date.past()),
-      data?.completed ? data.completed : Completed.create(false),
-      data?.year ? data.year : Year.create(faker.date.past().getFullYear()),
-      data?.publisher ? data.publisher : Publisher.create(faker.company.name()),
-      data?.language ? data.language : Language.create('English'),
-      data?.category || CategoryMother.create(),
-      data?.ownerId ? data.ownerId : Id.random()
-    );
+    return Item.create({
+      id: data?.id ? data.id : Id.random(),
+      title: data?.title ? data.title : Title.create(faker.commerce.productName()),
+      description: data?.description ? data.description : Description.create(faker.commerce.productDescription()),
+      author: data?.author ? data.author : Author.create(faker.person.fullName()),
+      cover: data?.cover ? data.cover : Cover.create(faker.image.url()),
+      owner: data?.owner ? data.owner : Owner.create(faker.person.fullName()),
+      tags: data?.tags ? data.tags : Tags.create([faker.word.sample()]),
+      topic: data?.topic ? data.topic : Topic.create(faker.word.noun()),
+      format: data?.format ? data.format : Format.create('Digital'),
+      created: data?.created ? data.created : Created.create(faker.date.past()),
+      completed: data?.completed ? data.completed : Completed.create(false),
+      year: data?.year ? data.year : Year.create(faker.date.past().getFullYear()),
+      publisher: data?.publisher ? data.publisher : Publisher.create(faker.company.name()),
+      language: data?.language ? data.language : Language.create('English'),
+      category: data?.category || CategoryMother.create(),
+      ownerId: data?.ownerId ? data.ownerId : Id.random()
+    });
   }
 
   static empty(): Item {
-    return Item.create(
-      Id.empty(),
-      Title.empty(),
-      Description.empty(),
-      Author.empty(),
-      Cover.empty(),
-      Owner.empty(),
-      Tags.empty(),
-      Topic.empty(),
-      Format.empty(),
-      Created.empty(),
-      Completed.empty(),
-      Year.empty(),
-      Publisher.empty(),
-      Language.empty(),
-      Category.empty(),
-      Id.empty()
-    );
+    return Item.create({
+      id: Id.empty(),
+      title: Title.empty(),
+      description: Description.empty(),
+      author: Author.empty(),
+      cover: Cover.empty(),
+      owner: Owner.empty(),
+      tags: Tags.empty(),
+      topic: Topic.empty(),
+      format: Format.empty(),
+      created: Created.empty(),
+      completed: Completed.empty(),
+      year: Year.empty(),
+      publisher: Publisher.empty(),
+      language: Language.empty(),
+      category: Category.empty(),
+      ownerId: Id.empty()
+    });
   }
 
   static createRandom() {

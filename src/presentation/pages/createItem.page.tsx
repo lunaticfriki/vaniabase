@@ -72,24 +72,24 @@ export function CreateItem() {
             .split(',')
             .map((t: string) => t.trim())
             .filter(Boolean);
-          return Item.create(
-            Id.create(uuidv4()),
-            Title.create(normalizedRow.title),
-            Description.create(normalizedRow.description || ''),
-            Author.create(normalizedRow.author || 'Unknown'),
-            Cover.create(getRandomCover()),
-            Owner.create(currentUser ? currentUser.name : ''),
-            Tags.create(tagsArray),
-            Topic.create(normalizedRow.topic || ''),
-            Format.create(normalizedRow.format || ''),
-            Created.create(normalizedRow.created ? new Date(normalizedRow.created) : new Date()),
-            Completed.create(!!normalizedRow.completed), // boolean check
-            Year.create(parseInt(normalizedRow.year) || new Date().getFullYear()),
-            Publisher.create(normalizedRow.publisher || ''),
-            Language.create(normalizedRow.language || 'English'),
-            Category.create(Id.create(uuidv4()), Title.create(normalizedRow.category || 'books')),
-            currentUser ? currentUser.id : Id.empty()
-          );
+          return Item.create({
+            id: Id.create(uuidv4()),
+            title: Title.create(normalizedRow.title),
+            description: Description.create(normalizedRow.description || ''),
+            author: Author.create(normalizedRow.author || 'Unknown'),
+            cover: Cover.create(getRandomCover()),
+            owner: Owner.create(currentUser ? currentUser.name : ''),
+            tags: Tags.create(tagsArray),
+            topic: Topic.create(normalizedRow.topic || ''),
+            format: Format.create(normalizedRow.format || ''),
+            created: Created.create(normalizedRow.created ? new Date(normalizedRow.created) : new Date()),
+            completed: Completed.create(!!normalizedRow.completed),
+            year: Year.create(parseInt(normalizedRow.year) || new Date().getFullYear()),
+            publisher: Publisher.create(normalizedRow.publisher || ''),
+            language: Language.create(normalizedRow.language || 'English'),
+            category: Category.create(Id.create(uuidv4()), Title.create(normalizedRow.category || 'books')),
+            ownerId: currentUser ? currentUser.id : Id.empty()
+          });
         })
         .filter((item): item is Item => item !== null);
       if (itemsToCreate.length === 0) {
@@ -118,24 +118,24 @@ export function CreateItem() {
         .filter(Boolean);
       const currentUser = authService.currentUser.value;
       await itemStateService.createItem(
-        Item.create(
-          Id.create(uuidv4()),
-          Title.create(formData.title),
-          Description.create(formData.description),
-          Author.create(formData.author),
-          Cover.create(formData.cover),
-          Owner.create(currentUser ? currentUser.name : ''),
-          Tags.create(tagsArray),
-          Topic.create(formData.topic),
-          Format.create(formData.format),
-          Created.create(new Date(formData.created)),
-          Completed.create(formData.completed), // now a boolean
-          Year.create(parseInt(formData.year) || 0),
-          Publisher.create(formData.publisher),
-          Language.create(formData.language),
-          Category.create(Id.create(uuidv4()), Title.create(formData.category)),
-          currentUser ? currentUser.id : Id.empty()
-        )
+        Item.create({
+          id: Id.create(uuidv4()),
+          title: Title.create(formData.title),
+          description: Description.create(formData.description),
+          author: Author.create(formData.author),
+          cover: Cover.create(formData.cover),
+          owner: Owner.create(currentUser ? currentUser.name : ''),
+          tags: Tags.create(tagsArray),
+          topic: Topic.create(formData.topic),
+          format: Format.create(formData.format),
+          created: Created.create(new Date(formData.created)),
+          completed: Completed.create(formData.completed),
+          year: Year.create(parseInt(formData.year) || 0),
+          publisher: Publisher.create(formData.publisher),
+          language: Language.create(formData.language),
+          category: Category.create(Id.create(uuidv4()), Title.create(formData.category)),
+          ownerId: currentUser ? currentUser.id : Id.empty()
+        })
       );
       route('/');
     } catch (error) {

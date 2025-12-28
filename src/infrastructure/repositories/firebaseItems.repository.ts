@@ -94,26 +94,26 @@ export class FirebaseItemsRepository implements ItemsRepository {
         const completed = !!data.completed;
 
 
-        return Item.create(
-            Id.create(id),
-            Title.create(data.title),
-            Description.create(data.description),
-            Author.create(data.author),
-            Cover.create(data.cover),
-            Owner.create(data.owner),
-            Tags.create(data.tags || []),
-            Topic.create(data.topic),
-            Format.create(data.format),
-            Created.create(createdDate),
-            Completed.create(completed),
-            Year.create(data.year),
-            Publisher.create(data.publisher),
-            Language.create(data.language),
-            Category.create(
+        return Item.create({
+            id: Id.create(id),
+            title: Title.create(data.title),
+            description: Description.create(data.description),
+            author: Author.create(data.author),
+            cover: Cover.create(data.cover),
+            owner: Owner.create(data.owner),
+            tags: Tags.create(data.tags || []),
+            topic: Topic.create(data.topic),
+            format: Format.create(data.format),
+            created: Created.create(createdDate),
+            completed: Completed.create(completed),
+            year: Year.create(data.year),
+            publisher: Publisher.create(data.publisher),
+            language: Language.create(data.language),
+            category: Category.create(
                 Id.create(data.category?.id || ''),
                 Title.create(data.category?.name || '')
             ),
-            Id.create(data.ownerId || '')
-        );
+            ownerId: Id.create(data.ownerId || '')
+        });
     }
 }
