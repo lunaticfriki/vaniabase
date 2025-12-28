@@ -93,9 +93,9 @@ export function Menu() {
                     return (
                       <Link
                         href={link.href}
-                        class={`${isActive ? 'text-brand-yellow' : 'text-white'} hover:text-brand-yellow transition-colors cursor-pointer flex items-center gap-2`}
+                        class={`${isActive ? 'text-brand-yellow' : 'text-white'} hover:text-brand-yellow transition-colors cursor-pointer flex items-center gap-2 group`}
                       >
-                        <link.icon size={16} />
+                        <link.icon size={16} className="group-hover:text-brand-yellow transition-colors" />
                         {link.label}
                       </Link>
                     );
@@ -164,10 +164,10 @@ export function Menu() {
                   return (
                     <Link
                       href={link.href}
-                      class={`${isActive ? 'text-brand-yellow' : 'text-white'} py-3 hover:text-brand-yellow transition-colors border-b border-white/5 flex items-center gap-3`}
+                      class={`${isActive ? 'text-brand-yellow' : 'text-white'} py-3 hover:text-brand-yellow transition-colors border-b border-white/5 flex items-center gap-3 group`}
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <link.icon size={20} />
+                      <link.icon size={20} className="group-hover:text-brand-yellow transition-colors" />
                       {link.label}
                     </Link>
                   );

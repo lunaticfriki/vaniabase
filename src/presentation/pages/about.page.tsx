@@ -9,8 +9,15 @@ export function About({ path: _ }: Props) {
         ABOUT VANIABASE
       </h1>
       <div class="prose prose-invert prose-lg">
-        <p class="text-white/80 leading-relaxed">Version: 1.0.0</p>
-        <p class="text-white/80 leading-relaxed">Copyright, {new Date().getFullYear()}</p>
+        <p class="text-white/80 leading-relaxed">
+          Version: <span class="font-bold bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">1.0.0</span>
+        </p>
+        <p class="text-white/80 leading-relaxed">
+          Copyright:{' '}
+          <span class="font-bold bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
+            {new Date().getFullYear()}
+          </span>
+        </p>
         <p class="text-white/80 leading-relaxed">
           Author:{' '}
           <a href="https://www.github.com/lunaticfriki" target="_blank" rel="noopener noreferrer">

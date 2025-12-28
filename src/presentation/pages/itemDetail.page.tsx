@@ -62,7 +62,7 @@ export function ItemDetail({ id }: Props) {
       <div>
         <button
           onClick={handleBack}
-          class="flex items-center gap-2 text-white/60 hover:text-brand-magenta transition-colors group"
+          class="flex items-center gap-2 text-white/60 transition-colors group cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -74,12 +74,14 @@ export function ItemDetail({ id }: Props) {
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="group-hover:-translate-x-1 transition-transform"
+            class="group-hover:-translate-x-1 group-hover:text-brand-yellow transition-all"
           >
             <path d="M19 12H5" />
             <path d="M12 19l-7-7 7-7" />
           </svg>
-          Back
+          <span class="group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-linear-to-r group-hover:from-brand-magenta group-hover:to-brand-yellow">
+            Back
+          </span>
         </button>
       </div>
 

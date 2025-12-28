@@ -6,7 +6,7 @@ export function Header() {
       <div class="container mx-auto px-4 h-16 flex items-center justify-between">
         <a
           href="/"
-          class="text-brand-magenta font-bold text-2xl tracking-tighter hover:text-brand-yellow transition-colors"
+          class="text-brand-magenta font-bold text-4xl tracking-tighter hover:text-brand-yellow transition-colors"
         >
           VANIABASE
         </a>
