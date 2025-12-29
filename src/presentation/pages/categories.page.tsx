@@ -75,8 +75,8 @@ export function Categories({ categoryName }: Props) {
                     block px-6 py-2 text-sm font-bold uppercase tracking-wide transition-all duration-300
                     ${
                       isActive
-                        ? 'bg-brand-magenta text-white scale-105'
-                        : 'bg-zinc-800 text-white/60 hover:bg-zinc-700 hover:text-white'
+                        ? 'bg-brand-magenta text-white scale-105 hover:bg-none! hover:bg-clip-border! hover:text-white!'
+                        : 'bg-zinc-800 text-white/60 hover:bg-brand-magenta! hover:text-white! hover:scale-105! hover:bg-none! hover:bg-clip-border!'
                     }
                   `}
                   style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
