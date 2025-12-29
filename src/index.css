@@ -36,8 +36,13 @@ a {
   text-decoration: inherit;
 }
 
-a:hover {
+a:not(.no-global-hover):hover {
   @apply bg-clip-text text-transparent bg-linear-to-r from-brand-magenta to-brand-yellow;
+}
+
+.no-global-hover {
+  background: none;
+  -webkit-text-fill-color: initial;
 }
 
 body {

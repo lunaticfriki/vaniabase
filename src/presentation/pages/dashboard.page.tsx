@@ -84,27 +84,11 @@ export function Dashboard() {
         <ListSection title="Formats" items={formats.value} linkPrefix="/formats" color="border-brand-yellow" />
         <div class="space-y-4">
           <h2 class="text-xl font-bold text-white border-l-4 border-green-500 pl-4">Recently Completed</h2>
-          <div class="bg-white/5 border border-white/10 rounded-lg p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
-            {viewModel.completedItems.value.length === 0 ? (
-              <p class="text-white/30 italic">No completed items yet.</p>
-            ) : (
-              <ul class="space-y-2">
-                {viewModel.completedItems.value.map(item => (
-                  <li key={item.id.value}>
-                    <Link
-                      href={`/item/${item.id.value}`}
-                      class="text-white/70 hover:text-brand-yellow hover:bg-white/5 px-3 py-2 rounded transition-colors truncate flex justify-between items-center"
-                    >
-                      <span>{item.title.value}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div class="pt-4 border-t border-white/10 mt-4">
+          <div class="bg-white/5 border border-white/10 rounded-lg max-h-[400px] overflow-y-auto custom-scrollbar relative">
+            <div class="sticky top-0 z-10 backdrop-blur-md bg-[#303030]/90 p-4 border-b border-white/10">
               <Link
                 href="/completed"
-                class="text-green-400 hover:text-green-300 text-sm font-bold uppercase tracking-widest flex items-center gap-2 group"
+                class="text-green-400 hover:text-green-300 text-sm font-bold uppercase tracking-widest flex items-center gap-2 group no-global-hover"
               >
                 View All Completed
                 <svg
@@ -123,6 +107,24 @@ export function Dashboard() {
                   <path d="M12 5l7 7-7 7" />
                 </svg>
               </Link>
+            </div>
+            <div class="p-4 pt-4">
+              {viewModel.completedItems.value.length === 0 ? (
+                <p class="text-white/30 italic">No completed items yet.</p>
+              ) : (
+                <ul class="space-y-2">
+                  {viewModel.completedItems.value.map(item => (
+                    <li key={item.id.value}>
+                      <Link
+                        href={`/item/${item.id.value}`}
+                        class="text-white/70 hover:text-brand-yellow hover:bg-white/5 px-3 py-2 rounded transition-colors truncate flex justify-between items-center"
+                      >
+                        <span>{item.title.value}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
