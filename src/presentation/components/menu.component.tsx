@@ -73,122 +73,128 @@ export function Menu() {
 
   return (
     <>
-      <nav class="hidden xl:block">
-        <div class="flex items-center gap-6">
-          <Link href="/dashboard" class="flex items-center gap-3 cursor-pointer group relative">
-            <img
-              src={currentUser.avatar}
-              alt={`${currentUser.name}'s avatar`}
-              class="w-8 h-8 rounded-full bg-white/10"
-              style="image-rendering: pixelated;"
-            />
-            <span class="text-brand-magenta font-bold group-hover:text-brand-yellow transition-colors">
-              Hello, {currentUser.name}!
-            </span>
-          </Link>
-          <ul class="flex gap-6 text-sm font-medium items-center">
-            {navLinks.map(link => (
-              <li key={link.href}>
-                <Match path={link.matcher || link.href}>
-                  {({ matches }: { matches: boolean }) => {
-                    const isActive = matches;
-                    return (
-                      <Link
-                        href={link.href}
-                        class={`${isActive ? 'text-brand-yellow' : 'text-white'} hover:text-brand-yellow transition-colors cursor-pointer flex items-center gap-2 group`}
-                      >
-                        <link.icon size={16} className="group-hover:text-brand-yellow transition-colors" />
-                        {link.label}
-                      </Link>
-                    );
-                  }}
-                </Match>
-              </li>
-            ))}
-            <li>
-              <button
-                onClick={handleLogout}
-                class="text-white hover:text-brand-yellow transition-colors cursor-pointer flex items-center gap-2"
-              >
-                <LogoutIcon size={16} />
-                LOGOUT
-              </button>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <button
-        ref={buttonRef}
-        class="xl:hidden p-2 text-white hover:text-brand-magenta transition-colors focus:outline-none"
-        onClick={toggleMenu}
-        aria-label="Toggle menu"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'}
-          />
-        </svg>
-      </button>
-
-      {isMenuOpen && (
-        <div
-          ref={menuRef}
-          class="xl:hidden bg-[#242424] border-t border-white/10 absolute w-full left-0 top-16 shadow-2xl animate-in slide-in-from-top-2 z-40"
-        >
-          <nav class="flex flex-col p-4">
-            <Link
-              href="/dashboard"
-              class="flex items-center gap-3 py-3 border-b border-white/5"
-              onClick={() => setIsMenuOpen(false)}
-            >
+      <div class="flex items-center gap-6 relative">
+        <nav class="hidden xl:block">
+          <div class="flex items-center gap-6">
+            <Link href="/dashboard" class="flex items-center gap-3 cursor-pointer group relative">
               <img
                 src={currentUser.avatar}
                 alt={`${currentUser.name}'s avatar`}
                 class="w-8 h-8 rounded-full bg-white/10"
                 style="image-rendering: pixelated;"
               />
-              <span class="text-brand-magenta font-bold">Hello, {currentUser.name}!</span>
+              <span class="text-brand-magenta font-bold group-hover:text-brand-yellow transition-colors">
+                Hello, {currentUser.name}!
+              </span>
             </Link>
-            {navLinks.map(link => (
-              <Match key={link.href} path={link.matcher || link.href}>
-                {({ matches }: { matches: boolean }) => {
-                  const isActive = matches;
-                  return (
-                    <Link
-                      href={link.href}
-                      class={`${isActive ? 'text-brand-yellow' : 'text-white'} py-3 hover:text-brand-yellow transition-colors border-b border-white/5 flex items-center gap-3 group`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <link.icon size={20} className="group-hover:text-brand-yellow transition-colors" />
-                      {link.label}
-                    </Link>
-                  );
-                }}
-              </Match>
-            ))}
-            <button
-              onClick={() => {
-                handleLogout();
-                setIsMenuOpen(false);
-              }}
-              class="text-white py-3 hover:text-brand-yellow transition-colors flex items-center gap-3 w-full text-left"
-            >
-              <LogoutIcon size={20} />
-              LOGOUT
-            </button>
-          </nav>
-        </div>
-      )}
+            <ul class="flex gap-6 text-sm font-medium items-center">
+              {navLinks.map(link => (
+                <li key={link.href} class={link.label !== 'ABOUT' ? 'hidden' : ''}>
+                  <Match path={link.matcher || link.href}>
+                    {({ matches }: { matches: boolean }) => {
+                      const isActive = matches;
+                      return (
+                        <Link
+                          href={link.href}
+                          class={`${isActive ? 'text-brand-yellow' : 'text-white'} hover:text-brand-yellow transition-colors cursor-pointer flex items-center gap-2 group`}
+                        >
+                          <link.icon size={16} className="group-hover:text-brand-yellow transition-colors" />
+                          {link.label}
+                        </Link>
+                      );
+                    }}
+                  </Match>
+                </li>
+              ))}
+              <li>
+                <button
+                  onClick={handleLogout}
+                  class="text-white hover:text-brand-yellow transition-colors cursor-pointer flex items-center gap-2"
+                >
+                  <LogoutIcon size={16} />
+                  LOGOUT
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <button
+          ref={buttonRef}
+          class="p-2 text-white hover:text-brand-magenta transition-colors focus:outline-none"
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'}
+            />
+          </svg>
+        </button>
+
+        {isMenuOpen && (
+          <div
+            ref={menuRef}
+            class="fixed left-0 top-16 w-full xl:absolute xl:top-full xl:right-0 xl:w-72 xl:left-auto xl:mt-4 z-40 cyberpunk-glow animate-in slide-in-from-top-2"
+          >
+            <div class="w-full h-full bg-[#242424] border-t border-white/10 xl:border xl:border-white/10 cyberpunk-dropdown shadow-2xl xl:shadow-none">
+              <nav class="flex flex-col p-4">
+                <Link
+                  href="/dashboard"
+                  class="flex items-center gap-3 py-3 border-b border-white/5 xl:hidden"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <img
+                    src={currentUser.avatar}
+                    alt={`${currentUser.name}'s avatar`}
+                    class="w-8 h-8 rounded-full bg-white/10"
+                    style="image-rendering: pixelated;"
+                  />
+                  <span class="text-brand-magenta font-bold">Hello, {currentUser.name}!</span>
+                </Link>
+                {navLinks.map(link => (
+                  <div key={link.href} class={link.label === 'ABOUT' ? 'xl:hidden' : ''}>
+                    <Match path={link.matcher || link.href}>
+                      {({ matches }: { matches: boolean }) => {
+                        const isActive = matches;
+                        return (
+                          <Link
+                            href={link.href}
+                            class={`${isActive ? 'text-brand-yellow' : 'text-white'} py-3 hover:text-brand-yellow transition-colors border-b border-white/5 flex items-center gap-3 group`}
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            <link.icon size={20} className="group-hover:text-brand-yellow transition-colors" />
+                            {link.label}
+                          </Link>
+                        );
+                      }}
+                    </Match>
+                  </div>
+                ))}
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  class="text-white py-3 hover:text-brand-yellow transition-colors flex items-center gap-3 w-full text-left xl:hidden"
+                >
+                  <LogoutIcon size={20} />
+                  LOGOUT
+                </button>
+              </nav>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }

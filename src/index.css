@@ -50,3 +50,12 @@ body {
 button {
   cursor: pointer;
 }
+
+@media (min-width: 1280px) {
+  .cyberpunk-dropdown {
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+  }
+  .cyberpunk-glow {
+    filter: drop-shadow(4px 4px 0px rgba(255, 0, 255, 0.5));
+  }
+}
