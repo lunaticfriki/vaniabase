@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "vite preview --port 8080 --host",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest",
