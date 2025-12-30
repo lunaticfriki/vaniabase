@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'preact/hooks';
 import { computed } from '@preact/signals';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'preact-router/match';
 import type { JSX } from 'preact';
 import { container } from '../../infrastructure/di/container';
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export function Categories({ categoryName }: Props) {
+  const { t } = useTranslation();
   const itemStateService = container.get(ItemStateService);
   const categoryStateService = container.get(CategoryStateService);
 
@@ -61,7 +63,7 @@ export function Categories({ categoryName }: Props) {
     <div class="space-y-8">
       <div class="space-y-6">
         <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-          CATEGORIES
+          {t('lists.categories.title')}
         </h1>
 
         <div class="flex flex-wrap gap-4 items-center">
@@ -100,7 +102,7 @@ export function Categories({ categoryName }: Props) {
 
       {filteredItems.value.length === 0 && !isItemsLoading.value && (
         <div class="text-center py-20 text-white/40">
-          <p>No items found in this category.</p>
+          <p>{t('lists.categories.no_items')}</p>
         </div>
       )}
 

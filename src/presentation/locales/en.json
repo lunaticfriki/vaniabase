@@ -12,5 +12,155 @@
     "create": "CREATE",
     "about": "ABOUT",
     "logout": "LOGOUT"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "jump_to_page": "Click to jump to page"
+  },
+  "item": {
+    "by": "By"
+  },
+  "home": {
+    "latest_items": "LATEST ITEMS",
+    "no_items": "No items found. (Check console for errors)"
+  },
+  "dashboard": {
+    "welcome_back": "Welcome back",
+    "overview": "Here is an overview of your collection.",
+    "stats": {
+      "total_items": "Total Items",
+      "completed": "Completed",
+      "categories": "Categories",
+      "tags": "Tags",
+      "topics": "Topics"
+    },
+    "sections": {
+      "categories": "Categories",
+      "topics": "Topics",
+      "tags": "Tags",
+      "formats": "Formats",
+      "recently_completed": "Recently Completed",
+      "no_found": "No {{title}} found.",
+      "no_completed": "No completed items yet."
+    },
+    "view_all_completed": "View All Completed"
+  },
+  "auth": {
+    "welcome": "Welcome to Vaniabase",
+    "login_prompt": "Please login to access your collection.",
+    "select_user": "Select User",
+    "login": "Login"
+  },
+  "collection": {
+    "title": "TIMELINE COLLECTION",
+    "no_items": "No items found."
+  },
+  "create_item": {
+    "title": "CREATE NEW ITEM",
+    "subtitle": "Add a new entry to the timeline collection.",
+    "labels": {
+      "title": "Title",
+      "author": "Author",
+      "description": "Description",
+      "category": "Category",
+      "year": "Year",
+      "format": "Format",
+      "publisher": "Publisher",
+      "language": "Language",
+      "tags": "Tags (comma separated)",
+      "topic": "Topic",
+      "cover": "Cover Image (Auto-generated)"
+    },
+    "placeholders": {
+      "tags": "scifi, classic, bestseller"
+    },
+    "buttons": {
+      "mark_completed": "Mark as Completed",
+      "mark_uncompleted": "Mark as Uncompleted",
+      "create": "Create Item"
+    },
+    "auto_cover_info": "A random image will be assigned on creation.",
+    "import": {
+      "or_import": "Or Import from Excel",
+      "drag_drop": "Click to upload or drag and drop",
+      "supported_files": "Supported files: .xlsx, .xls, .ods",
+      "expected_columns": "Expected columns:",
+      "columns_list": "Title, Description, Author, Tags, Topic, Format, Created, Completed, Year, Publisher, Language, Category"
+    },
+    "messages": {
+      "no_valid_items": "No valid items found in file. Please ensure columns are correct and \"Title\" is present.",
+      "parse_error": "Failed to parse file or create items",
+      "create_error": "Failed to create item"
+    }
+  },
+  "item_detail": {
+    "back": "Back",
+    "not_found": "Item not found",
+    "labels": {
+      "year": "Year",
+      "publisher": "Publisher",
+      "language": "Language",
+      "format": "Format",
+      "owner": "Owner",
+      "topic": "Topic",
+      "completed": "Completed",
+      "tags": "Tags"
+    },
+    "values": {
+      "yes": "Yes",
+      "no": "No",
+      "no_tags": "No tags"
+    }
+  },
+  "completed_items": {
+    "title": "COMPLETED ITEMS",
+    "subtitle": "Items you have finished reading, watching, or playing.",
+    "no_items": "No completed items yet."
+  },
+  "categories": {
+    "list": {
+      "books": "Books",
+      "movies": "Movies",
+      "games": "Games",
+      "music": "Music"
+    }
+  },
+  "lists": {
+    "categories": {
+      "title": "CATEGORIES",
+      "no_items": "No items found in this category."
+    },
+    "tags": {
+      "title": "TAGS",
+      "no_items": "No items found."
+    },
+    "topics": {
+      "title": "TOPICS",
+      "no_items": "No items found."
+    },
+    "formats": {
+      "title": "FORMATS",
+      "no_items": "No items found."
+    },
+    "common": {
+      "all_items": "ALL ITEMS",
+      "count_tooltip": "{{count}} items"
+    }
+  },
+  "search": {
+    "title": "SEARCH ITEMS",
+    "subtitle": "Find items by title, author, description, or tags.",
+    "placeholder": "Search for anything...",
+    "button": "Search",
+    "found_results": "Found <1>{{count}}</1> result",
+    "found_results_plural": "Found <1>{{count}}</1> results",
+    "no_results": "No items found matching \"{{query}}\"",
+    "suggestion": "Try different keywords or check spelling."
   }
 }

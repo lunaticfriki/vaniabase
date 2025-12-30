@@ -1,4 +1,5 @@
 import { useMemo } from 'preact/hooks';
+import { useTranslation } from 'react-i18next';
 import type { JSX } from 'preact';
 import { container } from '../../infrastructure/di/container';
 import { DashboardViewModel } from '../viewModels/dashboard.viewModel';
@@ -9,6 +10,7 @@ import { Link as RouterLink } from 'preact-router/match';
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const viewModel = useMemo(() => {
     return new DashboardViewModel(container.get(ItemsRepository), container.get(AuthService));
   }, []);
@@ -52,45 +54,66 @@ export function Dashboard() {
         </div>
         <div class="text-center md:text-left space-y-2">
           <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight">
-            Welcome back,{' '}
+            {t('dashboard.welcome_back')},{' '}
             <span class="text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
               {user.name}
             </span>
           </h1>
-          <p class="text-xl text-white/60">Here is an overview of your collection.</p>
+          <p class="text-xl text-white/60">{t('dashboard.overview')}</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        <StatCard label="Total Items" value={totalItems.value} color="text-brand-yellow" />
-        <StatCard label="Completed" value={viewModel.totalCompleted.value} color="text-green-500" />
-        <StatCard label="Categories" value={totalCategories.value} color="text-brand-magenta" />
-        <StatCard label="Tags" value={totalTags.value} color="text-cyan-400" />
-        <StatCard label="Topics" value={totalTopics.value} color="text-purple-400" />
+        <StatCard label={t('dashboard.stats.total_items')} value={totalItems.value} color="text-brand-yellow" />
+        <StatCard
+          label={t('dashboard.stats.completed')}
+          value={viewModel.totalCompleted.value}
+          color="text-green-500"
+        />
+        <StatCard label={t('dashboard.stats.categories')} value={totalCategories.value} color="text-brand-magenta" />
+        <StatCard label={t('dashboard.stats.tags')} value={totalTags.value} color="text-cyan-400" />
+        <StatCard label={t('dashboard.stats.topics')} value={totalTopics.value} color="text-purple-400" />
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <ListSection
-          title="Categories"
+          title={t('dashboard.sections.categories')}
           items={categories.value}
           linkPrefix="/categories"
           color="border-brand-magenta"
         />
-        <ListSection title="Topics" items={topics.value} linkPrefix="/topics" color="border-purple-400" />
-        <ListSection title="Tags" items={tags.value} linkPrefix="/tags" color="border-cyan-400" />
+        <ListSection
+          title={t('dashboard.sections.topics')}
+          items={topics.value}
+          linkPrefix="/topics"
+          color="border-purple-400"
+        />
+        <ListSection
+          title={t('dashboard.sections.tags')}
+          items={tags.value}
+          linkPrefix="/tags"
+          color="border-cyan-400"
+        />
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <ListSection title="Formats" items={formats.value} linkPrefix="/formats" color="border-brand-yellow" />
+        <ListSection
+          title={t('dashboard.sections.formats')}
+          items={formats.value}
+          linkPrefix="/formats"
+          color="border-brand-yellow"
+        />
         <div class="space-y-4">
-          <h2 class="text-xl font-bold text-white border-l-4 border-green-500 pl-4">Recently Completed</h2>
+          <h2 class="text-xl font-bold text-white border-l-4 border-green-500 pl-4">
+            {t('dashboard.sections.recently_completed')}
+          </h2>
           <div class="bg-white/5 border border-white/10 rounded-lg max-h-[400px] overflow-y-auto custom-scrollbar relative">
             <div class="sticky top-0 z-10 backdrop-blur-md bg-[#303030]/90 p-4 border-b border-white/10">
               <Link
                 href="/completed"
                 class="text-green-400 hover:text-green-300 text-sm font-bold uppercase tracking-widest flex items-center gap-2 group no-global-hover"
               >
-                View All Completed
+                {t('dashboard.view_all_completed')}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -110,7 +133,7 @@ export function Dashboard() {
             </div>
             <div class="p-4 pt-4">
               {viewModel.completedItems.value.length === 0 ? (
-                <p class="text-white/30 italic">No completed items yet.</p>
+                <p class="text-white/30 italic">{t('dashboard.sections.no_completed')}</p>
               ) : (
                 <ul class="space-y-2">
                   {viewModel.completedItems.value.map(item => (
@@ -157,12 +180,13 @@ function ListSection({
   linkPrefix: string;
   color: string;
 }) {
+  const { t } = useTranslation();
   return (
     <div class={`space-y-4`}>
       <h2 class={`text-xl font-bold text-white border-l-4 ${color} pl-4`}>{title}</h2>
       <div class="bg-white/5 border border-white/10 rounded-lg p-4 max-h-[400px] overflow-y-auto custom-scrollbar">
         {items.length === 0 ? (
-          <p class="text-white/30 italic">No {title.toLowerCase()} found.</p>
+          <p class="text-white/30 italic">{t('dashboard.sections.no_found', { title: title.toLowerCase() })}</p>
         ) : (
           <ul class="space-y-2">
             {items.map(item => {

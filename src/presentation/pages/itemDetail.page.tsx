@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Link as RouterLink } from 'preact-router/match';
+import { useTranslation } from 'react-i18next';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { Item } from '../../domain/model/entities/item.entity';
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function ItemDetail({ id }: Props) {
+  const { t } = useTranslation();
   const [item, setItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(true);
   const itemStateService = container.get(ItemStateService);
@@ -75,12 +77,12 @@ export function ItemDetail({ id }: Props) {
   if (!item) {
     return (
       <div class="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-        <h2 class="text-2xl text-white/50">Item not found</h2>
+        <h2 class="text-2xl text-white/50">{t('item_detail.not_found')}</h2>
         <button
           onClick={handleBack}
           class="px-6 py-2 bg-brand-violet text-white rounded hover:bg-brand-violet/80 transition-colors"
         >
-          Back
+          {t('item_detail.back')}
         </button>
       </div>
     );
@@ -109,7 +111,7 @@ export function ItemDetail({ id }: Props) {
             <path d="M12 19l-7-7 7-7" />
           </svg>
           <span class="group-hover:bg-clip-text group-hover:text-transparent group-hover:bg-linear-to-r group-hover:from-brand-magenta group-hover:to-brand-yellow">
-            Back
+            {t('item_detail.back')}
           </span>
         </button>
       </div>
@@ -140,7 +142,7 @@ export function ItemDetail({ id }: Props) {
             </h1>
 
             <div class="text-xl text-white/60">
-              by <span class="text-white">{item.author.value}</span>
+              {t('item.by')} <span class="text-white">{item.author.value}</span>
             </div>
           </div>
 
@@ -161,50 +163,58 @@ export function ItemDetail({ id }: Props) {
                 }
               `}
             >
-              {item.completed.value ? 'Mark as Uncompleted' : 'Mark as Completed'}
+              {item.completed.value
+                ? t('create_item.buttons.mark_uncompleted')
+                : t('create_item.buttons.mark_completed')}
             </button>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8 border-t border-white/10">
             <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Year</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.year')}</div>
               <div class="text-lg font-medium">{item.year.value}</div>
             </div>
 
             <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Publisher</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">
+                {t('item_detail.labels.publisher')}
+              </div>
               <div class="text-lg font-medium">{item.publisher.value || '-'}</div>
             </div>
 
             <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Language</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.language')}</div>
               <div class="text-lg font-medium">{item.language.value || '-'}</div>
             </div>
 
             <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Format</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.format')}</div>
               <div class="text-lg font-medium">{item.format.value || '-'}</div>
             </div>
 
             <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Owner</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.owner')}</div>
               <div class="text-lg font-medium">{item.owner.value || '-'}</div>
             </div>
 
             <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Topic</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.topic')}</div>
               <div class="text-lg font-medium">{item.topic.value || '-'}</div>
             </div>
 
             <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">Completed</div>
-              <div class="text-lg font-medium">{item.completed.value ? 'Yes' : 'No'}</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">
+                {t('item_detail.labels.completed')}
+              </div>
+              <div class="text-lg font-medium">
+                {item.completed.value ? t('item_detail.values.yes') : t('item_detail.values.no')}
+              </div>
             </div>
           </div>
 
           {item.tags.value.length > 0 ? (
             <div class="pt-6">
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-3">Tags</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-3">{t('item_detail.labels.tags')}</div>
               <div class="flex flex-wrap gap-2">
                 {item.tags.value.map(tag => (
                   <Link
@@ -219,9 +229,11 @@ export function ItemDetail({ id }: Props) {
             </div>
           ) : (
             <div class="pt-6">
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-3">Tags</div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-3">{t('item_detail.labels.tags')}</div>
               <div class="flex flex-wrap gap-2">
-                <span class="px-3 py-1 bg-white/5 rounded text-sm text-white/70">No tags</span>
+                <span class="px-3 py-1 bg-white/5 rounded text-sm text-white/70">
+                  {t('item_detail.values.no_tags')}
+                </span>
               </div>
             </div>
           )}

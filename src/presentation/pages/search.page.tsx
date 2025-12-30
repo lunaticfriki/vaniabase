@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useTranslation, Trans } from 'react-i18next';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { PreviewCard } from '../components/previewCard.component';
 import { Loading } from '../components/loading.component';
 
 export function Search() {
+  const { t } = useTranslation();
   const itemStateService = container.get(ItemStateService);
   const { searchResults, isLoading } = itemStateService;
   const [query, setQuery] = useState('');
@@ -36,9 +38,9 @@ export function Search() {
     <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
       <div class="space-y-2 text-center">
         <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-          SEARCH ITEMS
+          {t('search.title')}
         </h1>
-        <p class="text-white/60">Find items by title, author, description, or tags.</p>
+        <p class="text-white/60">{t('search.subtitle')}</p>
       </div>
 
       <div class="max-w-2xl mx-auto flex gap-4">
@@ -46,14 +48,14 @@ export function Search() {
           type="text"
           value={query}
           onInput={e => setQuery((e.target as HTMLInputElement).value)}
-          placeholder="Search for anything..."
+          placeholder={t('search.placeholder')}
           class="flex-1 bg-zinc-900 border border-white/10 rounded-sm p-4 text-lg text-white placeholder-white/30 focus:border-brand-magenta focus:outline-none transition-colors"
         />
         <button
           onClick={handleSearchImmediate}
           class="px-8 bg-brand-magenta text-white font-bold uppercase tracking-widest rounded-sm hover:bg-brand-magenta/80 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-brand-magenta/20"
         >
-          Search
+          {t('search.button')}
         </button>
       </div>
 
@@ -66,8 +68,12 @@ export function Search() {
           <>
             {searchResults.value.length > 0 && (
               <div class="text-center text-white/40 uppercase tracking-widest text-md mb-6">
-                Found <span class="font-bold text-brand-magenta">{searchResults.value.length}</span> result
-                {searchResults.value.length !== 1 ? 's' : ''}
+                <Trans
+                  i18nKey={searchResults.value.length === 1 ? 'search.found_results' : 'search.found_results_plural'}
+                  count={searchResults.value.length}
+                >
+                  Found <span class="font-bold text-brand-magenta">{{ count: searchResults.value.length }}</span> result
+                </Trans>
               </div>
             )}
 
@@ -81,8 +87,8 @@ export function Search() {
               query &&
               !isLoading.value && (
                 <div class="text-center py-12 text-white/30">
-                  <p class="text-xl">No items found matching "{query}"</p>
-                  <p class="text-sm mt-2">Try different keywords or check spelling.</p>
+                  <p class="text-xl">{t('search.no_results', { query })}</p>
+                  <p class="text-sm mt-2">{t('search.suggestion')}</p>
                 </div>
               )
             )}

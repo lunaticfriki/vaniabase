@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { useTranslation } from 'react-i18next';
 import { PaginationViewModel } from '../viewModels/pagination.viewModel';
 
 interface PaginationProps {
@@ -6,6 +7,7 @@ interface PaginationProps {
 }
 
 export function Pagination({ pagination }: PaginationProps) {
+  const { t } = useTranslation();
   const currentPage = pagination.currentPage.value;
   const totalPages = pagination.totalPages.value;
 
@@ -52,11 +54,11 @@ export function Pagination({ pagination }: PaginationProps) {
         onClick={() => pagination.prevPage()}
         disabled={currentPage === 1}
       >
-        Previous
+        {t('pagination.previous')}
       </button>
 
       <span class="text-white/60 flex items-baseline gap-1">
-        Page
+        {t('pagination.page')}
         {isEditing ? (
           <input
             ref={inputRef}
@@ -73,12 +75,12 @@ export function Pagination({ pagination }: PaginationProps) {
           <span
             class="text-white font-bold cursor-pointer hover:text-brand-magenta transition-colors px-2"
             onClick={() => setIsEditing(true)}
-            title="Click to jump to page"
+            title={t('pagination.jump_to_page')}
           >
             {currentPage}
           </span>
         )}
-        of {totalPages}
+        {t('pagination.of')} {totalPages}
       </span>
 
       <button
@@ -86,7 +88,7 @@ export function Pagination({ pagination }: PaginationProps) {
         onClick={() => pagination.nextPage()}
         disabled={currentPage === totalPages}
       >
-        Next
+        {t('pagination.next')}
       </button>
     </div>
   );

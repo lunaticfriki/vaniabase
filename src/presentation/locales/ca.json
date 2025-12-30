@@ -12,5 +12,155 @@
     "create": "CREAR",
     "about": "INFO",
     "logout": "TANCAR SESSIÓ"
+  },
+  "footer": {
+    "rights": "Tots els drets reservats."
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Següent",
+    "page": "Pàgina",
+    "of": "de",
+    "jump_to_page": "Fes clic per anar a la pàgina"
+  },
+  "item": {
+    "by": "Per"
+  },
+  "home": {
+    "latest_items": "ÚLTIMS ELEMENTS",
+    "no_items": "No s'han trobat elements. (Consulteu la consola per errors)"
+  },
+  "dashboard": {
+    "welcome_back": "Hola de nou",
+    "overview": "Aquí teniu un resum de la vostra col·lecció.",
+    "stats": {
+      "total_items": "Total Elements",
+      "completed": "Completats",
+      "categories": "Categories",
+      "tags": "Etiquetes",
+      "topics": "Temes"
+    },
+    "sections": {
+      "categories": "Categories",
+      "topics": "Temes",
+      "tags": "Etiquetes",
+      "formats": "Formats",
+      "recently_completed": "Completats Recentment",
+      "no_found": "No s'han trobat {{title}}.",
+      "no_completed": "Encara no hi ha elements completats."
+    },
+    "view_all_completed": "Veure tots els completats"
+  },
+  "auth": {
+    "welcome": "Benvingut a Vaniabase",
+    "login_prompt": "Inicieu sessió per accedir a la vostra col·lecció.",
+    "select_user": "Selecciona Usuari",
+    "login": "Inicia Sessió"
+  },
+  "collection": {
+    "title": "COL·LECCIÓ CRONOLÒGICA",
+    "no_items": "No s'han trobat elements."
+  },
+  "create_item": {
+    "title": "CREAR NOU ELEMENT",
+    "subtitle": "Afegiu una nova entrada a la col·lecció.",
+    "labels": {
+      "title": "Títol",
+      "author": "Autor",
+      "description": "Descripció",
+      "category": "Categoria",
+      "year": "Any",
+      "format": "Format",
+      "publisher": "Editor",
+      "language": "Idioma",
+      "tags": "Etiquetes (separades per comes)",
+      "topic": "Tema",
+      "cover": "Imatge de portada (Auto-generada)"
+    },
+    "placeholders": {
+      "tags": "ciència-ficció, clàssic, èxit"
+    },
+    "buttons": {
+      "mark_completed": "Marcar com a Completat",
+      "mark_uncompleted": "Marcar com a No Completat",
+      "create": "Crear Element"
+    },
+    "auto_cover_info": "S'assignarà una imatge aleatòria en crear.",
+    "import": {
+      "or_import": "O Importar des d'Excel",
+      "drag_drop": "Feu clic per penjar o arrossegueu i deixeu anar",
+      "supported_files": "Fitxers suportats: .xlsx, .xls, .ods",
+      "expected_columns": "Columnes esperades:",
+      "columns_list": "Títol, Descripció, Autor, Etiquetes, Tema, Format, Creat, Completat, Any, Editor, Idioma, Categoria"
+    },
+    "messages": {
+      "no_valid_items": "No s'han trobat elements vàlids al fitxer. Assegureu-vos que les columnes siguin correctes i que \"Títol\" estigui present.",
+      "parse_error": "No s'ha pogut analitzar el fitxer o crear elements",
+      "create_error": "No s'ha pogut crear l'element"
+    }
+  },
+  "item_detail": {
+    "back": "Enrere",
+    "not_found": "Element no trobat",
+    "labels": {
+      "year": "Any",
+      "publisher": "Editor",
+      "language": "Idioma",
+      "format": "Format",
+      "owner": "Propietari",
+      "topic": "Tema",
+      "completed": "Completat",
+      "tags": "Etiquetes"
+    },
+    "values": {
+      "yes": "Sí",
+      "no": "No",
+      "no_tags": "Sense etiquetes"
+    }
+  },
+  "completed_items": {
+    "title": "ELEMENTS COMPLETATS",
+    "subtitle": "Elements que heu acabat de llegir, mirar o jugar.",
+    "no_items": "Encara no hi ha elements completats."
+  },
+  "categories": {
+    "list": {
+      "books": "Llibres",
+      "movies": "Pel·lícules",
+      "games": "Jocs",
+      "music": "Música"
+    }
+  },
+  "lists": {
+    "categories": {
+      "title": "CATEGORIES",
+      "no_items": "No s'han trobat elements en aquesta categoria."
+    },
+    "tags": {
+      "title": "ETIQUETES",
+      "no_items": "No s'han trobat elements."
+    },
+    "topics": {
+      "title": "TEMES",
+      "no_items": "No s'han trobat elements."
+    },
+    "formats": {
+      "title": "FORMATS",
+      "no_items": "No s'han trobat elements."
+    },
+    "common": {
+      "all_items": "TOTS ELS ELEMENTS",
+      "count_tooltip": "{{count}} elements"
+    }
+  },
+  "search": {
+    "title": "CERCAR ELEMENTS",
+    "subtitle": "Cerqueu elements per títol, autor, descripció o etiquetes.",
+    "placeholder": "Cerca qualsevol cosa...",
+    "button": "Cercar",
+    "found_results": "S'ha trobat <1>{{count}}</1> resultat",
+    "found_results_plural": "S'han trobat <1>{{count}}</1> resultats",
+    "no_results": "No s'han trobat elements que coincideixin amb \"{{query}}\"",
+    "suggestion": "Proveu amb paraules clau diferents o comproveu l'ortografia."
   }
 }

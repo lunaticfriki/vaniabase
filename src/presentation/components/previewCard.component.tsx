@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Item } from '../../domain/model/entities/item.entity';
 
 interface PreviewCardProps {
@@ -5,6 +6,7 @@ interface PreviewCardProps {
 }
 
 export function PreviewCard({ item }: PreviewCardProps) {
+  const { t } = useTranslation();
   return (
     <a href={`/item/${item.id.value}`} class="block group relative transition-all duration-300 hover:animate-pulse">
       <div
@@ -34,7 +36,9 @@ export function PreviewCard({ item }: PreviewCardProps) {
           </h3>
 
           <div class="flex items-center justify-between text-white/60 pt-2 border-t border-white/10">
-            <span>By {item.author.value}</span>
+            <span>
+              {t('item.by')} {item.author.value}
+            </span>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'preact/hooks';
+import { useTranslation } from 'react-i18next';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { Loading } from '../components/loading.component';
@@ -7,6 +8,7 @@ import { Pagination } from '../components/pagination.component';
 import { PaginationViewModel } from '../viewModels/pagination.viewModel';
 
 export function CompletedItems() {
+  const { t } = useTranslation();
   const itemStateService = container.get(ItemStateService);
   const itemsPerPage = 12;
 
@@ -41,14 +43,14 @@ export function CompletedItems() {
     <div class="space-y-8 animate-in fade-in duration-500">
       <div class="space-y-2">
         <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-          COMPLETED ITEMS
+          {t('completed_items.title')}
         </h1>
-        <p class="text-white/60">Items you have finished reading, watching, or playing.</p>
+        <p class="text-white/60">{t('completed_items.subtitle')}</p>
       </div>
 
       {completedItems.length === 0 ? (
         <div class="text-center py-20 text-white/40">
-          <p>No completed items yet.</p>
+          <p>{t('completed_items.no_items')}</p>
         </div>
       ) : (
         <>

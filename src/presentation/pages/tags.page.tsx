@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'preact/hooks';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'preact-router/match';
 import type { JSX } from 'preact';
 
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export function Tags({ tagName }: Props) {
+  const { t } = useTranslation();
   const itemsRef = useRef<HTMLDivElement>(null);
   const viewModel = useMemo(() => {
     return new TagsViewModel(container.get(ItemStateService));
@@ -45,7 +47,7 @@ export function Tags({ tagName }: Props) {
   return (
     <div class="space-y-8">
       <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-        TAGS
+        {t('lists.tags.title')}
       </h1>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
@@ -73,7 +75,7 @@ export function Tags({ tagName }: Props) {
                         : 'text-white/70 hover:text-white hover:bg-brand-magenta/50'
                     }
                   `}
-                    title={`${count} items`}
+                    title={t('lists.common.count_tooltip', { count })}
                   >
                     {tag}
                   </Link>
@@ -86,7 +88,7 @@ export function Tags({ tagName }: Props) {
         <div class="lg:col-span-3 space-y-6" ref={itemsRef}>
           <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold text-white">
-              {activeTagName ? `#${activeTagName.toUpperCase()}` : 'ALL ITEMS'}
+              {activeTagName ? `#${activeTagName.toUpperCase()}` : t('lists.common.all_items')}
             </h2>
             <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 relative -top-2">
               [{filteredItemsCount}]
@@ -101,7 +103,7 @@ export function Tags({ tagName }: Props) {
 
           {filteredItemsCount === 0 && !viewModel.isLoading.value && (
             <div class="text-center py-20 text-white/40 border border-white/10 rounded-lg">
-              <p>No items found.</p>
+              <p>{t('lists.tags.no_items')}</p>
             </div>
           )}
 

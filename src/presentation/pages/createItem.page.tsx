@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useTranslation } from 'react-i18next';
 import { read, utils } from 'xlsx';
 import { route } from 'preact-router';
 import { container } from '../../infrastructure/di/container';
@@ -31,6 +32,7 @@ const getRandomCover = () => {
 };
 
 export function CreateItem() {
+  const { t } = useTranslation();
   const itemStateService = container.get(ItemStateService);
   const notificationService = container.get(NotificationService);
   const authService = container.get(AuthService);
@@ -93,15 +95,13 @@ export function CreateItem() {
         })
         .filter((item): item is Item => item !== null);
       if (itemsToCreate.length === 0) {
-        notificationService.error(
-          'No valid items found in file. Please ensure columns are correct and "Title" is present.'
-        );
+        notificationService.error(t('create_item.messages.no_valid_items'));
         return;
       }
       await itemStateService.createItems(itemsToCreate);
       route('/');
     } catch (error) {
-      notificationService.error('Failed to parse file or create items');
+      notificationService.error(t('create_item.messages.parse_error'));
       console.error(error);
     }
   };
@@ -139,7 +139,7 @@ export function CreateItem() {
       );
       route('/');
     } catch (error) {
-      notificationService.error('Failed to create item');
+      notificationService.error(t('create_item.messages.create_error'));
       console.error(error);
     }
   };
@@ -147,14 +147,16 @@ export function CreateItem() {
     <div class="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
       <div class="space-y-2">
         <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-          CREATE NEW ITEM
+          {t('create_item.title')}
         </h1>
-        <p class="text-white/60">Add a new entry to the timeline collection.</p>
+        <p class="text-white/60">{t('create_item.subtitle')}</p>
       </div>
       <form onSubmit={handleSubmit} class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Title</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.title')}
+            </label>
             <input
               type="text"
               name="title"
@@ -165,7 +167,9 @@ export function CreateItem() {
             />
           </div>
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Author</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.author')}
+            </label>
             <input
               type="text"
               name="author"
@@ -177,7 +181,9 @@ export function CreateItem() {
           </div>
         </div>
         <div class="space-y-2">
-          <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Description</label>
+          <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+            {t('create_item.labels.description')}
+          </label>
           <textarea
             name="description"
             value={formData.description}
@@ -189,21 +195,25 @@ export function CreateItem() {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Category</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.category')}
+            </label>
             <select
               name="category"
               value={formData.category}
               onChange={handleInput}
               class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors scheme-dark"
             >
-              <option value="books">Books</option>
-              <option value="movies">Movies</option>
-              <option value="games">Games</option>
-              <option value="music">Music</option>
+              <option value="books">{t('categories.list.books')}</option>
+              <option value="movies">{t('categories.list.movies')}</option>
+              <option value="games">{t('categories.list.games')}</option>
+              <option value="music">{t('categories.list.music')}</option>
             </select>
           </div>
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Year</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.year')}
+            </label>
             <input
               type="number"
               name="year"
@@ -213,7 +223,9 @@ export function CreateItem() {
             />
           </div>
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Format</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.format')}
+            </label>
             <input
               type="text"
               name="format"
@@ -225,7 +237,9 @@ export function CreateItem() {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Publisher</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.publisher')}
+            </label>
             <input
               type="text"
               name="publisher"
@@ -235,7 +249,9 @@ export function CreateItem() {
             />
           </div>
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Language</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.language')}
+            </label>
             <input
               type="text"
               name="language"
@@ -247,18 +263,22 @@ export function CreateItem() {
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Tags (comma separated)</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.tags')}
+            </label>
             <input
               type="text"
               name="tags"
               value={formData.tags}
               onInput={handleInput}
-              placeholder="scifi, classic, bestseller"
+              placeholder={t('create_item.placeholders.tags')}
               class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors"
             />
           </div>
           <div class="space-y-2">
-            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">Topic</label>
+            <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+              {t('create_item.labels.topic')}
+            </label>
             <input
               type="text"
               name="topic"
@@ -269,7 +289,9 @@ export function CreateItem() {
           </div>
         </div>
         <div class="space-y-2">
-          <label class="text-xs font-bold uppercase tracking-widest text-white/40">Cover Image (Auto-generated)</label>
+          <label class="text-xs font-bold uppercase tracking-widest text-white/40">
+            {t('create_item.labels.cover')}
+          </label>
           <input
             type="text"
             name="cover"
@@ -277,7 +299,7 @@ export function CreateItem() {
             disabled
             class="w-full bg-zinc-900/50 border border-white/5 rounded p-3 text-white/50 cursor-not-allowed"
           />
-          <p class="text-xs text-white/30">A random image will be assigned on creation.</p>
+          <p class="text-xs text-white/30">{t('create_item.auto_cover_info')}</p>
         </div>
         <div class="space-y-2 pt-6">
           <button
@@ -298,7 +320,7 @@ export function CreateItem() {
               }
                 `}
           >
-            {formData.completed ? 'Mark as Uncompleted' : 'Mark as Completed'}
+            {formData.completed ? t('create_item.buttons.mark_uncompleted') : t('create_item.buttons.mark_completed')}
           </button>
         </div>
         <div class="pt-4">
@@ -306,7 +328,7 @@ export function CreateItem() {
             type="submit"
             class="w-full bg-brand-magenta text-white font-bold uppercase tracking-widest py-4 rounded hover:bg-brand-magenta/80 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-brand-magenta/20"
           >
-            Create Item
+            {t('create_item.buttons.create')}
           </button>
         </div>
       </form>
@@ -315,7 +337,7 @@ export function CreateItem() {
           <div class="w-full border-t border-white/10"></div>
         </div>
         <div class="relative flex justify-center text-xs uppercase tracking-widest">
-          <span class="bg-black px-4 text-white/40">Or Import from Excel</span>
+          <span class="bg-black px-4 text-white/40">{t('create_item.import.or_import')}</span>
         </div>
       </div>
       <div class="space-y-4">
@@ -342,16 +364,14 @@ export function CreateItem() {
               <line x1="12" y1="3" x2="12" y2="15" />
             </svg>
             <p class="text-sm font-bold text-white/60 group-hover:text-white transition-colors">
-              Click to upload or drag and drop
+              {t('create_item.import.drag_drop')}
             </p>
-            <p class="text-xs text-white/30">Supported files: .xlsx, .xls, .ods</p>
+            <p class="text-xs text-white/30">{t('create_item.import.supported_files')}</p>
           </div>
         </div>
         <div class="text-xs text-white/30 space-y-1">
-          <p class="font-bold">Expected columns:</p>
-          <p>
-            Title, Description, Author, Tags, Topic, Format, Created, Completed, Year, Publisher, Language, Category
-          </p>
+          <p class="font-bold">{t('create_item.import.expected_columns')}</p>
+          <p>{t('create_item.import.columns_list')}</p>
         </div>
       </div>
     </div>

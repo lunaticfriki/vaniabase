@@ -1,5 +1,6 @@
 import { useEffect } from 'preact/hooks';
 import { computed } from '@preact/signals';
+import { useTranslation } from 'react-i18next';
 
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function Home({ path: _ }: Props) {
+  const { t } = useTranslation();
   const itemStateService = container.get(ItemStateService);
   const items = itemStateService.items;
   const isLoading = itemStateService.isLoading;
@@ -27,7 +29,7 @@ export function Home({ path: _ }: Props) {
     <div class="space-y-8">
       <div class="space-y-2">
         <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-          LATEST ITEMS
+          {t('home.latest_items')}
         </h1>
       </div>
 
@@ -39,7 +41,7 @@ export function Home({ path: _ }: Props) {
 
       {!isLoading.value && items.value.length === 0 && (
         <div class="text-center py-20 text-white/40">
-          <p>No items found. (Check console for errors)</p>
+          <p>{t('home.no_items')}</p>
         </div>
       )}
     </div>

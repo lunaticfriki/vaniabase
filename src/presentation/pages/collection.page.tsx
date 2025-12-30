@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'preact/hooks';
 import { computed } from '@preact/signals';
+import { useTranslation } from 'react-i18next';
 
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function Collection({ path: _ }: Props) {
+  const { t } = useTranslation();
   const itemStateService = container.get(ItemStateService);
   const items = itemStateService.items;
   const isLoading = itemStateService.isLoading;
@@ -38,7 +40,7 @@ export function Collection({ path: _ }: Props) {
       <div class="space-y-8">
         <div class="space-y-2">
           <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-            TIMELINE COLLECTION{' '}
+            {t('collection.title')}{' '}
             <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 align-top">
               [...]
             </span>
@@ -58,7 +60,7 @@ export function Collection({ path: _ }: Props) {
     <div class="space-y-8">
       <div class="space-y-2">
         <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
-          TIMELINE COLLECTION{' '}
+          {t('collection.title')}{' '}
           <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 align-super">
             [{items.value.length}]
           </span>
@@ -73,7 +75,7 @@ export function Collection({ path: _ }: Props) {
 
       {items.value.length === 0 && (
         <div class="text-center py-20 text-white/40">
-          <p>No items found.</p>
+          <p>{t('collection.no_items')}</p>
         </div>
       )}
 
