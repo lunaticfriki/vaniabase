@@ -56,15 +56,18 @@ export class FirebaseItemsRepository implements ItemsRepository {
         await Promise.all(items.map(item => this.save(item)));
     }
 
-    async findAll(): Promise<Item[]> {
+    async findAll(ownerId?: string): Promise<Item[]> {
         const currentUser = auth.currentUser;
-        if (!currentUser) {
+        const targetOwnerId = ownerId || currentUser?.uid;
+
+        if (!targetOwnerId) {
+            console.warn('[FirebaseItemsRepository] No owner ID provided for findAll and no current user');
             return [];
         }
 
         const q = query(
             collection(db, this.collectionName), 
-            where("owner", "==", currentUser.uid)
+            where("owner", "==", targetOwnerId)
         );
         
         const querySnapshot = await getDocs(q);

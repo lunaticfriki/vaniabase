@@ -123,25 +123,26 @@ export function CreateItem() {
         .map(t => t.trim())
         .filter(Boolean);
       const currentUser = authService.currentUser.value;
-      await itemStateService.createItem(
-        Item.create({
-          id: Id.create(uuidv4()),
-          title: Title.create(data.title),
-          description: Description.create(data.description),
-          author: Author.create(data.author),
-          cover: Cover.create(data.cover),
-          owner: Owner.create(currentUser ? currentUser.id.value : ''),
-          tags: Tags.create(tagsArray),
-          topic: Topic.create(data.topic),
-          format: Format.create(data.format),
-          created: Created.create(new Date(data.created)),
-          completed: Completed.create(data.completed),
-          year: Year.create(parseInt(data.year) || 0),
-          publisher: Publisher.create(data.publisher),
-          language: Language.create(data.language),
-          category: Category.create(Id.create(uuidv4()), Title.create(data.category))
-        })
-      );
+
+      const newItem = Item.create({
+        id: Id.create(uuidv4()),
+        title: Title.create(data.title),
+        description: Description.create(data.description),
+        author: Author.create(data.author),
+        cover: Cover.create(data.cover),
+        owner: Owner.create(currentUser ? currentUser.id.value : ''),
+        tags: Tags.create(tagsArray),
+        topic: Topic.create(data.topic),
+        format: Format.create(data.format),
+        created: Created.create(new Date(data.created)),
+        completed: Completed.create(data.completed),
+        year: Year.create(parseInt(data.year) || 0),
+        publisher: Publisher.create(data.publisher),
+        language: Language.create(data.language),
+        category: Category.create(Id.create(uuidv4()), Title.create(data.category))
+      });
+
+      await itemStateService.createItem(newItem);
       route('/');
     } catch (error) {
       notificationService.error(t('create_item.messages.create_error'));

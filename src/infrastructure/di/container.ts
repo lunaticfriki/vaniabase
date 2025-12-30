@@ -13,6 +13,9 @@ import { ConsoleErrorManager } from '../services/consoleErrorManager.service';
 import { NotificationService } from '../../domain/services/notification.service';
 import { ToastNotificationService } from '../services/toastNotification.service';
 
+import { UserRepository } from '../../domain/repositories/user.repository';
+import { FirebaseUserRepository } from '../repositories/firebaseUser.repository';
+
 import { AuthService } from '../../application/auth/auth.service';
 
 import { FirebaseAuthService } from '../auth/firebaseAuth.service';
@@ -32,6 +35,7 @@ const container = new Container();
 
 container.bind(ItemsRepository).to(FirebaseItemsRepository).inSingletonScope();
 container.bind(CategoriesRepository).to(FirebaseCategoriesRepository).inSingletonScope();
+container.bind(UserRepository).to(FirebaseUserRepository).inSingletonScope();
 
 container.bind(ErrorManager).to(ConsoleErrorManager).inSingletonScope();
 container.bind(NotificationService).to(ToastNotificationService).inSingletonScope();
