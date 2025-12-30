@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { filesOfProject } from 'tsarch';
 
-describe('Architecture Rules', () => {
+describe('Architecture Test', () => {
   it('domain should not depend on app', async () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain')
