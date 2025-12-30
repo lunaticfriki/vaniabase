@@ -141,15 +141,17 @@ export function ItemDetail({ id }: Props) {
               class="inline-block px-4 py-1 text-xs font-bold tracking-widest uppercase bg-brand-violet/20 text-brand-magenta border-l-2 border-brand-violet"
               style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
             >
-              <Link href={`/categories/${item.category.name.value.toLowerCase()}`}>{item.category.name.value}</Link>
+              <Link href={`/categories/${item.category.name.value.toLowerCase()}`} class="capitalize">
+                {item.category.name.value}
+              </Link>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-white leading-tight">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-white leading-tight capitalize">
               {item.title.value}
             </h1>
 
             <div class="text-xl text-white/60">
-              {t('item.by')} <span class="text-white">{item.author.value}</span>
+              {t('item.by')} <span class="text-white capitalize">{item.author.value}</span>
             </div>
           </div>
 
@@ -186,34 +188,29 @@ export function ItemDetail({ id }: Props) {
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">
                 {t('item_detail.labels.publisher')}
               </div>
-              <div class="text-lg font-medium">{item.publisher.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{item.publisher.value || '-'}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.language')}</div>
-              <div class="text-lg font-medium">{item.language.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{item.language.value || '-'}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.format')}</div>
-              <div class="text-lg font-medium">{item.format.value || '-'}</div>
-            </div>
-
-            <div>
-              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.owner')}</div>
-              <div class="text-lg font-medium">{item.owner.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{item.format.value || '-'}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.topic')}</div>
-              <div class="text-lg font-medium">{item.topic.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{item.topic.value || '-'}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">
                 {t('item_detail.labels.completed')}
               </div>
-              <div class="text-lg font-medium">
+              <div class="text-lg font-medium capitalize">
                 {item.completed.value ? t('item_detail.values.yes') : t('item_detail.values.no')}
               </div>
             </div>
