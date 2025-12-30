@@ -58,8 +58,7 @@ export function ItemDetail({ id }: Props) {
       year: item.year,
       publisher: item.publisher,
       language: item.language,
-      category: item.category,
-      ownerId: item.ownerId
+      category: item.category
     });
 
     await itemStateService.updateItem(updatedItem);

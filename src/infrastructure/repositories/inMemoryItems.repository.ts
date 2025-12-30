@@ -28,10 +28,10 @@ export class InMemoryItemsRepository implements ItemsRepository {
     });
   }
 
-  async findAll(ownerId?: Id): Promise<Item[]> {
+  async findAll(ownerId?: string): Promise<Item[]> {
     const allItems = Array.from(this.items.values());
     if (ownerId) {
-      return allItems.filter(item => item.ownerId.equals(ownerId));
+      return allItems.filter(item => item.owner.value === ownerId);
     }
     return allItems;
   }

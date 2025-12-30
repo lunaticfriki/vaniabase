@@ -21,7 +21,7 @@ export class DashboardViewModel {
     try {
       const currentUser = this.authService.currentUser.value;
       if (currentUser) {
-        this._items.value = await this.itemsRepository.findAll(currentUser.id);
+        this._items.value = await this.itemsRepository.findAll(currentUser.id.value);
       }
     } finally {
       this._isLoading.value = false;

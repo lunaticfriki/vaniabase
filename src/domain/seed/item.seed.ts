@@ -2,6 +2,7 @@ import { Item } from '../model/entities/item.entity';
 import { ItemMother } from '../__tests__/item.mother';
 import { CategoryMother } from '../__tests__/category.mother';
 import { UserSeed } from './user.seed';
+import { Owner } from '../model/value-objects/stringValues.valueObject';
 
 export class ItemSeed {
   public static generate(count: number = 100): Item[] {
@@ -16,7 +17,7 @@ export class ItemSeed {
       const randomUser = users[Math.floor(Math.random() * users.length)];
       const item = ItemMother.create({ 
         category: randomCategory,
-        ownerId: randomUser.id
+        owner: Owner.create(randomUser.id.value)
       });
       items.push(item);
     }

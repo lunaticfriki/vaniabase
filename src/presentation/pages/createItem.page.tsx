@@ -80,7 +80,7 @@ export function CreateItem() {
             description: Description.create(normalizedRow.description || ''),
             author: Author.create(normalizedRow.author || 'Unknown'),
             cover: Cover.create(getRandomCover()),
-            owner: Owner.create(currentUser ? currentUser.name : ''),
+            owner: Owner.create(currentUser ? currentUser.id.value : ''),
             tags: Tags.create(tagsArray),
             topic: Topic.create(normalizedRow.topic || ''),
             format: Format.create(normalizedRow.format || ''),
@@ -89,8 +89,7 @@ export function CreateItem() {
             year: Year.create(parseInt(normalizedRow.year) || new Date().getFullYear()),
             publisher: Publisher.create(normalizedRow.publisher || ''),
             language: Language.create(normalizedRow.language || 'English'),
-            category: Category.create(Id.create(uuidv4()), Title.create(normalizedRow.category || 'books')),
-            ownerId: currentUser ? currentUser.id : Id.empty()
+            category: Category.create(Id.create(uuidv4()), Title.create(normalizedRow.category || 'books'))
           });
         })
         .filter((item): item is Item => item !== null);
@@ -124,7 +123,7 @@ export function CreateItem() {
           description: Description.create(formData.description),
           author: Author.create(formData.author),
           cover: Cover.create(formData.cover),
-          owner: Owner.create(currentUser ? currentUser.name : ''),
+          owner: Owner.create(currentUser ? currentUser.id.value : ''),
           tags: Tags.create(tagsArray),
           topic: Topic.create(formData.topic),
           format: Format.create(formData.format),
@@ -133,8 +132,7 @@ export function CreateItem() {
           year: Year.create(parseInt(formData.year) || 0),
           publisher: Publisher.create(formData.publisher),
           language: Language.create(formData.language),
-          category: Category.create(Id.create(uuidv4()), Title.create(formData.category)),
-          ownerId: currentUser ? currentUser.id : Id.empty()
+          category: Category.create(Id.create(uuidv4()), Title.create(formData.category))
         })
       );
       route('/');

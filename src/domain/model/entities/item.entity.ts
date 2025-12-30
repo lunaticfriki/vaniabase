@@ -30,8 +30,7 @@ export class Item {
     public readonly year: Year,
     public readonly publisher: Publisher,
     public readonly language: Language,
-    public readonly category: Category,
-    public readonly ownerId: Id
+    public readonly category: Category
   ) {}
 
   public static create(props: {
@@ -50,7 +49,6 @@ export class Item {
     publisher: Publisher;
     language: Language;
     category: Category;
-    ownerId: Id;
   }): Item {
     return new Item(
       props.id,
@@ -67,8 +65,7 @@ export class Item {
       props.year,
       props.publisher,
       props.language,
-      props.category,
-      props.ownerId
+      props.category
     );
   }
 
@@ -88,8 +85,7 @@ export class Item {
       Year.empty(),
       Publisher.empty(),
       Language.empty(),
-      Category.empty(),
-      Id.empty()
+      Category.empty()
     );
   }
 }

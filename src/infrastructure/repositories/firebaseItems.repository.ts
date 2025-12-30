@@ -46,7 +46,7 @@ export class FirebaseItemsRepository implements ItemsRepository {
                 id: item.category.id.value,
                 name: item.category.name.value
             },
-            ownerId: item.ownerId.value
+
         };
 
         await setDoc(itemRef, data);
@@ -64,7 +64,7 @@ export class FirebaseItemsRepository implements ItemsRepository {
 
         const q = query(
             collection(db, this.collectionName), 
-            where("ownerId", "==", currentUser.uid)
+            where("owner", "==", currentUser.uid)
         );
         
         const querySnapshot = await getDocs(q);
@@ -122,8 +122,7 @@ export class FirebaseItemsRepository implements ItemsRepository {
             category: Category.create(
                 Id.create(data.category?.id || ''),
                 Title.create(data.category?.name || '')
-            ),
-            ownerId: Id.create(data.ownerId || '')
+            )
         });
     }
 }

@@ -36,7 +36,6 @@ export class ItemMother {
       publisher: Publisher;
       language: Language;
       category: Category;
-      ownerId: Id;
     }>
   ): Item {
     return Item.create({
@@ -54,8 +53,7 @@ export class ItemMother {
       year: data?.year ? data.year : Year.create(faker.date.past().getFullYear()),
       publisher: data?.publisher ? data.publisher : Publisher.create(faker.company.name()),
       language: data?.language ? data.language : Language.create('English'),
-      category: data?.category || CategoryMother.create(),
-      ownerId: data?.ownerId ? data.ownerId : Id.random()
+      category: data?.category || CategoryMother.create()
     });
   }
 
@@ -75,8 +73,7 @@ export class ItemMother {
       year: Year.empty(),
       publisher: Publisher.empty(),
       language: Language.empty(),
-      category: Category.empty(),
-      ownerId: Id.empty()
+      category: Category.empty()
     });
   }
 
@@ -99,8 +96,7 @@ export class ItemMother {
       year: Year.create(faker.date.past().getFullYear()),
       publisher: Publisher.create(faker.company.name()),
       language: Language.create('English'),
-      category: CategoryMother.create(),
-      ownerId: Id.random()
+      category: CategoryMother.create()
     });
   }
 }
