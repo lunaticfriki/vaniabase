@@ -55,7 +55,16 @@
     "welcome": "Benvingut a Vaniabase",
     "login_prompt": "Inicieu sessió per accedir a la vostra col·lecció.",
     "select_user": "Selecciona Usuari",
-    "login": "Inicia Sessió"
+    "login": "Inicia Sessió",
+    "login_title": "Benvingut de nou",
+    "login_subtitle": "Inicia sessió per accedir a la teva col·lecció.",
+    "signup_title": "Crear Compte",
+    "signup_subtitle": "Registra't per començar la teva col·lecció.",
+    "login_google": "Inicia sessió amb Google",
+    "signup_google": "Registra't amb Google",
+    "or": "O",
+    "to_signup": "No tens compte? Registra't",
+    "to_login": "Ja tens compte? Inicia sessió"
   },
   "collection": {
     "title": "COL·LECCIÓ CRONOLÒGICA",

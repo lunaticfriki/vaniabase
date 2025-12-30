@@ -2,7 +2,8 @@ import { Router } from 'preact-router';
 import { useEffect } from 'preact/hooks';
 import { Layout } from './presentation/components/layout.component';
 import { createLazy } from './presentation/components/lazyLoad.component';
-import { LandingPage } from './presentation/pages/landingPage.page';
+import { Login } from './presentation/pages/login.page';
+import { Signup } from './presentation/pages/signup.page';
 import { container } from './infrastructure/di/container';
 import { AuthService } from './application/auth/auth.service';
 
@@ -57,7 +58,10 @@ export function App() {
         {authService.currentUser.value && <Formats.Component path="/formats/:formatName?" />}
         {authService.currentUser.value && <Dashboard.Component path="/dashboard" />}
         {authService.currentUser.value && <CompletedItems.Component path="/completed" />}
-        {!authService.currentUser.value && <LandingPage path="/:rest*" />}
+        {!authService.currentUser.value && <Login path="/" />}
+        {!authService.currentUser.value && <Login path="/login" />}
+        {!authService.currentUser.value && <Signup path="/signup" />}
+        {!authService.currentUser.value && <Login path="/:rest*" />}
       </Router>
     </Layout>
   );

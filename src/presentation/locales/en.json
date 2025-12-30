@@ -55,7 +55,16 @@
     "welcome": "Welcome to Vaniabase",
     "login_prompt": "Please login to access your collection.",
     "select_user": "Select User",
-    "login": "Login"
+    "login": "Login",
+    "login_title": "Welcome Back",
+    "login_subtitle": "Login to access your collection.",
+    "signup_title": "Create Account",
+    "signup_subtitle": "Sign up to start your collection.",
+    "login_google": "Log in with Google",
+    "signup_google": "Sign up with Google",
+    "or": "OR",
+    "to_signup": "Don't have an account? Sign up",
+    "to_login": "Already have an account? Log in"
   },
   "collection": {
     "title": "TIMELINE COLLECTION",
