@@ -99,8 +99,16 @@
       "create_error": "Failed to create item"
     }
   },
+  "edit_item": {
+    "title": "EDIT ITEM: {{title}}",
+    "subtitle": "Update the details of this item.",
+    "buttons": {
+      "save": "Save Changes"
+    }
+  },
   "item_detail": {
     "back": "Back",
+    "edit": "Edit",
     "not_found": "Item not found",
     "labels": {
       "year": "Year",

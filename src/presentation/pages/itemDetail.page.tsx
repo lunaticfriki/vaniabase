@@ -89,7 +89,7 @@ export function ItemDetail({ id }: Props) {
 
   return (
     <div class="space-y-8 animate-in fade-in duration-500">
-      <div>
+      <div class="flex justify-between items-center">
         <button
           onClick={handleBack}
           class="flex items-center gap-2 text-white/60 transition-colors group cursor-pointer"
@@ -113,6 +113,14 @@ export function ItemDetail({ id }: Props) {
             {t('item_detail.back')}
           </span>
         </button>
+        {item && (
+          <Link
+            href={`/edit/${item.id.value}`}
+            class="flex items-center gap-2 text-brand-magenta hover:text-white transition-colors"
+          >
+            <span class="uppercase tracking-widest text-xs font-bold">{t('item_detail.edit')}</span>
+          </Link>
+        )}
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
