@@ -8,7 +8,8 @@ import { UserSeed } from '../../domain/seed/user.seed';
 export class MockAuthService implements AuthService {
   currentUser = signal<User | null>(null);
 
-  async login(userId: string): Promise<void> {
+  async login(userId?: string): Promise<void> {
+    if (!userId) return; 
     const users = UserSeed.generate();
     const user = users.find(u => u.id.value === userId);
     if (user) {

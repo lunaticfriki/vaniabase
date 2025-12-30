@@ -124,17 +124,17 @@ export function Menu() {
               <li>
                 <div class="flex gap-2">
                   <button
-                    onClick={() => changeLanguage('en')}
-                    class={`text-xs ${i18n.language === 'en' ? 'text-brand-yellow' : 'text-white'}`}
-                  >
-                    EN
-                  </button>
-                  <span class="text-white/20">|</span>
-                  <button
                     onClick={() => changeLanguage('ca')}
                     class={`text-xs ${i18n.language === 'ca' ? 'text-brand-yellow' : 'text-white'}`}
                   >
                     CA
+                  </button>
+                  <span class="text-white/20">|</span>
+                  <button
+                    onClick={() => changeLanguage('en')}
+                    class={`text-xs ${i18n.language === 'en' ? 'text-brand-yellow' : 'text-white'}`}
+                  >
+                    EN
                   </button>
                 </div>
               </li>

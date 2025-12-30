@@ -16,8 +16,8 @@ import { Tags } from "../../domain/model/value-objects/tags.valueObject";
 import { Created, Completed, Year } from "../../domain/model/value-objects/dateAndNumberValues.valueObject";
 import { ItemsRepository } from "../../domain/repositories/items.repository";
 import { injectable } from "inversify";
-import { db } from "../firebase/firebaseConfig";
-import { collection, doc, getDoc, getDocs, setDoc, Timestamp } from "firebase/firestore";
+import { db, auth } from "../firebase/firebaseConfig";
+import { collection, doc, getDoc, getDocs, setDoc, Timestamp, query, where } from "firebase/firestore";
 
 @injectable()
 export class FirebaseItemsRepository implements ItemsRepository {
@@ -57,7 +57,17 @@ export class FirebaseItemsRepository implements ItemsRepository {
     }
 
     async findAll(): Promise<Item[]> {
-        const querySnapshot = await getDocs(collection(db, this.collectionName));
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+            return [];
+        }
+
+        const q = query(
+            collection(db, this.collectionName), 
+            where("ownerId", "==", currentUser.uid)
+        );
+        
+        const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => this.mapToItem(doc.id, doc.data()));
     }
 

@@ -2,9 +2,11 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 
 import { ItemsRepository } from '../../domain/repositories/items.repository';
-import { InMemoryItemsRepository } from '../repositories/inMemoryItems.repository';
+// import { InMemoryItemsRepository } from '../repositories/inMemoryItems.repository';
+import { FirebaseItemsRepository } from '../repositories/firebaseItems.repository';
 import { CategoriesRepository } from '../../domain/repositories/categories.repository';
-import { InMemoryCategoriesRepository } from '../repositories/inMemoryCategories.repository';
+// import { InMemoryCategoriesRepository } from '../repositories/inMemoryCategories.repository';
+import { FirebaseCategoriesRepository } from '../repositories/firebaseCategories.repository';
 
 import { ErrorManager } from '../../domain/services/errorManager.service';
 import { ConsoleErrorManager } from '../services/consoleErrorManager.service';
@@ -12,7 +14,8 @@ import { NotificationService } from '../../domain/services/notification.service'
 import { ToastNotificationService } from '../services/toastNotification.service';
 
 import { AuthService } from '../../application/auth/auth.service';
-import { MockAuthService } from '../auth/mockAuth.service';
+// import { MockAuthService } from '../auth/mockAuth.service';
+import { FirebaseAuthService } from '../auth/firebaseAuth.service';
 
 import { ItemReadService } from '../../application/item/item.readService';
 import { ItemWriteService } from '../../application/item/item.writeService';
@@ -24,12 +27,12 @@ import { CategoryStateService } from '../../application/category/category.stateS
 
 const container = new Container();
 
-container.bind(ItemsRepository).to(InMemoryItemsRepository).inSingletonScope();
-container.bind(CategoriesRepository).to(InMemoryCategoriesRepository).inSingletonScope();
+container.bind(ItemsRepository).to(FirebaseItemsRepository).inSingletonScope();
+container.bind(CategoriesRepository).to(FirebaseCategoriesRepository).inSingletonScope();
 
 container.bind(ErrorManager).to(ConsoleErrorManager).inSingletonScope();
 container.bind(NotificationService).to(ToastNotificationService).inSingletonScope();
-container.bind(AuthService).to(MockAuthService).inSingletonScope();
+container.bind(AuthService).to(FirebaseAuthService).inSingletonScope();
 
 container.bind(ItemReadService).toSelf().inSingletonScope();
 container.bind(ItemWriteService).toSelf().inSingletonScope();
