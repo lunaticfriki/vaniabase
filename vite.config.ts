@@ -19,7 +19,8 @@ export default defineConfig({
   },
   preview: {
     port: 8080,
-    host: true
+    host: true,
+    allowedHosts: true
   },
   test: {
     globals: true
