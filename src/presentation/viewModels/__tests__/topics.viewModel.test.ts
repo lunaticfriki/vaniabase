@@ -5,6 +5,7 @@ import { ItemStateService } from '../../../application/item/item.stateService';
 import { AuthService } from '../../../application/auth/auth.service';
 import { ItemReadService } from '../../../application/item/item.readService';
 import { ItemWriteService } from '../../../application/item/item.writeService';
+import { NotificationService } from '../../../domain/services/notification.service';
 import { signal } from '@preact/signals';
 import { ItemMother } from '../../../domain/__tests__/item.mother';
 import { Topic } from '../../../domain/model/value-objects/stringValues.valueObject';
@@ -12,17 +13,20 @@ describe('TopicsViewModel', () => {
     let mockReadService: ItemReadService;
     let mockWriteService: ItemWriteService;
     let mockAuthService: AuthService;
+    let mockNotificationService: NotificationService;
     let viewModel: TopicsViewModel;
     beforeEach(() => {
         mockReadService = mock(ItemReadService);
         mockWriteService = mock(ItemWriteService);
         mockAuthService = mock(AuthService);
+        mockNotificationService = mock(NotificationService);
         when(mockAuthService.currentUser).thenReturn(signal(null));
         when(mockReadService.findAll(anything())).thenResolve([]);
         const itemStateService = new ItemStateService(
             instance(mockReadService),
             instance(mockWriteService),
-            instance(mockAuthService)
+            instance(mockAuthService),
+            instance(mockNotificationService)
         );
         viewModel = new TopicsViewModel(itemStateService);
     });

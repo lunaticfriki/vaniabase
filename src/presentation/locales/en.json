@@ -1,0 +1,16 @@
+{
+  "menu": {
+    "hello": "Hello, {{name}}!",
+    "home": "HOME",
+    "collection": "COLLECTION",
+    "completed": "COMPLETED",
+    "categories": "CATEGORIES",
+    "tags": "TAGS",
+    "topics": "TOPICS",
+    "formats": "FORMATS",
+    "search": "SEARCH",
+    "create": "CREATE",
+    "about": "ABOUT",
+    "logout": "LOGOUT"
+  }
+}

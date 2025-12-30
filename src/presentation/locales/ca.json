@@ -1,0 +1,16 @@
+{
+  "menu": {
+    "hello": "Hola, {{name}}!",
+    "home": "INICI",
+    "collection": "COL·LECCIÓ",
+    "completed": "COMPLETATS",
+    "categories": "CATEGORIES",
+    "tags": "ETIQUETES",
+    "topics": "TEMES",
+    "formats": "FORMATS",
+    "search": "CERCAR",
+    "create": "CREAR",
+    "about": "INFO",
+    "logout": "TANCAR SESSIÓ"
+  }
+}

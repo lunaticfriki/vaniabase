@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, Match } from 'preact-router/match';
 import { route } from 'preact-router';
 import type { JSX } from 'preact';
@@ -21,6 +22,7 @@ import {
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
 
 export function Menu() {
+  const { t, i18n } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -33,6 +35,10 @@ export function Menu() {
   const handleLogout = async () => {
     await authService.logout();
     route('/', true);
+  };
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
   };
 
   useEffect(() => {
@@ -55,16 +61,16 @@ export function Menu() {
   }, [isMenuOpen]);
 
   const navLinks = [
-    { href: '/', label: 'HOME', icon: HomeIcon, matcher: undefined },
-    { href: '/collection', label: 'COLLECTION', icon: CollectionIcon, matcher: undefined },
-    { href: '/completed', label: 'COMPLETED', icon: CompletedIcon, matcher: undefined },
-    { href: '/categories/books', label: 'CATEGORIES', icon: CategoriesIcon, matcher: '/categories/:rest*' },
-    { href: '/tags', label: 'TAGS', icon: TagsIcon, matcher: '/tags/:rest*' },
-    { href: '/topics', label: 'TOPICS', icon: TopicsIcon, matcher: '/topics/:rest*' },
-    { href: '/formats', label: 'FORMATS', icon: FormatsIcon, matcher: '/formats/:rest*' },
-    { href: '/search', label: 'SEARCH', icon: SearchIcon, matcher: undefined },
-    { href: '/create', label: 'CREATE', icon: CreateIcon, matcher: undefined },
-    { href: '/about', label: 'ABOUT', icon: AboutIcon, matcher: undefined }
+    { href: '/', label: t('menu.home'), icon: HomeIcon, matcher: undefined },
+    { href: '/collection', label: t('menu.collection'), icon: CollectionIcon, matcher: undefined },
+    { href: '/completed', label: t('menu.completed'), icon: CompletedIcon, matcher: undefined },
+    { href: '/categories/books', label: t('menu.categories'), icon: CategoriesIcon, matcher: '/categories/:rest*' },
+    { href: '/tags', label: t('menu.tags'), icon: TagsIcon, matcher: '/tags/:rest*' },
+    { href: '/topics', label: t('menu.topics'), icon: TopicsIcon, matcher: '/topics/:rest*' },
+    { href: '/formats', label: t('menu.formats'), icon: FormatsIcon, matcher: '/formats/:rest*' },
+    { href: '/search', label: t('menu.search'), icon: SearchIcon, matcher: undefined },
+    { href: '/create', label: t('menu.create'), icon: CreateIcon, matcher: undefined },
+    { href: '/about', label: t('menu.about'), icon: AboutIcon, matcher: undefined }
   ];
 
   if (!currentUser) {
@@ -84,12 +90,12 @@ export function Menu() {
                 style="image-rendering: pixelated;"
               />
               <span class="text-brand-magenta font-bold group-hover:text-brand-yellow transition-colors">
-                Hello, {currentUser.name}!
+                {t('menu.hello', { name: currentUser.name })}
               </span>
             </Link>
             <ul class="flex gap-6 text-sm font-medium items-center">
               {navLinks.map(link => (
-                <li key={link.href} class={link.label !== 'ABOUT' ? 'hidden' : ''}>
+                <li key={link.href} class={link.label !== t('menu.about') ? 'hidden' : ''}>
                   <Match path={link.matcher || link.href}>
                     {({ matches }: { matches: boolean }) => {
                       const isActive = matches;
@@ -112,8 +118,25 @@ export function Menu() {
                   class="text-white hover:text-brand-yellow transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <LogoutIcon size={16} />
-                  LOGOUT
+                  {t('menu.logout')}
                 </button>
+              </li>
+              <li>
+                <div class="flex gap-2">
+                  <button
+                    onClick={() => changeLanguage('en')}
+                    class={`text-xs ${i18n.language === 'en' ? 'text-brand-yellow' : 'text-white'}`}
+                  >
+                    EN
+                  </button>
+                  <span class="text-white/20">|</span>
+                  <button
+                    onClick={() => changeLanguage('ca')}
+                    class={`text-xs ${i18n.language === 'ca' ? 'text-brand-yellow' : 'text-white'}`}
+                  >
+                    CA
+                  </button>
+                </div>
               </li>
             </ul>
           </div>
@@ -159,10 +182,10 @@ export function Menu() {
                     class="w-8 h-8 rounded-full bg-white/10"
                     style="image-rendering: pixelated;"
                   />
-                  <span class="text-brand-magenta font-bold">Hello, {currentUser.name}!</span>
+                  <span class="text-brand-magenta font-bold">{t('menu.hello', { name: currentUser.name })}</span>
                 </Link>
                 {navLinks.map(link => (
-                  <div key={link.href} class={link.label === 'ABOUT' ? 'xl:hidden' : ''}>
+                  <div key={link.href} class={link.label === t('menu.about') ? 'xl:hidden' : ''}>
                     <Match path={link.matcher || link.href}>
                       {({ matches }: { matches: boolean }) => {
                         const isActive = matches;
@@ -188,8 +211,22 @@ export function Menu() {
                   class="text-white py-3 hover:text-brand-yellow transition-colors flex items-center gap-3 w-full text-left xl:hidden"
                 >
                   <LogoutIcon size={20} />
-                  LOGOUT
+                  {t('menu.logout')}
                 </button>
+                <div class="flex gap-4 p-4 border-t border-white/5 justify-center">
+                  <button
+                    onClick={() => changeLanguage('en')}
+                    class={`text-sm ${i18n.language === 'en' ? 'text-brand-yellow' : 'text-white'}`}
+                  >
+                    English
+                  </button>
+                  <button
+                    onClick={() => changeLanguage('ca')}
+                    class={`text-sm ${i18n.language === 'ca' ? 'text-brand-yellow' : 'text-white'}`}
+                  >
+                    Català
+                  </button>
+                </div>
               </nav>
             </div>
           </div>
