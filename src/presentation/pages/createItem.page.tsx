@@ -5,6 +5,7 @@ import { route } from 'preact-router';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
 import { AuthService } from '../../application/auth/auth.service';
+import { StorageService } from '../../application/services/storage.service';
 import { NotificationService } from '../../domain/services/notification.service';
 import { Item } from '../../domain/model/entities/item.entity';
 import { Category } from '../../domain/model/entities/category.entity';
@@ -38,6 +39,8 @@ export function CreateItem() {
   const itemStateService = container.get(ItemStateService);
   const notificationService = container.get(NotificationService);
   const authService = container.get(AuthService);
+  const storageService = container.get(StorageService);
+  const [itemId] = useState(uuidv4());
   const [formData] = useState({
     title: '',
     description: '',
@@ -53,6 +56,13 @@ export function CreateItem() {
     language: 'English',
     category: 'books'
   });
+
+  const handleUploadCover = async (file: File): Promise<string> => {
+    const currentUser = authService.currentUser.value;
+    if (!currentUser) throw new Error('User not authenticated');
+    const path = `users/${currentUser.id.value}/items/${itemId}/${file.name}`;
+    return await storageService.upload(file, path);
+  };
   const handleFileUpload = async (e: Event) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
@@ -146,7 +156,12 @@ export function CreateItem() {
         </h1>
         <p class="text-white/60">{t('create_item.subtitle')}</p>
       </div>
-      <ItemForm initialValues={formData} onSubmit={handleSubmit} submitLabel={t('create_item.buttons.create')} />
+      <ItemForm
+        initialValues={formData}
+        onSubmit={handleSubmit}
+        submitLabel={t('create_item.buttons.create')}
+        onUploadCover={handleUploadCover}
+      />
       <div class="relative py-4">
         <div class="absolute inset-0 flex items-center">
           <div class="w-full border-t border-white/10"></div>

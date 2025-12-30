@@ -22,11 +22,13 @@ interface Props {
   initialValues: ItemFormData;
   onSubmit: (data: ItemFormData) => void;
   submitLabel: string;
+  onUploadCover?: (file: File) => Promise<string>;
 }
 
-export function ItemForm({ initialValues, onSubmit, submitLabel }: Props) {
+export function ItemForm({ initialValues, onSubmit, submitLabel, onUploadCover }: Props) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<ItemFormData>(initialValues);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     setFormData(initialValues);
@@ -35,6 +37,22 @@ export function ItemForm({ initialValues, onSubmit, submitLabel }: Props) {
   const handleInput = (e: Event) => {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
     setFormData(prev => ({ ...prev, [target.name]: target.value }));
+  };
+
+  const handleUpload = async (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file && onUploadCover) {
+      try {
+        setUploading(true);
+        const url = await onUploadCover(file);
+        setFormData(prev => ({ ...prev, cover: url }));
+      } catch (error) {
+        console.error('Failed to upload cover', error);
+      } finally {
+        setUploading(false);
+      }
+    }
   };
 
   const handleSubmit = (e: Event) => {
@@ -182,15 +200,18 @@ export function ItemForm({ initialValues, onSubmit, submitLabel }: Props) {
       </div>
       <div class="space-y-2">
         <label class="text-xs font-bold uppercase tracking-widest text-white/40">{t('create_item.labels.cover')}</label>
-        <div class="flex gap-4">
-          <input
-            type="text"
-            name="cover"
-            value={formData.cover}
-            disabled
-            class="w-full bg-zinc-900/50 border border-white/5 rounded p-3 text-white/50 cursor-not-allowed"
-          />
-          <div class="w-16 h-16 shrink-0 bg-zinc-900 rounded overflow-hidden">
+        <div class="flex gap-4 items-center">
+          <div class="flex-1">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleUpload}
+              disabled={uploading || !onUploadCover}
+              class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-magenta file:text-white hover:file:bg-brand-magenta/80"
+            />
+            {uploading && <p class="text-xs text-brand-magenta mt-1">Uploading...</p>}
+          </div>
+          <div class="w-16 h-16 shrink-0 bg-zinc-900 rounded overflow-hidden relative">
             <img src={formData.cover} alt="Cover preview" class="w-full h-full object-cover" />
           </div>
         </div>

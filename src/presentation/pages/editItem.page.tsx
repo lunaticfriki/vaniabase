@@ -3,6 +3,8 @@ import { route } from 'preact-router';
 import { useTranslation } from 'react-i18next';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
+import { StorageService } from '../../application/services/storage.service';
+import { AuthService } from '../../application/auth/auth.service';
 import { NotificationService } from '../../domain/services/notification.service';
 import { ItemForm } from '../components/itemForm.component';
 import type { ItemFormData } from '../components/itemForm.component';
@@ -32,8 +34,21 @@ export function EditItem({ id }: Props) {
   const { t } = useTranslation();
   const itemStateService = container.get(ItemStateService);
   const notificationService = container.get(NotificationService);
+  const authService = container.get(AuthService);
+  const storageService = container.get(StorageService);
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<Item | null>(null);
+
+  const handleUploadCover = async (file: File): Promise<string> => {
+    const currentUser = authService.currentUser.value;
+    if (!currentUser) throw new Error('User not authenticated');
+
+    const itemIdToUse = item?.id.value || id;
+    if (!itemIdToUse) throw new Error('Item ID unavailable');
+
+    const path = `users/${currentUser.id.value}/items/${itemIdToUse}/${file.name}`;
+    return await storageService.upload(file, path);
+  };
 
   const [formData, setFormData] = useState<ItemFormData>({
     title: '',
@@ -127,7 +142,12 @@ export function EditItem({ id }: Props) {
         </h1>
         <p class="text-white/60">{t('edit_item.subtitle')}</p>
       </div>
-      <ItemForm initialValues={formData} onSubmit={handleSubmit} submitLabel={t('edit_item.buttons.save')} />
+      <ItemForm
+        initialValues={formData}
+        onSubmit={handleSubmit}
+        submitLabel={t('edit_item.buttons.save')}
+        onUploadCover={handleUploadCover}
+      />
     </div>
   );
 }

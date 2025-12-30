@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import { Container } from 'inversify';
 
 import { ItemsRepository } from '../../domain/repositories/items.repository';
-// import { InMemoryItemsRepository } from '../repositories/inMemoryItems.repository';
+
 import { FirebaseItemsRepository } from '../repositories/firebaseItems.repository';
 import { CategoriesRepository } from '../../domain/repositories/categories.repository';
-// import { InMemoryCategoriesRepository } from '../repositories/inMemoryCategories.repository';
+
 import { FirebaseCategoriesRepository } from '../repositories/firebaseCategories.repository';
 
 import { ErrorManager } from '../../domain/services/errorManager.service';
@@ -14,8 +14,11 @@ import { NotificationService } from '../../domain/services/notification.service'
 import { ToastNotificationService } from '../services/toastNotification.service';
 
 import { AuthService } from '../../application/auth/auth.service';
-// import { MockAuthService } from '../auth/mockAuth.service';
+
 import { FirebaseAuthService } from '../auth/firebaseAuth.service';
+
+import { StorageService } from '../../application/services/storage.service';
+import { FirebaseStorageService } from '../services/firebaseStorage.service';
 
 import { ItemReadService } from '../../application/item/item.readService';
 import { ItemWriteService } from '../../application/item/item.writeService';
@@ -33,6 +36,7 @@ container.bind(CategoriesRepository).to(FirebaseCategoriesRepository).inSingleto
 container.bind(ErrorManager).to(ConsoleErrorManager).inSingletonScope();
 container.bind(NotificationService).to(ToastNotificationService).inSingletonScope();
 container.bind(AuthService).to(FirebaseAuthService).inSingletonScope();
+container.bind(StorageService).to(FirebaseStorageService).inSingletonScope();
 
 container.bind(ItemReadService).toSelf().inSingletonScope();
 container.bind(ItemWriteService).toSelf().inSingletonScope();

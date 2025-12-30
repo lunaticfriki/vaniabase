@@ -22,7 +22,7 @@ i18n
     debug: import.meta.env.DEV,
 
     interpolation: {
-      escapeValue: false // 
+      escapeValue: false 
     }
   });
 
