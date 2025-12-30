@@ -1,6 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { signal } from '@preact/signals';
 import { Item } from '../../domain/model/entities/item.entity';
+import { Id } from '../../domain/model/value-objects/id.valueObject';
 import { ItemReadService } from './item.readService';
 import { ItemWriteService } from './item.writeService';
 import { AuthService } from '../auth/auth.service';
@@ -59,6 +60,17 @@ export class ItemStateService {
       await this.writeService.update(item);
       await this.loadItems();
       this.notificationService.success('Item updated successfully');
+    } finally {
+      this.isLoading.value = false;
+    }
+  }
+
+  async deleteItem(id: string): Promise<void> {
+    this.isLoading.value = true;
+    try {
+      await this.writeService.delete(Id.create(id));
+      await this.loadItems();
+      this.notificationService.success('Item deleted successfully');
     } finally {
       this.isLoading.value = false;
     }

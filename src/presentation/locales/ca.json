@@ -133,7 +133,9 @@
       "yes": "Sí",
       "no": "No",
       "no_tags": "Sense etiquetes"
-    }
+    },
+    "delete": "Eliminar",
+    "confirm_delete": "Estàs segur que vols eliminar aquest element?"
   },
   "completed_items": {
     "title": "ELEMENTS COMPLETATS",

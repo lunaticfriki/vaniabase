@@ -17,7 +17,7 @@ import { Created, Completed, Year } from "../../domain/model/value-objects/dateA
 import { ItemsRepository } from "../../domain/repositories/items.repository";
 import { injectable } from "inversify";
 import { db, auth } from "../firebase/firebaseConfig";
-import { collection, doc, getDoc, getDocs, setDoc, Timestamp, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, Timestamp, query, where } from "firebase/firestore";
 
 @injectable()
 export class FirebaseItemsRepository implements ItemsRepository {
@@ -82,6 +82,11 @@ export class FirebaseItemsRepository implements ItemsRepository {
             return this.mapToItem(docSnap.id, docSnap.data());
         }
         return undefined;
+    }
+
+    async delete(id: Id): Promise<void> {
+        const docRef = doc(db, this.collectionName, id.value);
+        await deleteDoc(docRef);
     }
 
     async search(query: string): Promise<Item[]> {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { Link as RouterLink } from 'preact-router/match';
+import { route } from 'preact-router';
 import { useTranslation } from 'react-i18next';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
@@ -65,6 +66,14 @@ export function ItemDetail({ id }: Props) {
     setItem(updatedItem);
   };
 
+  const handleDelete = async () => {
+    if (!item) return;
+    if (window.confirm(t('item_detail.confirm_delete'))) {
+      await itemStateService.deleteItem(item.id.value);
+      route('/');
+    }
+  };
+
   const handleBack = () => {
     history.go(-1);
   };
@@ -114,12 +123,20 @@ export function ItemDetail({ id }: Props) {
           </span>
         </button>
         {item && (
-          <Link
-            href={`/edit/${item.id.value}`}
-            class="flex items-center gap-2 text-brand-magenta hover:text-white transition-colors"
-          >
-            <span class="uppercase tracking-widest text-xs font-bold">{t('item_detail.edit')}</span>
-          </Link>
+          <div class="flex items-center gap-4">
+            <Link
+              href={`/edit/${item.id.value}`}
+              class="flex items-center gap-2 text-brand-magenta hover:text-white transition-colors"
+            >
+              <span class="uppercase tracking-widest text-xs font-bold">{t('item_detail.edit')}</span>
+            </Link>
+            <button
+              onClick={handleDelete}
+              class="flex items-center gap-2 text-red-500 hover:text-white transition-colors"
+            >
+              <span class="uppercase tracking-widest text-xs font-bold">{t('item_detail.delete')}</span>
+            </button>
+          </div>
         )}
       </div>
 

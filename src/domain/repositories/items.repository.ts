@@ -7,4 +7,5 @@ export abstract class ItemsRepository {
   abstract findAll(ownerId?: string): Promise<Item[]>;
   abstract findById(id: Id): Promise<Item | undefined>;
   abstract search(query: string): Promise<Item[]>;
+  abstract delete(id: Id): Promise<void>;
 }

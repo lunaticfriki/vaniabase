@@ -133,7 +133,9 @@
       "yes": "Yes",
       "no": "No",
       "no_tags": "No tags"
-    }
+    },
+    "delete": "Delete",
+    "confirm_delete": "Are you sure you want to delete this item?"
   },
   "completed_items": {
     "title": "COMPLETED ITEMS",

@@ -40,6 +40,10 @@ export class InMemoryItemsRepository implements ItemsRepository {
     return this.items.get(id.value);
   }
 
+  async delete(id: Id): Promise<void> {
+    this.items.delete(id.value);
+  }
+
   async search(query: string): Promise<Item[]> {
     const lowerQuery = query.toLowerCase();
     return Array.from(this.items.values()).filter(item =>
