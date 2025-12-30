@@ -99,8 +99,16 @@
       "create_error": "No s'ha pogut crear l'element"
     }
   },
+  "edit_item": {
+    "title": "EDITAR ELEMENT: {{title}}",
+    "subtitle": "Actualitza els detalls d'aquest element.",
+    "buttons": {
+      "save": "Desa els canvis"
+    }
+  },
   "item_detail": {
     "back": "Enrere",
+    "edit": "Editar",
     "not_found": "Element no trobat",
     "labels": {
       "year": "Any",
