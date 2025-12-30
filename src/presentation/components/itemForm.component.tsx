@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useTranslation } from 'react-i18next';
+import { Item } from '../../domain/model/entities/item.entity';
 
 export interface ItemFormData {
   title: string;
@@ -220,7 +221,15 @@ export function ItemForm({ initialValues, onSubmit, submitLabel }: Props) {
       <div class="pt-4">
         <button
           type="submit"
-          class="w-full bg-brand-magenta text-white font-bold uppercase tracking-widest py-4 rounded hover:bg-brand-magenta/80 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-brand-magenta/20"
+          disabled={!Item.isEditable(initialValues, formData)}
+          class={`
+            w-full font-bold uppercase tracking-widest py-4 rounded transition-all
+            ${
+              !Item.isEditable(initialValues, formData)
+                ? 'bg-zinc-800 text-white/30 cursor-not-allowed'
+                : 'bg-brand-magenta text-white hover:bg-brand-magenta/80 hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-brand-magenta/20'
+            }
+          `}
         >
           {submitLabel}
         </button>

@@ -88,4 +88,49 @@ export class Item {
       Category.empty()
     );
   }
+  public static isEditable(
+    initial: {
+      title: string;
+      description: string;
+      author: string;
+      cover: string;
+      tags: string;
+      topic: string;
+      format: string;
+      completed: boolean;
+      year: string;
+      publisher: string;
+      language: string;
+      category: string;
+    },
+    current: {
+      title: string;
+      description: string;
+      author: string;
+      cover: string;
+      tags: string;
+      topic: string;
+      format: string;
+      completed: boolean;
+      year: string;
+      publisher: string;
+      language: string;
+      category: string;
+    }
+  ): boolean {
+    return (
+      initial.title !== current.title ||
+      initial.description !== current.description ||
+      initial.author !== current.author ||
+      initial.cover !== current.cover ||
+      initial.tags !== current.tags ||
+      initial.topic !== current.topic ||
+      initial.format !== current.format ||
+      initial.completed !== current.completed ||
+      initial.year !== current.year ||
+      initial.publisher !== current.publisher ||
+      initial.language !== current.language ||
+      initial.category !== current.category
+    );
+  }
 }
