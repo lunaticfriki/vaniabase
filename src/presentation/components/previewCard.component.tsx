@@ -29,7 +29,9 @@ export function PreviewCard({ item }: PreviewCardProps) {
         </div>
 
         <div class="p-4 space-y-3">
-          <div class="text-xs font-bold text-brand-magenta tracking-widest uppercase">{item.category.name.value}</div>
+          <div class="text-xs font-bold text-brand-magenta tracking-widest uppercase">
+            {t(`categories.list.${item.category.name.value.toLowerCase()}`, item.category.name.value)}
+          </div>
 
           <h3 class="text-xl font-bold leading-tight text-white group-hover:text-brand-yellow transition-colors">
             {item.title.value}

@@ -159,7 +159,7 @@ export function ItemDetail({ id }: Props) {
               style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
             >
               <Link href={`/categories/${item.category.name.value.toLowerCase()}`} class="capitalize">
-                {item.category.name.value}
+                {t(`categories.list.${item.category.name.value.toLowerCase()}`, item.category.name.value)}
               </Link>
             </div>
 
