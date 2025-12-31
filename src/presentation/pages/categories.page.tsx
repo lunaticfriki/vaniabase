@@ -83,7 +83,7 @@ export function Categories({ categoryName }: Props) {
                   `}
                   style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
                 >
-                  {category.name.value}
+                  {t(`categories.list.${category.name.value.toLowerCase()}`, category.name.value)}
                 </Link>
               </div>
             );

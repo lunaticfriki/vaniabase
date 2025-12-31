@@ -118,6 +118,8 @@ export function ItemForm({ initialValues, onSubmit, submitLabel, onUploadCover }
             <option value="movies">{t('categories.list.movies')}</option>
             <option value="games">{t('categories.list.games')}</option>
             <option value="music">{t('categories.list.music')}</option>
+            <option value="comics">{t('categories.list.comics')}</option>
+            <option value="magazines">{t('categories.list.magazines')}</option>
           </select>
         </div>
         <div class="space-y-2">

@@ -81,6 +81,7 @@ export function Dashboard() {
           items={categories.value}
           linkPrefix="/categories"
           color="border-brand-magenta"
+          translationScope="categories.list"
         />
         <ListSection
           title={t('dashboard.sections.topics')}
@@ -173,12 +174,14 @@ function ListSection({
   title,
   items,
   linkPrefix,
-  color
+  color,
+  translationScope
 }: {
   title: string;
   items: (string | { name: string; count: number })[];
   linkPrefix: string;
   color: string;
+  translationScope?: string;
 }) {
   const { t } = useTranslation();
   return (
@@ -200,7 +203,7 @@ function ListSection({
                     class="text-white/70 hover:text-brand-yellow hover:bg-white/5 px-3 py-2 rounded transition-colors truncate flex justify-between items-center"
                     title={name}
                   >
-                    <span>{name}</span>
+                    <span>{translationScope ? t(`${translationScope}.${name.toLowerCase()}`, name) : name}</span>
                     {count !== null && (
                       <span class="text-white/30 text-xs bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow font-mono ml-2">
                         [{count}]
