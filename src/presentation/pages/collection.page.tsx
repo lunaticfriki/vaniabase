@@ -29,10 +29,14 @@ export function Collection({ path: _ }: Props) {
     pagination.setTotalItems(items.value.length);
   }, [items.value.length]);
 
+  const sortedItems = computed(() => {
+    return [...items.value].sort((a, b) => b.created.value.getTime() - a.created.value.getTime());
+  });
+
   const currentItems = computed(() => {
     const start = (pagination.currentPage.value - 1) * pagination.itemsPerPage;
     const end = start + pagination.itemsPerPage;
-    return items.value.slice(start, end);
+    return sortedItems.value.slice(start, end);
   });
 
   if (isLoading.value && items.value.length === 0) {

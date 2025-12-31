@@ -1,5 +1,5 @@
-import { useEffect } from 'preact/hooks';
-import { computed } from '@preact/signals';
+import { useEffect, useMemo } from 'preact/hooks';
+
 import { useTranslation } from 'react-i18next';
 
 import { container } from '../../infrastructure/di/container';
@@ -7,30 +7,39 @@ import { ItemStateService } from '../../application/item/item.stateService';
 import { PreviewCard } from '../components/previewCard.component';
 import { SkeletonItem } from '../components/skeletonItem.component';
 
+import { HomeViewModel } from '../viewModels/home.viewModel';
+
 interface Props {
   path?: string;
 }
 
 export function Home({ path: _ }: Props) {
   const { t } = useTranslation();
-  const itemStateService = container.get(ItemStateService);
-  const items = itemStateService.items;
-  const isLoading = itemStateService.isLoading;
+  const viewModel = useMemo(() => {
+    const service = container.get(ItemStateService);
+    return new HomeViewModel(service);
+  }, []);
 
-  const recentItems = computed(() => {
-    return items.value.slice(-5).reverse();
-  });
+  const items = viewModel.items;
+  const isLoading = viewModel.isLoading;
+  const recentItems = viewModel.recentItems;
 
   useEffect(() => {
-    itemStateService.loadItems();
+    viewModel.loadItems();
   }, []);
 
   return (
     <div class="space-y-8">
-      <div class="space-y-2">
+      <div class="flex justify-between items-end">
         <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
           {t('home.latest_items')}
         </h1>
+        <a
+          href="/collection"
+          class="text-xl md:text-2xl font-bold text-white/50 hover:text-brand-magenta transition-colors"
+        >
+          {t('menu.collection')}
+        </a>
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
