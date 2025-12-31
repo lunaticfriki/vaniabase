@@ -1,4 +1,3 @@
-
 import 'reflect-metadata';
 import { mock, instance, when, verify, resetCalls, anything } from 'ts-mockito';
 import { DashboardViewModel } from '../dashboard.viewModel';
@@ -19,26 +18,20 @@ describe('DashboardViewModel', () => {
   beforeEach(() => {
     mockItemsRepository = mock<ItemsRepository>();
     mockAuthService = mock(AuthService);
-    
+
     const user = UserMother.create();
     when(mockAuthService.currentUser).thenReturn(signal(user));
 
     when(mockItemsRepository.findAll(anything())).thenResolve([]);
 
-    viewModel = new DashboardViewModel(
-      instance(mockItemsRepository),
-      instance(mockAuthService)
-    );
+    viewModel = new DashboardViewModel(instance(mockItemsRepository), instance(mockAuthService));
   });
 
   it('should not load data if user is not logged in', async () => {
     when(mockAuthService.currentUser).thenReturn(signal(null));
     resetCalls(mockItemsRepository);
 
-    viewModel = new DashboardViewModel(
-      instance(mockItemsRepository),
-      instance(mockAuthService)
-    );
+    viewModel = new DashboardViewModel(instance(mockItemsRepository), instance(mockAuthService));
     await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(viewModel.totalItems.value).toBe(0);
@@ -48,15 +41,12 @@ describe('DashboardViewModel', () => {
   it('should load data when initialized with logged in user', async () => {
     const items = [ItemMother.create()];
     when(mockItemsRepository.findAll(anything())).thenResolve(items);
-    
+
     resetCalls(mockItemsRepository);
 
-    viewModel = new DashboardViewModel(
-      instance(mockItemsRepository),
-      instance(mockAuthService)
-    );
+    viewModel = new DashboardViewModel(instance(mockItemsRepository), instance(mockAuthService));
 
-    await new Promise(resolve => setTimeout(resolve, 0)); 
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(viewModel.totalItems.value).toBe(1);
     verify(mockItemsRepository.findAll(anything())).once();
@@ -65,45 +55,45 @@ describe('DashboardViewModel', () => {
   it('should calculate total items correctly', async () => {
     const items = [ItemMother.create(), ItemMother.create()];
     when(mockItemsRepository.findAll(anything())).thenResolve(items);
-    
+
     await viewModel.loadData();
-    
+
     expect(viewModel.totalItems.value).toBe(2);
   });
 
   it('should aggregate categories correctly', async () => {
     const cat1 = CategoryMother.create(undefined, Title.create('Books'));
     const cat2 = CategoryMother.create(undefined, Title.create('Movies'));
-    
+
     const item1 = ItemMother.create({ category: cat1 });
-    const item2 = ItemMother.create({ category: cat1 }); 
+    const item2 = ItemMother.create({ category: cat1 });
     const item3 = ItemMother.create({ category: cat2 });
 
     when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
-    
+
     await viewModel.loadData();
-    
+
     const categories = viewModel.categories.value;
     expect(categories).toHaveLength(2);
-    
+
     expect(categories[0].name).toBe('Books');
     expect(categories[0].count).toBe(2);
     expect(categories[1].name).toBe('Movies');
     expect(categories[1].count).toBe(1);
-    
+
     expect(viewModel.totalCategories.value).toBe(2);
   });
 
   it('should aggregate tags correctly', async () => {
     const item1 = ItemMother.create({ tags: Tags.create(['tag1', 'tag2']) });
     const item2 = ItemMother.create({ tags: Tags.create(['tag2', 'tag3']) });
-    
+
     when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2]);
-    
+
     await viewModel.loadData();
-    
+
     const tags = viewModel.tags.value;
-    expect(tags).toHaveLength(3); 
+    expect(tags).toHaveLength(3);
     expect(tags[0]).toEqual({ name: 'tag2', count: 2 });
     expect(tags[1]).toEqual({ name: 'tag1', count: 1 });
     expect(tags[2]).toEqual({ name: 'tag3', count: 1 });
@@ -113,12 +103,12 @@ describe('DashboardViewModel', () => {
   it('should aggregate topics correctly', async () => {
     const item1 = ItemMother.create({ topic: Topic.create('Topic A') });
     const item2 = ItemMother.create({ topic: Topic.create('Topic B') });
-    const item3 = ItemMother.create({ topic: Topic.create('Topic A') }); 
-    
+    const item3 = ItemMother.create({ topic: Topic.create('Topic A') });
+
     when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
-    
+
     await viewModel.loadData();
-    
+
     const topics = viewModel.topics.value;
     expect(topics).toHaveLength(2);
     expect(topics[0]).toEqual({ name: 'Topic A', count: 2 });
@@ -129,12 +119,12 @@ describe('DashboardViewModel', () => {
   it('should aggregate formats correctly', async () => {
     const item1 = ItemMother.create({ format: Format.create('Digital') });
     const item2 = ItemMother.create({ format: Format.create('Physical') });
-    const item3 = ItemMother.create({ format: Format.create('Digital') }); 
-    
+    const item3 = ItemMother.create({ format: Format.create('Digital') });
+
     when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
-    
+
     await viewModel.loadData();
-    
+
     const formats = viewModel.formats.value;
     expect(formats).toHaveLength(2);
     expect(formats[0]).toEqual({ name: 'Digital', count: 2 });

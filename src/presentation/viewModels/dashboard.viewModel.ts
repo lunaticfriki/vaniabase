@@ -31,9 +31,8 @@ export class DashboardViewModel {
   isLoading = computed(() => this._isLoading.value);
   currentUser = computed(() => this.authService.currentUser.value);
 
-
   totalItems = computed(() => this._items.value.length);
-  
+
   categories = computed(() => {
     const counts = new Map<string, number>();
     this._items.value.forEach(item => {
@@ -94,7 +93,7 @@ export class DashboardViewModel {
   });
 
   totalFormats = computed(() => this.formats.value.length);
-  
+
   completedItems = computed(() => {
     return this._items.value
       .filter(item => item.completed.value === true)

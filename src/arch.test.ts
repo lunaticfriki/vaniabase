@@ -70,7 +70,7 @@ describe('Architecture Test', () => {
     expect(violations).toEqual([]);
   });
 
-   it('components should be named *.component.tsx', async () => {
+  it('components should be named *.component.tsx', async () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/presentation/components')
       .should()
@@ -78,14 +78,14 @@ describe('Architecture Test', () => {
       .check();
     expect(violations).toEqual([]);
   });
-  
+
   it('pages should be named *.page.tsx', async () => {
-      const violations = await filesOfProject('./tsconfig.app.json')
+    const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/presentation/pages')
       .should()
       .matchPattern('.*\.page\.tsx')
       .check();
-      expect(violations).toEqual([]);
+    expect(violations).toEqual([]);
   });
 
   it('entities should be named *.entity.ts', async () => {
@@ -118,7 +118,7 @@ describe('Architecture Test', () => {
   it('statistics models should be named *.model.ts', async () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/model')
-      .matchingPattern('.*Statistics.ts') 
+      .matchingPattern('.*Statistics.ts')
       .should()
       .matchPattern('.*\.model\.ts')
       .check();
@@ -128,14 +128,13 @@ describe('Architecture Test', () => {
   it('mothers should be named *.mother.ts', async () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/test')
-      .matchingPattern('.*Mother.ts') 
+      .matchingPattern('.*Mother.ts')
       .inFolder('src/domain/test')
       .matchingPattern('.*mother.ts')
       .should()
       .matchPattern('.*\.mother\.ts')
       .check();
-      
-      
+
     expect(violations).toEqual([]);
   });
 
@@ -147,5 +146,4 @@ describe('Architecture Test', () => {
       .check();
     expect(violations).toEqual([]);
   });
-
 });

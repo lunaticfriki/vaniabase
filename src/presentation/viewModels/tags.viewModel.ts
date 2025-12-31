@@ -5,7 +5,7 @@ import { PaginationViewModel } from './pagination.viewModel';
 
 export class TagsViewModel {
   private itemStateService: ItemStateService;
-  
+
   activeTagName = signal<string>('');
   pagination: PaginationViewModel;
 
@@ -42,13 +42,11 @@ export class TagsViewModel {
   filteredItems = computed(() => {
     const items = this.items.value;
     if (!items.length) return [];
-    
+
     const active = this.activeTagName.value.toLowerCase();
     if (!active) return items;
 
-    return items.filter(item => 
-      item.tags.value.some(tag => tag.toLowerCase() === active)
-    );
+    return items.filter(item => item.tags.value.some(tag => tag.toLowerCase() === active));
   });
 
   currentItems = computed(() => {
@@ -63,9 +61,9 @@ export class TagsViewModel {
 
   getFontSizeClass(count: number): string {
     const { minCount, maxCount } = this.tagData.value;
-    
+
     if (minCount === maxCount) return 'text-lg';
-    
+
     const normalized = (count - minCount) / (maxCount - minCount);
 
     if (normalized < 0.1) return 'text-sm';

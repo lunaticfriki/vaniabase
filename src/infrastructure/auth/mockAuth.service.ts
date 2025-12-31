@@ -9,7 +9,7 @@ export class MockAuthService implements AuthService {
   currentUser = signal<User | null>(null);
 
   async login(userId?: string): Promise<void> {
-    if (!userId) return; 
+    if (!userId) return;
     const users = UserSeed.generate();
     const user = users.find(u => u.id.value === userId);
     if (user) {

@@ -13,7 +13,7 @@ export class ToastNotificationService implements NotificationService {
   notify(message: string, type: Notification['type'] = 'info', duration = 3000): void {
     const id = uuidv4();
     const notification: Notification = { id, type, message, duration };
-    
+
     this._notifications.value = [...this._notifications.value, notification];
 
     if (duration > 0) {

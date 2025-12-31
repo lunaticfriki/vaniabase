@@ -10,7 +10,7 @@ export interface TopicData {
 export class TopicStatistics {
   public static fromItems(items: Item[]): TopicData {
     const counts: Record<string, number> = {};
-    
+
     items.forEach(item => {
       const topic = item.topic.value;
       if (topic) {

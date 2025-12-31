@@ -16,10 +16,10 @@ describe('PaginationViewModel', () => {
   it('should calculate total pages correctly', () => {
     viewModel.setTotalItems(25);
     expect(viewModel.totalPages.value).toBe(3);
-    
+
     viewModel.setTotalItems(10);
     expect(viewModel.totalPages.value).toBe(1);
-    
+
     viewModel.setTotalItems(0);
     expect(viewModel.totalPages.value).toBe(0);
   });
@@ -58,7 +58,7 @@ describe('PaginationViewModel', () => {
     viewModel.setTotalItems(30);
     viewModel.goToPage(4);
     expect(viewModel.currentPage.value).toBe(1);
-    
+
     viewModel.goToPage(0);
     expect(viewModel.currentPage.value).toBe(1);
   });

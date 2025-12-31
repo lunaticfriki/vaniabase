@@ -17,8 +17,6 @@ export class HomeViewModel {
   }
 
   recentItems = computed(() => {
-    return [...this.items.value]
-      .sort((a, b) => b.created.value.getTime() - a.created.value.getTime())
-      .slice(0, 5);
+    return [...this.items.value].sort((a, b) => b.created.value.getTime() - a.created.value.getTime()).slice(0, 5);
   });
 }

@@ -80,7 +80,7 @@ export class ItemMother {
   static createRandom() {
     const id = Id.random();
     const title = faker.commerce.productName();
-    
+
     return this.create({
       id,
       title: Title.create(title),

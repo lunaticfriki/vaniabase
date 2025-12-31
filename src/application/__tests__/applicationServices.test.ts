@@ -37,10 +37,7 @@ describe('Application Services (Unit Tests)', () => {
     beforeEach(() => {
       mockRepo = mock<ItemsRepository>();
       mockErrorManager = mock<ErrorManager>();
-      service = new ItemWriteService(
-        instance(mockRepo),
-        instance(mockErrorManager),
-      );
+      service = new ItemWriteService(instance(mockRepo), instance(mockErrorManager));
     });
 
     it('should create item and notify success', async () => {
@@ -118,10 +115,7 @@ describe('Application Services (Unit Tests)', () => {
     beforeEach(() => {
       mockReadService = mock(CategoryReadService);
       mockWriteService = mock(CategoryWriteService);
-      service = new CategoryStateService(
-        instance(mockReadService),
-        instance(mockWriteService)
-      );
+      service = new CategoryStateService(instance(mockReadService), instance(mockWriteService));
     });
 
     it('should load categories', async () => {

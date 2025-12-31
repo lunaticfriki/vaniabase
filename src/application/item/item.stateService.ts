@@ -77,14 +77,10 @@ export class ItemStateService {
   }
 
   async getItem(id: string): Promise<Item | undefined> {
-
     const existingIcon = this.items.value.find(i => i.id.value === id);
     if (existingIcon) {
       return existingIcon;
     }
-
-
-
 
     if (this.items.value.length === 0) {
       await this.loadItems();

@@ -46,17 +46,18 @@ export class InMemoryItemsRepository implements ItemsRepository {
 
   async search(query: string): Promise<Item[]> {
     const lowerQuery = query.toLowerCase();
-    return Array.from(this.items.values()).filter(item =>
-      item.title.value.toLowerCase().includes(lowerQuery) ||
-      item.author.value.toLowerCase().includes(lowerQuery) ||
-      item.description.value.toLowerCase().includes(lowerQuery) ||
-      item.publisher.value.toLowerCase().includes(lowerQuery) ||
-      item.owner.value.toLowerCase().includes(lowerQuery) ||
-      item.topic.value.toLowerCase().includes(lowerQuery) ||
-      item.format.value.toLowerCase().includes(lowerQuery) ||
-      item.language.value.toLowerCase().includes(lowerQuery) ||
-      item.tags.value.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
-      item.category.name.value.toLowerCase().includes(lowerQuery)
+    return Array.from(this.items.values()).filter(
+      item =>
+        item.title.value.toLowerCase().includes(lowerQuery) ||
+        item.author.value.toLowerCase().includes(lowerQuery) ||
+        item.description.value.toLowerCase().includes(lowerQuery) ||
+        item.publisher.value.toLowerCase().includes(lowerQuery) ||
+        item.owner.value.toLowerCase().includes(lowerQuery) ||
+        item.topic.value.toLowerCase().includes(lowerQuery) ||
+        item.format.value.toLowerCase().includes(lowerQuery) ||
+        item.language.value.toLowerCase().includes(lowerQuery) ||
+        item.tags.value.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
+        item.category.name.value.toLowerCase().includes(lowerQuery)
     );
   }
 }

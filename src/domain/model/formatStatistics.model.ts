@@ -10,7 +10,7 @@ export interface FormatData {
 export class FormatStatistics {
   public static fromItems(items: Item[]): FormatData {
     const counts: Record<string, number> = {};
-    
+
     items.forEach(item => {
       const format = item.format.value;
       if (format) {

@@ -11,11 +11,7 @@ export class PaginationViewModel {
   }
 
   totalPages = computed(() => {
-    return new Pagination(
-      this.currentPage.value,
-      this.itemsPerPage,
-      this.totalItems.value
-    ).totalPages;
+    return new Pagination(this.currentPage.value, this.itemsPerPage, this.totalItems.value).totalPages;
   });
 
   setTotalItems(count: number) {

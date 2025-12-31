@@ -18,11 +18,11 @@ i18n
       }
     },
     fallbackLng: 'ca',
-    
+
     debug: import.meta.env.DEV,
 
     interpolation: {
-      escapeValue: false 
+      escapeValue: false
     }
   });
 

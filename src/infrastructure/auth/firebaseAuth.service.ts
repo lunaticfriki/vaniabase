@@ -12,7 +12,7 @@ export class FirebaseAuthService implements AuthService {
   currentUser = signal<User | null>(null);
 
   constructor(@inject(UserRepository) private userRepository: UserRepository) {
-    onAuthStateChanged(auth, async (firebaseUser) => {
+    onAuthStateChanged(auth, async firebaseUser => {
       if (firebaseUser) {
         const user = User.create(
           Id.create(firebaseUser.uid),
@@ -22,7 +22,7 @@ export class FirebaseAuthService implements AuthService {
         );
         this.currentUser.value = user;
         this.userRepository.save(user).catch(err => {
-            console.error('[FirebaseAuthService] Failed to save user profile', err);
+          console.error('[FirebaseAuthService] Failed to save user profile', err);
         });
       } else {
         this.currentUser.value = null;
@@ -34,7 +34,7 @@ export class FirebaseAuthService implements AuthService {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Error signing in with Google", error);
+      console.error('Error signing in with Google', error);
       throw error;
     }
   }

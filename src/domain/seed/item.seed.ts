@@ -15,7 +15,7 @@ export class ItemSeed {
     for (let i = 0; i < count; i++) {
       const randomCategory = categories[Math.floor(Math.random() * categories.length)];
       const randomUser = users[Math.floor(Math.random() * users.length)];
-      const item = ItemMother.create({ 
+      const item = ItemMother.create({
         category: randomCategory,
         owner: Owner.create(randomUser.id.value)
       });

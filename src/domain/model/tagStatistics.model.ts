@@ -10,7 +10,7 @@ export interface TagData {
 export class TagStatistics {
   public static fromItems(items: Item[]): TagData {
     const counts: Record<string, number> = {};
-    
+
     items.forEach(item => {
       item.tags.value.forEach(t => {
         const key = t;

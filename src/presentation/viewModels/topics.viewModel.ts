@@ -5,7 +5,7 @@ import { PaginationViewModel } from './pagination.viewModel';
 
 export class TopicsViewModel {
   private itemStateService: ItemStateService;
-  
+
   activeTopicName = signal<string>('');
   pagination: PaginationViewModel;
 
@@ -42,13 +42,11 @@ export class TopicsViewModel {
   filteredItems = computed(() => {
     const items = this.items.value;
     if (!items.length) return [];
-    
+
     const active = this.activeTopicName.value.toLowerCase();
     if (!active) return items;
 
-    return items.filter(item => 
-      item.topic.value.toLowerCase() === active
-    );
+    return items.filter(item => item.topic.value.toLowerCase() === active);
   });
 
   currentItems = computed(() => {
@@ -63,9 +61,9 @@ export class TopicsViewModel {
 
   getFontSizeClass(count: number): string {
     const { minCount, maxCount } = this.topicData.value;
-    
+
     if (minCount === maxCount) return 'text-lg';
-    
+
     const normalized = (count - minCount) / (maxCount - minCount);
 
     if (normalized < 0.1) return 'text-sm';

@@ -26,13 +26,8 @@ export class FirebaseUserRepository implements UserRepository {
     const docSnap = await getDoc(userRef);
 
     if (docSnap.exists()) {
-        const data = docSnap.data();
-        return User.create(
-            Id.create(data.id),
-            data.name,
-            data.email,
-            data.avatar
-        );
+      const data = docSnap.data();
+      return User.create(Id.create(data.id), data.name, data.email, data.avatar);
     }
     return undefined;
   }
