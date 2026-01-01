@@ -1,5 +1,6 @@
 
 import 'reflect-metadata';
+import type { Mock } from 'vitest';
 import { AuthViewModel } from '../auth.viewModel';
 import { AuthService } from '../../../application/auth/auth.service';
 import { route } from 'preact-router';
@@ -27,7 +28,7 @@ describe('AuthViewModel', () => {
     });
 
     it('should login with google successfully and redirect', async () => {
-        (mockAuthService.loginWithGoogle as any).mockResolvedValue(true);
+        (mockAuthService.loginWithGoogle as Mock).mockResolvedValue(true);
 
         await viewModel.loginWithGoogle();
 
@@ -38,7 +39,7 @@ describe('AuthViewModel', () => {
     });
 
     it('should handle login failure', async () => {
-        (mockAuthService.loginWithGoogle as any).mockResolvedValue(false);
+        (mockAuthService.loginWithGoogle as Mock).mockResolvedValue(false);
 
         await viewModel.loginWithGoogle();
 
@@ -49,7 +50,7 @@ describe('AuthViewModel', () => {
     });
 
     it('should handle login exception', async () => {
-        (mockAuthService.loginWithGoogle as any).mockRejectedValue(new Error('Network error'));
+        (mockAuthService.loginWithGoogle as Mock).mockRejectedValue(new Error('Network error'));
 
         await viewModel.loginWithGoogle();
 
@@ -60,7 +61,7 @@ describe('AuthViewModel', () => {
     });
 
     it('should logout and redirect', async () => {
-        (mockAuthService.logout as any).mockResolvedValue(undefined);
+        (mockAuthService.logout as Mock).mockResolvedValue(undefined);
 
         await viewModel.logout();
 

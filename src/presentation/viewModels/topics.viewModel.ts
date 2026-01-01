@@ -14,7 +14,7 @@ export class TopicsViewModel {
     this.pagination = new PaginationViewModel(12);
 
     effect(() => {
-      this.activeTopicName.value;
+      void this.activeTopicName.value;
       this.pagination.goToPage(1);
     });
 

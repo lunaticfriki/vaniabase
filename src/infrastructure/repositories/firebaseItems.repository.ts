@@ -18,7 +18,7 @@ import { Created, Completed, Year } from '../../domain/model/value-objects/dateA
 import { ItemsRepository } from '../../domain/repositories/items.repository';
 import { injectable } from 'inversify';
 import { db, auth } from '../firebase/firebaseConfig';
-import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, Timestamp, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, Timestamp, query, where, type DocumentData } from 'firebase/firestore';
 
 @injectable()
 export class FirebaseItemsRepository implements ItemsRepository {
@@ -106,7 +106,7 @@ export class FirebaseItemsRepository implements ItemsRepository {
     );
   }
 
-  private mapToItem(id: string, data: any): Item {
+  private mapToItem(id: string, data: DocumentData): Item {
     const createdDate =
       data.created instanceof Timestamp
         ? data.created.toDate()

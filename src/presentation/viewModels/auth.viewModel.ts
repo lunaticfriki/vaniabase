@@ -19,8 +19,12 @@ export class AuthViewModel {
       } else {
         this.error.value = 'Failed to login with Google';
       }
-    } catch (err: any) {
-      this.error.value = err.message || 'An error occurred during login';
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        this.error.value = err.message;
+      } else {
+        this.error.value = 'An error occurred during login';
+      }
     } finally {
       this.loading.value = false;
     }

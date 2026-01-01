@@ -173,9 +173,13 @@ export class CreateItemViewModel {
       await Promise.all(validItems.map(item => this.itemStateService.createItem(item)));
       return true;
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Import error:', err);
-      this.importError.value = err.message || 'parse_error';
+      if (err instanceof Error) {
+        this.importError.value = err.message;
+      } else {
+        this.importError.value = 'parse_error';
+      }
       return false;
     } finally {
       this.isImporting.value = false;

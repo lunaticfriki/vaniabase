@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import type { ComponentType, FunctionalComponent } from 'preact';
 
-export function createLazy<T = any>(loader: () => Promise<ComponentType<T>>) {
+export function createLazy<T>(loader: () => Promise<ComponentType<T>>) {
   let cachedPromise: Promise<ComponentType<T>> | null = null;
   let CachedComponent: ComponentType<T> | null = null;
 

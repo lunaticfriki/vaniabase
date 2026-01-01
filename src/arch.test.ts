@@ -56,7 +56,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/repositories')
       .should()
-      .matchPattern('.*\.repository\.ts')
+      .matchPattern('.*.repository.ts')
       .check();
     expect(violations).toEqual([]);
   });
@@ -65,7 +65,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/services')
       .should()
-      .matchPattern('.*\.(service|readService|writeService|stateService)\.ts')
+      .matchPattern('.*.(service|readService|writeService|stateService).ts')
       .check();
     expect(violations).toEqual([]);
   });
@@ -74,7 +74,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/presentation/components')
       .should()
-      .matchPattern('.*\.component\.tsx')
+      .matchPattern('.*.component.tsx')
       .check();
     expect(violations).toEqual([]);
   });
@@ -83,7 +83,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/presentation/pages')
       .should()
-      .matchPattern('.*\.page\.tsx')
+      .matchPattern('.*.page.tsx')
       .check();
     expect(violations).toEqual([]);
   });
@@ -92,7 +92,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/model/entities')
       .should()
-      .matchPattern('.*\.entity\.ts')
+      .matchPattern('.*.entity.ts')
       .check();
     expect(violations).toEqual([]);
   });
@@ -101,7 +101,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/model/value-objects')
       .should()
-      .matchPattern('.*\.valueObject\.ts')
+      .matchPattern('.*.valueObject.ts')
       .check();
     expect(violations).toEqual([]);
   });
@@ -110,7 +110,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/presentation/viewModels')
       .should()
-      .matchPattern('.*\.viewModel\.ts')
+      .matchPattern('.*.viewModel.ts')
       .check();
     expect(violations).toEqual([]);
   });
@@ -120,7 +120,7 @@ describe('Architecture Test', () => {
       .inFolder('src/domain/model')
       .matchingPattern('.*Statistics.ts')
       .should()
-      .matchPattern('.*\.model\.ts')
+      .matchPattern('.*.model.ts')
       .check();
     expect(violations).toEqual([]);
   }, 10000);
@@ -132,7 +132,7 @@ describe('Architecture Test', () => {
       .inFolder('src/domain/test')
       .matchingPattern('.*mother.ts')
       .should()
-      .matchPattern('.*\.mother\.ts')
+      .matchPattern('.*.mother.ts')
       .check();
 
     expect(violations).toEqual([]);
@@ -142,7 +142,7 @@ describe('Architecture Test', () => {
     const violations = await filesOfProject('./tsconfig.app.json')
       .inFolder('src/domain/seed')
       .should()
-      .matchPattern('.*\.seed\.ts')
+      .matchPattern('.*.seed.ts')
       .check();
     expect(violations).toEqual([]);
   });

@@ -14,7 +14,7 @@ export class FormatsViewModel {
     this.pagination = new PaginationViewModel(12);
 
     effect(() => {
-      this.activeFormatName.value;
+      void this.activeFormatName.value;
       this.pagination.goToPage(1);
     });
 

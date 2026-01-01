@@ -14,7 +14,7 @@ export class TagsViewModel {
     this.pagination = new PaginationViewModel(12);
 
     effect(() => {
-      this.activeTagName.value;
+      void this.activeTagName.value;
       this.pagination.goToPage(1);
     });
 

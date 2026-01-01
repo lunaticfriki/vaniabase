@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "tmux": "bash scripts/tmux-dev.sh",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@preact/signals": "^2.5.1",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-decorators": "^7.28.0",
+    "@eslint/js": "^9.39.2",
     "@faker-js/faker": "^10.1.0",
     "@preact/preset-vite": "^2.10.2",
     "@tailwindcss/postcss": "^4.1.18",
@@ -35,12 +38,16 @@
     "@types/uuid": "^11.0.0",
     "autoprefixer": "^10.4.23",
     "babel-plugin-transform-typescript-metadata": "^0.4.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
     "postcss": "^8.5.6",
     "prettier": "^3.7.4",
     "tailwindcss": "^4.1.18",
     "ts-mockito": "^2.6.1",
     "tsarch": "^5.4.1",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.51.0",
     "vite": "^7.2.4",
     "vitest": "^4.0.16"
   }
