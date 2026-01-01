@@ -6,7 +6,7 @@ import { ItemStateService } from '../../application/item/item.stateService';
 import { StorageService } from '../../application/services/storage.service';
 import { AuthService } from '../../application/auth/auth.service';
 import { NotificationService } from '../../domain/services/notification.service';
-import { ImageLookupService } from '../../infrastructure/services/imageLookupService';
+
 import { ItemForm } from '../components/itemForm.component';
 import type { ItemFormData } from '../components/itemForm.component';
 import { Loading } from '../components/loading.component';
@@ -24,7 +24,7 @@ export function EditItem({ id }: Props) {
   const storageService = container.get(StorageService);
 
   const viewModel = useMemo(() => {
-    return new EditItemViewModel(container.get(ItemStateService), container.get(ImageLookupService));
+    return new EditItemViewModel(container.get(ItemStateService));
   }, []);
 
   const { loading, item, formData } = viewModel;
