@@ -1,7 +1,6 @@
 
 import { signal } from '@preact/signals';
 import { ItemStateService } from '../../application/item/item.stateService';
-import { ImageLookupService } from '../../infrastructure/services/imageLookupService';
 import { Item } from '../../domain/model/entities/item.entity';
 import { Category } from '../../domain/model/entities/category.entity';
 import { Id } from '../../domain/model/value-objects/id.valueObject';
@@ -27,7 +26,6 @@ export class EditItemViewModel {
 
   constructor(
     private itemStateService: ItemStateService,
-    private imageLookupService: ImageLookupService
   ) {}
 
   async loadItem(id: string) {
