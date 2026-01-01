@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import { Link as RouterLink } from 'preact-router/match';
 import { route } from 'preact-router';
 import { useTranslation } from 'react-i18next';
 import { container } from '../../infrastructure/di/container';
 import { ItemStateService } from '../../application/item/item.stateService';
-import { Item } from '../../domain/model/entities/item.entity';
-import { Completed } from '../../domain/model/value-objects/dateAndNumberValues.valueObject';
 import { Loading } from '../components/loading.component';
+import { ItemDetailViewModel } from '../viewModels/itemDetail.viewModel';
 import type { JSX } from 'preact';
 
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
@@ -18,58 +17,26 @@ interface Props {
 
 export function ItemDetail({ id }: Props) {
   const { t } = useTranslation();
-  const [item, setItem] = useState<Item | null>(null);
-  const [loading, setLoading] = useState(true);
-  const itemStateService = container.get(ItemStateService);
+
+  const viewModel = useMemo(() => {
+    return new ItemDetailViewModel(container.get(ItemStateService));
+  }, []);
+
+  const { item, loading } = viewModel;
 
   useEffect(() => {
-    if (!id) return;
-
-    const loadItem = async () => {
-      setLoading(true);
-      const foundItem = await itemStateService.getItem(id);
-      if (foundItem) {
-        setItem(foundItem);
-      } else {
-        console.error('Item not found');
-      }
-      setLoading(false);
-    };
-
-    loadItem();
+    if (id) {
+      viewModel.loadItem(id);
+    }
   }, [id]);
 
   const handleToggleComplete = async () => {
-    if (!item) return;
-
-    const newStatus = Completed.create(!item.completed.value);
-
-    const updatedItem = Item.create({
-      id: item.id,
-      title: item.title,
-      description: item.description,
-      author: item.author,
-      cover: item.cover,
-      owner: item.owner,
-      tags: item.tags,
-      topic: item.topic,
-      format: item.format,
-      created: item.created,
-      completed: newStatus,
-      year: item.year,
-      publisher: item.publisher,
-      language: item.language,
-      category: item.category
-    });
-
-    await itemStateService.updateItem(updatedItem);
-    setItem(updatedItem);
+    await viewModel.toggleComplete();
   };
 
   const handleDelete = async () => {
-    if (!item) return;
     if (window.confirm(t('item_detail.confirm_delete'))) {
-      await itemStateService.deleteItem(item.id.value);
+      await viewModel.deleteItem();
       route('/');
     }
   };
@@ -78,11 +45,11 @@ export function ItemDetail({ id }: Props) {
     history.go(-1);
   };
 
-  if (loading) {
+  if (loading.value) {
     return <Loading />;
   }
 
-  if (!item) {
+  if (!item.value) {
     return (
       <div class="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
         <h2 class="text-2xl text-white/50">{t('item_detail.not_found')}</h2>
@@ -95,6 +62,8 @@ export function ItemDetail({ id }: Props) {
       </div>
     );
   }
+
+  const currentItem = item.value;
 
   return (
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -122,10 +91,10 @@ export function ItemDetail({ id }: Props) {
             {t('item_detail.back')}
           </span>
         </button>
-        {item && (
+        {currentItem && (
           <div class="flex items-center gap-4">
             <Link
-              href={`/edit/${item.id.value}`}
+              href={`/edit/${currentItem.id.value}`}
               class="flex items-center gap-2 text-brand-magenta hover:text-white transition-colors"
             >
               <span class="uppercase tracking-widest text-xs font-bold">{t('item_detail.edit')}</span>
@@ -147,7 +116,11 @@ export function ItemDetail({ id }: Props) {
               class="aspect-2/3 overflow-hidden bg-zinc-900"
               style="clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);"
             >
-              <img src={item.cover.value} alt={`Cover for ${item.title.value}`} class="w-full h-full object-cover" />
+              <img
+                src={currentItem.cover.value}
+                alt={`Cover for ${currentItem.title.value}`}
+                class="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -158,22 +131,22 @@ export function ItemDetail({ id }: Props) {
               class="inline-block px-4 py-1 text-xs font-bold tracking-widest uppercase bg-brand-violet/20 text-brand-magenta border-l-2 border-brand-violet"
               style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);"
             >
-              <Link href={`/categories/${item.category.name.value.toLowerCase()}`} class="capitalize">
-                {t(`categories.list.${item.category.name.value.toLowerCase()}`, item.category.name.value)}
+              <Link href={`/categories/${currentItem.category.name.value.toLowerCase()}`} class="capitalize">
+                {t(`categories.list.${currentItem.category.name.value.toLowerCase()}`, currentItem.category.name.value)}
               </Link>
             </div>
 
             <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-white leading-tight capitalize">
-              {item.title.value}
+              {currentItem.title.value}
             </h1>
 
             <div class="text-xl text-white/60">
-              {t('item.by')} <span class="text-white capitalize">{item.author.value}</span>
+              {t('item.by')} <span class="text-white capitalize">{currentItem.author.value}</span>
             </div>
           </div>
 
           <div class="prose prose-invert prose-lg text-white/80">
-            <p>{item.description.value}</p>
+            <p>{currentItem.description.value}</p>
           </div>
 
           <div class="pt-4">
@@ -183,13 +156,13 @@ export function ItemDetail({ id }: Props) {
               class={`
                 w-full md:w-auto px-8 py-4 font-black uppercase tracking-widest transition-all
                 ${
-                  item.completed.value
+                  currentItem.completed.value
                     ? 'bg-white/10 text-white/60 hover:bg-white/20 hover:text-white'
                     : 'bg-green-500 text-black hover:bg-green-400 hover:scale-[1.02] shadow-[0_0_20px_rgba(34,197,94,0.3)]'
                 }
               `}
             >
-              {item.completed.value
+              {currentItem.completed.value
                 ? t('create_item.buttons.mark_uncompleted')
                 : t('create_item.buttons.mark_completed')}
             </button>
@@ -198,29 +171,36 @@ export function ItemDetail({ id }: Props) {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8 border-t border-white/10">
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.year')}</div>
-              <div class="text-lg font-medium">{item.year.value}</div>
+              <div class="text-lg font-medium">{currentItem.year.value}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">
                 {t('item_detail.labels.publisher')}
               </div>
-              <div class="text-lg font-medium capitalize">{item.publisher.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{currentItem.publisher.value || '-'}</div>
+            </div>
+
+            <div>
+              <div class="text-xs text-white/40 uppercase tracking-widest mb-1">
+                {t('item_detail.labels.reference')}
+              </div>
+              <div class="text-lg font-medium capitalize">{currentItem.reference.value || '-'}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.language')}</div>
-              <div class="text-lg font-medium capitalize">{item.language.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{currentItem.language.value || '-'}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.format')}</div>
-              <div class="text-lg font-medium capitalize">{item.format.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{currentItem.format.value || '-'}</div>
             </div>
 
             <div>
               <div class="text-xs text-white/40 uppercase tracking-widest mb-1">{t('item_detail.labels.topic')}</div>
-              <div class="text-lg font-medium capitalize">{item.topic.value || '-'}</div>
+              <div class="text-lg font-medium capitalize">{currentItem.topic.value || '-'}</div>
             </div>
 
             <div>
@@ -228,16 +208,16 @@ export function ItemDetail({ id }: Props) {
                 {t('item_detail.labels.completed')}
               </div>
               <div class="text-lg font-medium capitalize">
-                {item.completed.value ? t('item_detail.values.yes') : t('item_detail.values.no')}
+                {currentItem.completed.value ? t('item_detail.values.yes') : t('item_detail.values.no')}
               </div>
             </div>
           </div>
 
-          {item.tags.value.length > 0 ? (
+          {currentItem.tags.value.length > 0 ? (
             <div class="pt-6">
               <div class="text-xs text-white/40 uppercase tracking-widest mb-3">{t('item_detail.labels.tags')}</div>
               <div class="flex flex-wrap gap-2">
-                {item.tags.value.map(tag => (
+                {currentItem.tags.value.map(tag => (
                   <Link
                     key={tag}
                     href={`/tags/${tag.toLowerCase()}`}

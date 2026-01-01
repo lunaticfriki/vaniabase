@@ -6,36 +6,30 @@ import { Loading } from '../components/loading.component';
 import { PreviewCard } from '../components/previewCard.component';
 import { Pagination } from '../components/pagination.component';
 import { PaginationViewModel } from '../viewModels/pagination.viewModel';
+import { CompletedItemsViewModel } from '../viewModels/completedItems.viewModel';
 
 export function CompletedItems() {
   const { t } = useTranslation();
-  const itemStateService = container.get(ItemStateService);
-  const itemsPerPage = 12;
 
-  const paginationViewModel = useMemo(() => new PaginationViewModel(itemsPerPage), []);
-
-  useEffect(() => {
-    if (itemStateService.items.value.length === 0) {
-      itemStateService.loadItems();
-    }
+  const viewModel = useMemo(() => {
+    return new CompletedItemsViewModel(container.get(ItemStateService));
   }, []);
 
-  const allItems = itemStateService.items.value;
-  const isLoading = itemStateService.isLoading.value;
-
-  const completedItems = allItems
-    .filter(item => item.completed.value === true)
-    .sort((a, b) => b.created.value.getTime() - a.created.value.getTime());
+  const paginationViewModel = useMemo(() => new PaginationViewModel(12), []);
+  const { allCompletedItems, isLoading, totalItems } = viewModel;
 
   useEffect(() => {
-    paginationViewModel.setTotalItems(completedItems.length);
-  }, [completedItems.length]);
+    paginationViewModel.setTotalItems(totalItems.value);
+  }, [totalItems.value]);
 
-  const currentPage = paginationViewModel.currentPage.value;
+  const currentItems = useMemo(() => {
+    return allCompletedItems.value.slice(
+      (paginationViewModel.currentPage.value - 1) * paginationViewModel.itemsPerPage,
+      paginationViewModel.currentPage.value * paginationViewModel.itemsPerPage
+    );
+  }, [allCompletedItems.value, paginationViewModel.currentPage.value, paginationViewModel.itemsPerPage]);
 
-  const currentItems = completedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  if (isLoading) {
+  if (isLoading.value && totalItems.value === 0) {
     return <Loading />;
   }
 
@@ -48,7 +42,7 @@ export function CompletedItems() {
         <p class="text-white/60">{t('completed_items.subtitle')}</p>
       </div>
 
-      {completedItems.length === 0 ? (
+      {totalItems.value === 0 ? (
         <div class="text-center py-20 text-white/40">
           <p>{t('completed_items.no_items')}</p>
         </div>

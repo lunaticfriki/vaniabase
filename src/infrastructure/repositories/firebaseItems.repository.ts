@@ -10,7 +10,8 @@ import {
   Topic,
   Format,
   Publisher,
-  Language
+  Language,
+  Reference
 } from '../../domain/model/value-objects/stringValues.valueObject';
 import { Tags } from '../../domain/model/value-objects/tags.valueObject';
 import { Created, Completed, Year } from '../../domain/model/value-objects/dateAndNumberValues.valueObject';
@@ -45,7 +46,8 @@ export class FirebaseItemsRepository implements ItemsRepository {
       category: {
         id: item.category.id.value,
         name: item.category.name.value
-      }
+      },
+      reference: item.reference.value
     };
 
     await setDoc(itemRef, data);
@@ -128,7 +130,8 @@ export class FirebaseItemsRepository implements ItemsRepository {
       year: Year.create(data.year),
       publisher: Publisher.create(data.publisher),
       language: Language.create(data.language),
-      category: Category.create(Id.create(data.category?.id || ''), Title.create(data.category?.name || ''))
+      category: Category.create(Id.create(data.category?.id || ''), Title.create(data.category?.name || '')),
+      reference: Reference.create(data.reference ? data.reference.toString() : '0')
     });
   }
 }

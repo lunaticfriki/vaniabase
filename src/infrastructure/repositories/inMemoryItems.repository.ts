@@ -57,7 +57,8 @@ export class InMemoryItemsRepository implements ItemsRepository {
         item.format.value.toLowerCase().includes(lowerQuery) ||
         item.language.value.toLowerCase().includes(lowerQuery) ||
         item.tags.value.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
-        item.category.name.value.toLowerCase().includes(lowerQuery)
+        item.category.name.value.toLowerCase().includes(lowerQuery) ||
+        item.reference.value.toLowerCase().includes(lowerQuery)
     );
   }
 }

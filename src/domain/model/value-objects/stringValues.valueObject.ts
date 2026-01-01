@@ -107,3 +107,15 @@ export class Language extends ValueObject<string> {
     return new Language('');
   }
 }
+
+export class Reference extends ValueObject<string> {
+  private constructor(value: string) {
+    super(value);
+  }
+  public static create(value: string): Reference {
+    return new Reference(value);
+  }
+  public static empty(): Reference {
+    return new Reference('');
+  }
+}

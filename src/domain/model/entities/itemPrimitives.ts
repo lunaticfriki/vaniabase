@@ -12,4 +12,5 @@ export interface ItemPrimitives {
   publisher: string;
   language: string;
   category: string;
+  reference: string;
 }

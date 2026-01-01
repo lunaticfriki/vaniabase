@@ -31,6 +31,8 @@ import { CategoryReadService } from '../../application/category/category.readSer
 import { CategoryWriteService } from '../../application/category/category.writeService';
 import { CategoryStateService } from '../../application/category/category.stateService';
 
+import { ImageLookupService } from '../services/imageLookupService';
+
 const container = new Container();
 
 container.bind(ItemsRepository).to(FirebaseItemsRepository).inSingletonScope();
@@ -49,5 +51,7 @@ container.bind(ItemStateService).toSelf().inSingletonScope();
 container.bind(CategoryReadService).toSelf().inSingletonScope();
 container.bind(CategoryWriteService).toSelf().inSingletonScope();
 container.bind(CategoryStateService).toSelf().inSingletonScope();
+
+container.bind(ImageLookupService).toSelf().inSingletonScope();
 
 export { container };

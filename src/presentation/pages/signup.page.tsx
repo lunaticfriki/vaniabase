@@ -1,22 +1,30 @@
 import type { FunctionalComponent, JSX } from 'preact';
+import { useMemo } from 'preact/hooks';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'preact-router/match';
 import { container } from '../../infrastructure/di/container';
 import { AuthService } from '../../application/auth/auth.service';
+import { AuthViewModel } from '../viewModels/auth.viewModel';
+import { Loading } from '../components/loading.component';
 
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a']) => JSX.Element;
 
 export const Signup: FunctionalComponent = () => {
   const { t } = useTranslation();
-  const authService = container.get(AuthService);
+
+  const viewModel = useMemo(() => {
+    return new AuthViewModel(container.get(AuthService));
+  }, []);
+
+  const { loading, error } = viewModel;
 
   const handleSignup = async () => {
-    try {
-      await authService.login();
-    } catch (e) {
-      console.error(e);
-    }
+    await viewModel.loginWithGoogle();
   };
+
+  if (loading.value) {
+    return <Loading />;
+  }
 
   return (
     <div class="flex flex-col items-center justify-center min-h-[80vh] text-white p-4 animate-in fade-in zoom-in duration-500">
@@ -30,9 +38,16 @@ export const Signup: FunctionalComponent = () => {
       <div class="bg-zinc-900/50 border border-white/10 p-8 rounded-lg shadow-2xl backdrop-blur-sm flex flex-col gap-6 w-full max-w-md relative overflow-hidden group">
         <div class="absolute inset-0 bg-linear-to-br from-brand-magenta/5 to-brand-yellow/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
+        {error.value && (
+          <div class="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded text-sm text-center">
+            {error.value}
+          </div>
+        )}
+
         <button
           onClick={handleSignup}
-          class="relative flex items-center justify-center gap-3 px-6 py-4 bg-white text-black hover:bg-gray-100 rounded font-bold transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)]"
+          disabled={loading.value}
+          class="relative flex items-center justify-center gap-3 px-6 py-4 bg-white text-black hover:bg-gray-100 rounded font-bold transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path

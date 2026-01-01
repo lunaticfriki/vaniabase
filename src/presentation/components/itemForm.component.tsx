@@ -16,6 +16,7 @@ export interface ItemFormData {
   publisher: string;
   language: string;
   category: string;
+  reference: string;
 }
 
 interface Props {
@@ -147,7 +148,7 @@ export function ItemForm({ initialValues, onSubmit, submitLabel, onUploadCover }
           />
         </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="space-y-2">
           <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
             {t('create_item.labels.publisher')}
@@ -168,6 +169,18 @@ export function ItemForm({ initialValues, onSubmit, submitLabel, onUploadCover }
             type="text"
             name="language"
             value={formData.language}
+            onInput={handleInput}
+            class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors"
+          />
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase tracking-widest text-brand-magenta">
+            {t('create_item.labels.reference')}
+          </label>
+          <input
+            type="text"
+            name="reference"
+            value={formData.reference}
             onInput={handleInput}
             class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors"
           />

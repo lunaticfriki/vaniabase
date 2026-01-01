@@ -4,5 +4,6 @@ import { User } from '../../domain/model/entities/user.entity';
 export abstract class AuthService {
   abstract currentUser: Signal<User | null>;
   abstract login(userId?: string): Promise<void>;
+  abstract loginWithGoogle(): Promise<boolean>;
   abstract logout(): Promise<void>;
 }

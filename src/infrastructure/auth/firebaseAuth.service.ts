@@ -31,11 +31,16 @@ export class FirebaseAuthService implements AuthService {
   }
 
   async login(_userId?: string): Promise<void> {
+    await this.loginWithGoogle();
+  }
+
+  async loginWithGoogle(): Promise<boolean> {
     try {
       await signInWithPopup(auth, googleProvider);
+      return true;
     } catch (error) {
       console.error('Error signing in with Google', error);
-      throw error;
+      return false;
     }
   }
 

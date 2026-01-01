@@ -1,5 +1,7 @@
+import { injectable } from 'inversify';
 import { Id } from '../../domain/model/value-objects/id.valueObject';
 
+@injectable()
 export class ImageLookupService {
   private static readonly AVAILABLE_COVERS = [
     'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&auto=format&fit=crop',
@@ -13,13 +15,20 @@ export class ImageLookupService {
     'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop'
   ];
 
-  static getCoverFor(id: Id): string {
+  getCoverFor(id: Id): string {
     const hash = this.hashString(id.value);
-    const index = Math.abs(hash) % this.AVAILABLE_COVERS.length;
-    return this.AVAILABLE_COVERS[index];
+    const index = Math.abs(hash) % ImageLookupService.AVAILABLE_COVERS.length;
+    return ImageLookupService.AVAILABLE_COVERS[index];
   }
 
-  private static hashString(str: string): number {
+  async findImage(query: string): Promise<string> {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const hash = this.hashString(query);
+      const index = Math.abs(hash) % ImageLookupService.AVAILABLE_COVERS.length;
+      return ImageLookupService.AVAILABLE_COVERS[index];
+  }
+
+  private hashString(str: string): number {
     let hash = 0;
     if (str.length === 0) return hash;
     for (let i = 0; i < str.length; i++) {

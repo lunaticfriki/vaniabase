@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'preact/hooks';
-import { computed } from '@preact/signals';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'preact-router/match';
 import type { JSX } from 'preact';
@@ -10,6 +9,7 @@ import { PreviewCard } from '../components/previewCard.component';
 import { PaginationViewModel } from '../viewModels/pagination.viewModel';
 import { Pagination } from '../components/pagination.component';
 import { Loading } from '../components/loading.component';
+import { CategoriesViewModel } from '../viewModels/categories.viewModel';
 
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
 
@@ -20,42 +20,38 @@ interface Props {
 
 export function Categories({ categoryName }: Props) {
   const { t } = useTranslation();
-  const itemStateService = container.get(ItemStateService);
-  const categoryStateService = container.get(CategoryStateService);
 
-  const items = itemStateService.items;
+  const categoryStateService = container.get(CategoryStateService);
   const categories = categoryStateService.categories;
-  const isItemsLoading = itemStateService.isLoading;
+
+  const viewModel = useMemo(() => {
+    return new CategoriesViewModel(container.get(ItemStateService));
+  }, []);
+
+  const pagination = useMemo(() => new PaginationViewModel(12), []);
+  const { totalItems, paginatedItems, isLoading } = viewModel;
 
   const activeCategoryName = (categoryName || 'books').toLowerCase();
 
-  const pagination = useMemo(() => new PaginationViewModel(12), []);
-
   useEffect(() => {
-    itemStateService.loadItems();
     categoryStateService.loadCategories();
   }, []);
 
-  const filteredItems = computed(() => {
-    if (!items.value.length) return [];
-    return items.value.filter(item => item.category.name.value.toLowerCase() === activeCategoryName);
-  });
-
   useEffect(() => {
-    pagination.goToPage(1);
+    viewModel.selectCategory(activeCategoryName);
   }, [activeCategoryName]);
 
   useEffect(() => {
-    pagination.setTotalItems(filteredItems.value.length);
-  }, [filteredItems.value.length]);
+    pagination.setTotalItems(totalItems.value);
+  }, [totalItems.value]);
 
-  const currentItems = computed(() => {
-    const start = (pagination.currentPage.value - 1) * pagination.itemsPerPage;
-    const end = start + pagination.itemsPerPage;
-    return filteredItems.value.slice(start, end);
-  });
+  useEffect(() => {
+    viewModel.currentPage.value = pagination.currentPage.value;
+  }, [pagination.currentPage.value]);
 
-  if (isItemsLoading.value && items.value.length === 0) {
+  viewModel.itemsPerPage = 12;
+
+  if (isLoading.value && totalItems.value === 0) {
     return <Loading />;
   }
 
@@ -89,24 +85,24 @@ export function Categories({ categoryName }: Props) {
             );
           })}
           <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 relative -top-2">
-            [{filteredItems.value.length}]
+            [{totalItems.value}]
           </span>
         </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {currentItems.value.map(item => (
+        {paginatedItems.value.map(item => (
           <PreviewCard key={item.id.value} item={item} />
         ))}
       </div>
 
-      {filteredItems.value.length === 0 && !isItemsLoading.value && (
+      {totalItems.value === 0 && !isLoading.value && (
         <div class="text-center py-20 text-white/40">
           <p>{t('lists.categories.no_items')}</p>
         </div>
       )}
 
-      {filteredItems.value.length > 0 && <Pagination pagination={pagination} />}
+      {totalItems.value > 0 && <Pagination pagination={pagination} />}
     </div>
   );
 }

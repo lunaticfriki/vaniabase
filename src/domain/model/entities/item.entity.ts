@@ -8,7 +8,8 @@ import {
   Topic,
   Format,
   Publisher,
-  Language
+  Language,
+  Reference
 } from '../value-objects/stringValues.valueObject';
 import { Tags } from '../value-objects/tags.valueObject';
 import { Created, Completed, Year } from '../value-objects/dateAndNumberValues.valueObject';
@@ -30,7 +31,8 @@ export class Item {
     public readonly year: Year,
     public readonly publisher: Publisher,
     public readonly language: Language,
-    public readonly category: Category
+    public readonly category: Category,
+    public readonly reference: Reference
   ) {}
 
   public static create(props: {
@@ -49,6 +51,7 @@ export class Item {
     publisher: Publisher;
     language: Language;
     category: Category;
+    reference: Reference;
   }): Item {
     return new Item(
       props.id,
@@ -65,7 +68,8 @@ export class Item {
       props.year,
       props.publisher,
       props.language,
-      props.category
+      props.category,
+      props.reference
     );
   }
 
@@ -85,7 +89,8 @@ export class Item {
       Year.empty(),
       Publisher.empty(),
       Language.empty(),
-      Category.empty()
+      Category.empty(),
+      Reference.empty()
     );
   }
   public static isEditable(
@@ -102,6 +107,7 @@ export class Item {
       publisher: string;
       language: string;
       category: string;
+      reference: string;
     },
     current: {
       title: string;
@@ -116,6 +122,7 @@ export class Item {
       publisher: string;
       language: string;
       category: string;
+      reference: string;
     }
   ): boolean {
     return (
@@ -130,7 +137,8 @@ export class Item {
       initial.year !== current.year ||
       initial.publisher !== current.publisher ||
       initial.language !== current.language ||
-      initial.category !== current.category
+      initial.category !== current.category ||
+      initial.reference !== current.reference
     );
   }
 }

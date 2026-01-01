@@ -77,6 +77,7 @@
       "title": "Title",
       "author": "Author",
       "description": "Description",
+      "reference": "Reference",
       "category": "Category",
       "year": "Year",
       "format": "Format",
@@ -127,7 +128,8 @@
       "owner": "Owner",
       "topic": "Topic",
       "completed": "Completed",
-      "tags": "Tags"
+      "tags": "Tags",
+      "reference": "Reference"
     },
     "values": {
       "yes": "Yes",

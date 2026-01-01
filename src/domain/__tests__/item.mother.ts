@@ -10,7 +10,8 @@ import {
   Topic,
   Format,
   Publisher,
-  Language
+  Language,
+  Reference
 } from '../model/value-objects/stringValues.valueObject';
 import { Tags } from '../model/value-objects/tags.valueObject';
 import { Created, Completed, Year } from '../model/value-objects/dateAndNumberValues.valueObject';
@@ -35,7 +36,9 @@ export class ItemMother {
       year: Year;
       publisher: Publisher;
       language: Language;
+
       category: Category;
+      reference: Reference;
     }>
   ): Item {
     return Item.create({
@@ -53,7 +56,8 @@ export class ItemMother {
       year: data?.year ? data.year : Year.create(faker.date.past().getFullYear()),
       publisher: data?.publisher ? data.publisher : Publisher.create(faker.company.name()),
       language: data?.language ? data.language : Language.create('English'),
-      category: data?.category || CategoryMother.create()
+      category: data?.category || CategoryMother.create(),
+      reference: data?.reference ? data.reference : Reference.create('0')
     });
   }
 
@@ -73,7 +77,8 @@ export class ItemMother {
       year: Year.empty(),
       publisher: Publisher.empty(),
       language: Language.empty(),
-      category: Category.empty()
+      category: Category.empty(),
+      reference: Reference.empty()
     });
   }
 
@@ -86,7 +91,7 @@ export class ItemMother {
       title: Title.create(title),
       description: Description.create(faker.commerce.productDescription()),
       author: Author.create(faker.person.fullName()),
-      cover: Cover.create(ImageLookupService.getCoverFor(id)),
+      cover: Cover.create(new ImageLookupService().getCoverFor(id)),
       owner: Owner.create(faker.person.fullName()),
       tags: Tags.create([faker.word.sample()]),
       topic: Topic.create(faker.word.noun()),
@@ -96,7 +101,8 @@ export class ItemMother {
       year: Year.create(faker.date.past().getFullYear()),
       publisher: Publisher.create(faker.company.name()),
       language: Language.create('English'),
-      category: CategoryMother.create()
+      category: CategoryMother.create(),
+      reference: Reference.create(faker.string.alphanumeric(10))
     });
   }
 }

@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'preact/hooks';
-import { computed } from '@preact/signals';
 import { useTranslation } from 'react-i18next';
 
 import { container } from '../../infrastructure/di/container';
@@ -8,6 +7,7 @@ import { PreviewCard } from '../components/previewCard.component';
 import { PaginationViewModel } from '../viewModels/pagination.viewModel';
 import { Pagination } from '../components/pagination.component';
 import { SkeletonItem } from '../components/skeletonItem.component';
+import { CollectionViewModel } from '../viewModels/collection.viewModel';
 
 interface Props {
   path?: string;
@@ -15,31 +15,27 @@ interface Props {
 
 export function Collection({ path: _ }: Props) {
   const { t } = useTranslation();
-  const itemStateService = container.get(ItemStateService);
-  const items = itemStateService.items;
-  const isLoading = itemStateService.isLoading;
+
+  const viewModel = useMemo(() => {
+    return new CollectionViewModel(container.get(ItemStateService));
+  }, []);
 
   const pagination = useMemo(() => new PaginationViewModel(12), []);
 
-  useEffect(() => {
-    itemStateService.loadItems();
-  }, []);
+  const { isLoading, totalItems } = viewModel;
 
   useEffect(() => {
-    pagination.setTotalItems(items.value.length);
-  }, [items.value.length]);
+    pagination.setTotalItems(totalItems.value);
+  }, [totalItems.value]);
 
-  const sortedItems = computed(() => {
-    return [...items.value].sort((a, b) => b.created.value.getTime() - a.created.value.getTime());
-  });
+  const currentItems = useMemo(() => {
+    return viewModel.allItems.value.slice(
+      (pagination.currentPage.value - 1) * pagination.itemsPerPage,
+      pagination.currentPage.value * pagination.itemsPerPage
+    );
+  }, [viewModel.allItems.value, pagination.currentPage.value, pagination.itemsPerPage]);
 
-  const currentItems = computed(() => {
-    const start = (pagination.currentPage.value - 1) * pagination.itemsPerPage;
-    const end = start + pagination.itemsPerPage;
-    return sortedItems.value.slice(start, end);
-  });
-
-  if (isLoading.value && items.value.length === 0) {
+  if (isLoading.value && totalItems.value === 0) {
     return (
       <div class="space-y-8">
         <div class="space-y-2">
@@ -66,24 +62,24 @@ export function Collection({ path: _ }: Props) {
         <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow">
           {t('collection.title')}{' '}
           <span class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-brand-magenta to-brand-yellow ml-2 align-super">
-            [{items.value.length}]
+            [{totalItems.value}]
           </span>
         </h1>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {currentItems.value.map(item => (
+        {currentItems.map(item => (
           <PreviewCard key={item.id.value} item={item} />
         ))}
       </div>
 
-      {items.value.length === 0 && (
+      {totalItems.value === 0 && (
         <div class="text-center py-20 text-white/40">
           <p>{t('collection.no_items')}</p>
         </div>
       )}
 
-      {items.value.length > 0 && <Pagination pagination={pagination} />}
+      {totalItems.value > 0 && <Pagination pagination={pagination} />}
     </div>
   );
 }

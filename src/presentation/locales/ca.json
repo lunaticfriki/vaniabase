@@ -77,6 +77,7 @@
       "title": "Títol",
       "author": "Autor",
       "description": "Descripció",
+      "reference": "Referència",
       "category": "Categoria",
       "year": "Any",
       "format": "Format",
@@ -127,7 +128,8 @@
       "owner": "Propietari",
       "topic": "Tema",
       "completed": "Completat",
-      "tags": "Etiquetes"
+      "tags": "Etiquetes",
+      "reference": "Referència"
     },
     "values": {
       "yes": "Sí",
