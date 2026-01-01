@@ -19,6 +19,15 @@ export class MockAuthService implements AuthService {
     }
   }
 
+  async loginWithGoogle(): Promise<boolean> {
+    const users = UserSeed.generate();
+    if (users.length > 0) {
+      this.currentUser.value = users[0];
+      return true;
+    }
+    return false;
+  }
+
   async logout(): Promise<void> {
     this.currentUser.value = null;
   }
