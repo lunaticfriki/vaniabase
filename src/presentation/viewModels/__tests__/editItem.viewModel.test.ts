@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { mock, instance, when, verify, anything } from 'ts-mockito';
 import { EditItemViewModel } from '../editItem.viewModel';
 import { ItemStateService } from '../../../application/item/item.stateService';
-import { ImageLookupService } from '../../../infrastructure/services/imageLookupService';
 import { AuthService } from '../../../application/auth/auth.service';
 import { ItemReadService } from '../../../application/item/item.readService';
 import { ItemWriteService } from '../../../application/item/item.writeService';
@@ -16,7 +15,6 @@ describe('EditItemViewModel', () => {
     let mockWriteService: ItemWriteService;
     let mockAuthService: AuthService;
     let mockNotificationService: NotificationService;
-    let mockImageLookupService: ImageLookupService;
     let itemStateService: ItemStateService;
     let viewModel: EditItemViewModel;
 
@@ -25,7 +23,6 @@ describe('EditItemViewModel', () => {
         mockWriteService = mock(ItemWriteService);
         mockAuthService = mock(AuthService);
         mockNotificationService = mock(NotificationService);
-        mockImageLookupService = mock(ImageLookupService);
 
         when(mockAuthService.currentUser).thenReturn(signal(null));
         when(mockReadService.findAll(anything())).thenResolve([]);
@@ -37,7 +34,7 @@ describe('EditItemViewModel', () => {
             instance(mockNotificationService)
         );
 
-        viewModel = new EditItemViewModel(itemStateService, instance(mockImageLookupService));
+        viewModel = new EditItemViewModel(itemStateService);
     });
 
     it('should load an item for editing', async () => {
