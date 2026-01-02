@@ -8,8 +8,8 @@ import { UserSeed } from '../../domain/seed/user.seed';
 export class MockAuthService implements AuthService {
   currentUser = signal<User | null>(null);
 
-  async login(userId?: string): Promise<void> {
-    if (!userId) return;
+  login(userId?: string): Promise<void> {
+    if (!userId) return Promise.resolve();
     const users = UserSeed.generate();
     const user = users.find(u => u.id.value === userId);
     if (user) {
@@ -17,18 +17,20 @@ export class MockAuthService implements AuthService {
     } else {
       throw new Error('User not found');
     }
+    return Promise.resolve();
   }
 
-  async loginWithGoogle(): Promise<boolean> {
+  loginWithGoogle(): Promise<boolean> {
     const users = UserSeed.generate();
     if (users.length > 0) {
       this.currentUser.value = users[0];
-      return true;
+      return Promise.resolve(true);
     }
-    return false;
+    return Promise.resolve(false);
   }
 
-  async logout(): Promise<void> {
+  logout(): Promise<void> {
     this.currentUser.value = null;
+    return Promise.resolve();
   }
 }

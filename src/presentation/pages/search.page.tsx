@@ -17,14 +17,14 @@ export function Search() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      viewModel.search(query.value);
+      void viewModel.search(query.value);
     }, 500);
 
     return () => clearTimeout(timer);
   }, [query.value]);
 
   const handleSearchImmediate = () => {
-    viewModel.search(query.value);
+    void viewModel.search(query.value);
   };
 
   return (

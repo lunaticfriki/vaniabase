@@ -5,7 +5,7 @@ export class HomeViewModel {
   constructor(private itemStateService: ItemStateService) {}
 
   loadItems() {
-    this.itemStateService.loadItems();
+    void this.itemStateService.loadItems();
   }
 
   get items() {

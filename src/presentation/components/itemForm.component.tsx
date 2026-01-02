@@ -40,19 +40,21 @@ export function ItemForm({ initialValues, onSubmit, submitLabel, onUploadCover }
     setFormData(prev => ({ ...prev, [target.name]: target.value }));
   };
 
-  const handleUpload = async (e: Event) => {
+  const handleUpload = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
     if (file && onUploadCover) {
-      try {
-        setUploading(true);
-        const url = await onUploadCover(file);
-        setFormData(prev => ({ ...prev, cover: url }));
-      } catch (error) {
-        console.error('Failed to upload cover', error);
-      } finally {
-        setUploading(false);
-      }
+      void (async () => {
+        try {
+          setUploading(true);
+          const url = await onUploadCover(file);
+          setFormData(prev => ({ ...prev, cover: url }));
+        } catch (error) {
+          console.error('Failed to upload cover', error);
+        } finally {
+          setUploading(false);
+        }
+      })();
     }
   };
 

@@ -9,6 +9,8 @@ import { ItemWriteService } from '../../../application/item/item.writeService';
 import { NotificationService } from '../../../domain/services/notification.service';
 import { signal } from '@preact/signals';
 import { ItemMother } from '../../../domain/__tests__/item.mother';
+import { Id } from '../../../domain/model/value-objects/id.valueObject';
+import { Item } from '../../../domain/model/entities/item.entity';
 
 describe('EditItemViewModel', () => {
     let mockReadService: ItemReadService;
@@ -25,7 +27,7 @@ describe('EditItemViewModel', () => {
         mockNotificationService = mock(NotificationService);
 
         when(mockAuthService.currentUser).thenReturn(signal(null));
-        when(mockReadService.findAll(anything())).thenResolve([]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
         
         itemStateService = new ItemStateService(
             instance(mockReadService),
@@ -39,7 +41,8 @@ describe('EditItemViewModel', () => {
 
     it('should load an item for editing', async () => {
         const item = ItemMother.create();
-        when(mockReadService.findAll(anything())).thenResolve([item]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item]);
+        when(mockReadService.findById(anything() as unknown as Id)).thenResolve(item);
         
         await itemStateService.loadItems();
         await viewModel.loadItem(item.id.value);
@@ -72,7 +75,7 @@ describe('EditItemViewModel', () => {
 
         await viewModel.updateItem(formData);
 
-        verify(mockWriteService.update(anything())).once();
+        verify(mockWriteService.update(anything() as unknown as Item)).once();
         expect(viewModel.item.value?.title.value).toBe('Updated Title');
     });
 });

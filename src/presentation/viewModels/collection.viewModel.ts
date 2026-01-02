@@ -7,7 +7,7 @@ export class CollectionViewModel {
   public itemsPerPage = 20;
 
   constructor(private itemStateService: ItemStateService) {
-    this.itemStateService.loadItems();
+    void this.itemStateService.loadItems();
   }
 
   public allItems = computed(() => {

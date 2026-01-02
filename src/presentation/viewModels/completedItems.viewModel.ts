@@ -7,7 +7,7 @@ export class CompletedItemsViewModel {
   public itemsPerPage = 20;
 
   constructor(private itemStateService: ItemStateService) {
-    this.itemStateService.loadItems();
+    void this.itemStateService.loadItems();
   }
 
   public allCompletedItems = computed(() => {

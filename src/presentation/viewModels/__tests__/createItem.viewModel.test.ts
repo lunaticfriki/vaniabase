@@ -1,6 +1,9 @@
 import 'reflect-metadata';
 import { mock, instance, when, verify, anything } from 'ts-mockito';
 import { CreateItemViewModel } from '../createItem.viewModel';
+
+import { Id } from '../../../domain/model/value-objects/id.valueObject';
+import { Item } from '../../../domain/model/entities/item.entity';
 import { ItemStateService } from '../../../application/item/item.stateService';
 import { ImageLookupService } from '../../../infrastructure/services/imageLookupService';
 import { AuthService } from '../../../application/auth/auth.service';
@@ -29,8 +32,8 @@ describe('CreateItemViewModel', () => {
         mockImageLookupService = mock(ImageLookupService);
 
         when(mockAuthService.currentUser).thenReturn(signal(null));
-        when(mockReadService.findAll(anything())).thenResolve([]);
-        when(mockImageLookupService.findImage(anything())).thenResolve('http://example.com/cover.jpg');
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
+        when(mockImageLookupService.findImage(anything() as unknown as string)).thenResolve('http://example.com/image.jpg');
 
         itemStateService = new ItemStateService(
             instance(mockReadService),
@@ -64,7 +67,7 @@ describe('CreateItemViewModel', () => {
         await viewModel.createItem(formData, userId);
 
         verify(mockImageLookupService.findImage('New Item')).once();
-        verify(mockWriteService.create(anything())).once();
+        verify(mockWriteService.create(anything() as unknown as Item)).once();
     });
 
 

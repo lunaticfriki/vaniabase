@@ -25,7 +25,7 @@ export function Formats({ formatName }: Props) {
   }, []);
 
   useEffect(() => {
-    viewModel.loadItems();
+    void viewModel.loadItems();
   }, []);
 
   useEffect(() => {

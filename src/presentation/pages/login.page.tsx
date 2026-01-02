@@ -18,8 +18,8 @@ export const Login: FunctionalComponent = () => {
 
   const { loading, error } = viewModel;
 
-  const handleLogin = async () => {
-    await viewModel.loginWithGoogle();
+  const handleLogin = () => {
+    void viewModel.loginWithGoogle();
   };
 
   if (loading.value) {

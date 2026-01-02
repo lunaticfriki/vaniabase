@@ -25,19 +25,19 @@ export const CompletedItems = createLazy(() =>
 
 export function App() {
   useEffect(() => {
-    Home.preload();
-    Collection.preload();
-    Categories.preload();
-    Tags.preload();
-    ItemDetail.preload();
-    About.preload();
-    CreateItem.preload();
-    EditItem.preload();
-    Search.preload();
-    Topics.preload();
-    Formats.preload();
-    Dashboard.preload();
-    CompletedItems.preload();
+    void Home.preload();
+    void Collection.preload();
+    void Categories.preload();
+    void Tags.preload();
+    void ItemDetail.preload();
+    void About.preload();
+    void CreateItem.preload();
+    void EditItem.preload();
+    void Search.preload();
+    void Topics.preload();
+    void Formats.preload();
+    void Dashboard.preload();
+    void CompletedItems.preload();
   }, []);
 
   const authService = container.get(AuthService);

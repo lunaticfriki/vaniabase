@@ -13,7 +13,7 @@ export class DashboardViewModel {
     @inject('ItemsRepository') private itemsRepository: ItemsRepository,
     @inject(AuthService) private authService: AuthService
   ) {
-    this.loadData();
+    void this.loadData();
   }
 
   async loadData() {

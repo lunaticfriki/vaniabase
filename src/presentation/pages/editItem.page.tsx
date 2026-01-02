@@ -31,7 +31,7 @@ export function EditItem({ id }: Props) {
 
   useEffect(() => {
     if (id) {
-      viewModel.loadItem(id).then(() => {
+      void viewModel.loadItem(id).then(() => {
         if (!viewModel.item.value) {
           notificationService.error(t('item_detail.not_found'));
           route('/');
@@ -53,6 +53,7 @@ export function EditItem({ id }: Props) {
 
   const handleSubmit = async (data: ItemFormData) => {
     if (!item.value) return;
+
     try {
       await viewModel.updateItem(data);
       route(`/item/${id}`);
@@ -75,7 +76,7 @@ export function EditItem({ id }: Props) {
       </div>
       <ItemForm
         initialValues={formData.value}
-        onSubmit={handleSubmit}
+        onSubmit={data => void handleSubmit(data)}
         submitLabel={t('edit_item.buttons.save')}
         onUploadCover={handleUploadCover}
       />

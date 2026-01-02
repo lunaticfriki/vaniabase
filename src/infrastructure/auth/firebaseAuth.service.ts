@@ -12,7 +12,7 @@ export class FirebaseAuthService implements AuthService {
   currentUser = signal<User | null>(null);
 
   constructor(@inject(UserRepository) private userRepository: UserRepository) {
-    onAuthStateChanged(auth, async firebaseUser => {
+    onAuthStateChanged(auth, firebaseUser => {
       if (firebaseUser) {
         const user = User.create(
           Id.create(firebaseUser.uid),

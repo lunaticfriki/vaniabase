@@ -20,7 +20,7 @@ export function createLazy<T>(loader: () => Promise<ComponentType<T>>) {
 
     useEffect(() => {
       if (!Comp) {
-        preload().then(c => setComp(() => c));
+        void preload().then(c => setComp(() => c));
       }
     }, []);
 

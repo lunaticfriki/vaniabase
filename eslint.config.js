@@ -5,9 +5,13 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   {files: ["**/*.{js,mjs,cjs,ts}"]},
-  {languageOptions: { globals: globals.browser }},
+  {languageOptions: { globals: globals.browser, parserOptions: { projectService: { allowDefaultProject: ['*.js', '*.mjs', '*.cjs'] }, tsconfigRootDir: import.meta.dirname } }},
   pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  {
+    files: ["eslint.config.js"],
+    ...tseslint.configs.disableTypeChecked,
+  },
   eslintConfigPrettier,
   {
     ignores: ["dist/"],

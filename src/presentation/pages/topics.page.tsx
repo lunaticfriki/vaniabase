@@ -25,7 +25,7 @@ export function Topics({ topicName }: Props) {
   }, []);
 
   useEffect(() => {
-    viewModel.loadItems();
+    void viewModel.loadItems();
   }, []);
 
   useEffect(() => {

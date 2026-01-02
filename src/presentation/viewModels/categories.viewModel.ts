@@ -10,7 +10,7 @@ export class CategoriesViewModel {
 
   constructor(private itemStateService: ItemStateService) {
       if (this.itemStateService.items.value.length === 0) {
-        this.itemStateService.loadItems();
+        void this.itemStateService.loadItems();
       }
   }
 

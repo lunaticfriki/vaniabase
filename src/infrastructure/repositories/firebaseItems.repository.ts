@@ -106,7 +106,24 @@ export class FirebaseItemsRepository implements ItemsRepository {
     );
   }
 
-  private mapToItem(id: string, data: DocumentData): Item {
+  private mapToItem(id: string, docData: DocumentData): Item {
+    const data = docData as {
+      title: string;
+      description: string;
+      author: string;
+      cover: string;
+      owner: string;
+      tags: string[];
+      topic: string;
+      format: string;
+      created: Timestamp | Date | string;
+      completed: boolean;
+      year: number;
+      publisher: string;
+      language: string;
+      category: { id: string; name: string };
+      reference: string;
+    };
     const createdDate =
       data.created instanceof Timestamp
         ? data.created.toDate()

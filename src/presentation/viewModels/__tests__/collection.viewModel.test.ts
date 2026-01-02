@@ -10,6 +10,7 @@ import { NotificationService } from '../../../domain/services/notification.servi
 import { signal } from '@preact/signals';
 import { ItemMother } from '../../../domain/__tests__/item.mother';
 import { Year } from '../../../domain/model/value-objects/dateAndNumberValues.valueObject';
+import { Id } from '../../../domain/model/value-objects/id.valueObject';
 
 describe('CollectionViewModel', () => {
     let mockReadService: ItemReadService;
@@ -26,7 +27,7 @@ describe('CollectionViewModel', () => {
         mockNotificationService = mock(NotificationService);
 
         when(mockAuthService.currentUser).thenReturn(signal(null));
-        when(mockReadService.findAll(anything())).thenResolve([]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
 
         itemStateService = new ItemStateService(
             instance(mockReadService),
@@ -41,7 +42,7 @@ describe('CollectionViewModel', () => {
     it('should sort items by year descending', async () => {
         const item1 = ItemMother.create({ year: Year.create(2020) });
         const item2 = ItemMother.create({ year: Year.create(2022) });
-        when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
         
         await itemStateService.loadItems();
         
@@ -52,7 +53,7 @@ describe('CollectionViewModel', () => {
 
     it('should handle pagination', async () => {
         const items = Array(25).fill(null).map(() => ItemMother.create());
-        when(mockReadService.findAll(anything())).thenResolve(items);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve(items);
         
         await itemStateService.loadItems();
         viewModel.itemsPerPage = 10;

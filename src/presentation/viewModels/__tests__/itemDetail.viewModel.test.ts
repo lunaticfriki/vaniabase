@@ -9,6 +9,8 @@ import { ItemWriteService } from '../../../application/item/item.writeService';
 import { NotificationService } from '../../../domain/services/notification.service';
 import { signal } from '@preact/signals';
 import { ItemMother } from '../../../domain/__tests__/item.mother';
+import { Id } from '../../../domain/model/value-objects/id.valueObject';
+import { Item } from '../../../domain/model/entities/item.entity';
 
 describe('ItemDetailViewModel', () => {
   let mockReadService: ItemReadService;
@@ -25,7 +27,7 @@ describe('ItemDetailViewModel', () => {
     mockNotificationService = mock(NotificationService);
 
     when(mockAuthService.currentUser).thenReturn(signal(null));
-    when(mockReadService.findAll(anything())).thenResolve([]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
 
     itemStateService = new ItemStateService(
       instance(mockReadService),
@@ -39,7 +41,7 @@ describe('ItemDetailViewModel', () => {
 
   it('should load an item successfully', async () => {
     const item = ItemMother.create();
-    when(mockReadService.findAll(anything())).thenResolve([item]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item]);
     
     await itemStateService.loadItems();
     
@@ -50,7 +52,7 @@ describe('ItemDetailViewModel', () => {
   });
 
   it('should handle item not found', async () => {
-    when(mockReadService.findAll(anything())).thenResolve([]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
     await itemStateService.loadItems();
 
     await viewModel.loadItem('non-existent-id');
@@ -66,11 +68,11 @@ describe('ItemDetailViewModel', () => {
     
     itemStateService.items.value = [];
     
-    when(mockReadService.findAll(anything())).thenResolve([item]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item]);
     
     await viewModel.loadItem(item.id.value);
     
-    verify(mockReadService.findAll(anything())).times(1);
+    verify(mockReadService.findAll(anything() as unknown as Id)).times(1);
     expect(viewModel.item.value).toEqual(item);
   });
 
@@ -82,7 +84,7 @@ describe('ItemDetailViewModel', () => {
 
     await viewModel.toggleComplete();
 
-    verify(mockWriteService.update(anything())).once();
+    verify(mockWriteService.update(anything() as unknown as Item)).once();
     expect(viewModel.item.value?.completed.value).toBe(!initialStatus);
   });
 
@@ -92,6 +94,6 @@ describe('ItemDetailViewModel', () => {
 
     await viewModel.deleteItem();
 
-    verify(mockWriteService.delete(anything())).once();
+    verify(mockWriteService.delete(anything() as unknown as Id)).once();
   });
 });

@@ -32,13 +32,14 @@ export function Menu() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const handleLogout = async () => {
-    await authService.logout();
-    route('/', true);
+  const handleLogout = () => {
+    void authService.logout().then(() => {
+      route('/', true);
+    });
   };
 
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+    void i18n.changeLanguage(lng);
   };
 
   useEffect(() => {

@@ -28,7 +28,7 @@ describe('CategoriesViewModel', () => {
         mockNotificationService = mock(NotificationService);
 
         when(mockAuthService.currentUser).thenReturn(signal(null));
-        when(mockReadService.findAll(anything())).thenResolve([]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
 
         itemStateService = new ItemStateService(
             instance(mockReadService),
@@ -47,7 +47,7 @@ describe('CategoriesViewModel', () => {
         const item2 = ItemMother.create({ category: cat1 });
         const item3 = ItemMother.create({ category: cat2 });
 
-        when(mockReadService.findAll(anything())).thenResolve([item1, item2, item3]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2, item3]);
         await itemStateService.loadItems();
 
         const categories = viewModel.categories.value;
@@ -67,7 +67,7 @@ describe('CategoriesViewModel', () => {
         const item1 = ItemMother.create({ category: cat1 });
         const item2 = ItemMother.create({ category: cat2 });
 
-        when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
         await itemStateService.loadItems();
 
         viewModel.selectCategory('cat1');
@@ -77,7 +77,7 @@ describe('CategoriesViewModel', () => {
         expect(filteredItems[0]).toBe(item1);
     });
 
-    it('should reset page when category changes', async () => {
+    it('should reset page when category changes', () => {
         viewModel.currentPage.value = 5;
         viewModel.selectCategory('new-cat');
         expect(viewModel.currentPage.value).toBe(1);

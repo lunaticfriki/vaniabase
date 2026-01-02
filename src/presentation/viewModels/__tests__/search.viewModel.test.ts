@@ -9,6 +9,7 @@ import { ItemWriteService } from '../../../application/item/item.writeService';
 import { NotificationService } from '../../../domain/services/notification.service';
 import { signal } from '@preact/signals';
 import { ItemMother } from '../../../domain/__tests__/item.mother';
+import { Id } from '../../../domain/model/value-objects/id.valueObject';
 
 describe('SearchViewModel', () => {
     let mockReadService: ItemReadService;
@@ -25,8 +26,8 @@ describe('SearchViewModel', () => {
         mockNotificationService = mock(NotificationService);
 
         when(mockAuthService.currentUser).thenReturn(signal(null));
-        when(mockReadService.findAll(anything())).thenResolve([]);
-        when(mockReadService.search(anything())).thenResolve([]);
+        when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
+        when(mockReadService.search(anything() as unknown as string)).thenResolve([]);
 
         itemStateService = new ItemStateService(
             instance(mockReadService),

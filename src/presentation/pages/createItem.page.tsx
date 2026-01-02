@@ -80,7 +80,7 @@ export function CreateItem() {
 
       <ItemForm
         initialValues={formData.value}
-        onSubmit={handleSubmit}
+        onSubmit={data => void handleSubmit(data)}
         submitLabel={t('create_item.buttons.create')}
         onUploadCover={handleUploadCover}
       />
@@ -99,7 +99,7 @@ export function CreateItem() {
           <input
             type="file"
             accept=".xlsx, .xls, .ods"
-            onChange={handleFileUpload}
+            onChange={e => void handleFileUpload(e)}
             disabled={isImporting.value}
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
           />

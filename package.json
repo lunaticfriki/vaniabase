@@ -12,7 +12,8 @@
     "tmux": "bash scripts/tmux-dev.sh",
     "format": "prettier --write .",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@preact/signals": "^2.5.1",

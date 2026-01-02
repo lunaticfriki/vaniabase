@@ -23,8 +23,8 @@ export class TagsViewModel {
     });
   }
 
-  loadItems() {
-    this.itemStateService.loadItems();
+  loadItems(): Promise<void> {
+    return this.itemStateService.loadItems();
   }
 
   get items() {

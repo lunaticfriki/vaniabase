@@ -12,60 +12,64 @@ vi.mock('preact-router', () => ({
 }));
 
 describe('AuthViewModel', () => {
+    let mockLoginWithGoogle: Mock;
+    let mockLogout: Mock;
     let mockAuthService: AuthService;
     let viewModel: AuthViewModel;
 
     beforeEach(() => {
         vi.clearAllMocks();
+        mockLoginWithGoogle = vi.fn();
+        mockLogout = vi.fn();
         mockAuthService = {
             currentUser: signal(null),
             login: vi.fn(),
-            loginWithGoogle: vi.fn(),
-            logout: vi.fn()
+            loginWithGoogle: mockLoginWithGoogle,
+            logout: mockLogout
         } as unknown as AuthService;
 
         viewModel = new AuthViewModel(mockAuthService);
     });
 
     it('should login with google successfully and redirect', async () => {
-        (mockAuthService.loginWithGoogle as Mock).mockResolvedValue(true);
+        mockLoginWithGoogle.mockResolvedValue(true);
 
         await viewModel.loginWithGoogle();
 
-        expect(mockAuthService.loginWithGoogle).toHaveBeenCalledOnce();
+        expect(mockLoginWithGoogle).toHaveBeenCalledOnce();
         expect(route).toHaveBeenCalledWith('/');
         expect(viewModel.loading.value).toBe(false);
         expect(viewModel.error.value).toBeNull();
     });
 
     it('should handle login failure', async () => {
-        (mockAuthService.loginWithGoogle as Mock).mockResolvedValue(false);
+        mockLoginWithGoogle.mockResolvedValue(false);
 
         await viewModel.loginWithGoogle();
 
-        expect(mockAuthService.loginWithGoogle).toHaveBeenCalledOnce();
+        expect(mockLoginWithGoogle).toHaveBeenCalledOnce();
         expect(route).not.toHaveBeenCalled();
         expect(viewModel.error.value).toBe('Failed to login with Google');
         expect(viewModel.loading.value).toBe(false);
     });
 
     it('should handle login exception', async () => {
-        (mockAuthService.loginWithGoogle as Mock).mockRejectedValue(new Error('Network error'));
+        mockLoginWithGoogle.mockRejectedValue(new Error('Network error'));
 
         await viewModel.loginWithGoogle();
 
-        expect(mockAuthService.loginWithGoogle).toHaveBeenCalledOnce();
+        expect(mockLoginWithGoogle).toHaveBeenCalledOnce();
         expect(route).not.toHaveBeenCalled();
         expect(viewModel.error.value).toBe('Network error');
         expect(viewModel.loading.value).toBe(false);
     });
 
     it('should logout and redirect', async () => {
-        (mockAuthService.logout as Mock).mockResolvedValue(undefined);
+        mockLogout.mockResolvedValue(undefined);
 
         await viewModel.logout();
 
-        expect(mockAuthService.logout).toHaveBeenCalledOnce();
+        expect(mockLogout).toHaveBeenCalledOnce();
         expect(route).toHaveBeenCalledWith('/login');
     });
 });

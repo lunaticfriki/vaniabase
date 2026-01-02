@@ -22,7 +22,7 @@ export class FirebaseCategoriesRepository implements CategoriesRepository {
   async findAll(): Promise<Category[]> {
     const querySnapshot = await getDocs(collection(db, this.collectionName));
     return querySnapshot.docs.map(doc => {
-      const data = doc.data();
+      const data = doc.data() as { name: string };
       return Category.create(Id.create(doc.id), Title.create(data.name));
     });
   }
@@ -32,7 +32,7 @@ export class FirebaseCategoriesRepository implements CategoriesRepository {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const data = docSnap.data();
+      const data = docSnap.data() as { name: string };
       return Category.create(Id.create(docSnap.id), Title.create(data.name));
     }
     return undefined;

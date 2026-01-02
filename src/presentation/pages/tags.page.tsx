@@ -25,7 +25,7 @@ export function Tags({ tagName }: Props) {
   }, []);
 
   useEffect(() => {
-    viewModel.loadItems();
+    void viewModel.loadItems();
   }, []);
 
   useEffect(() => {

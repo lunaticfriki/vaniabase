@@ -9,6 +9,7 @@ import { NotificationService } from '../../../domain/services/notification.servi
 import { signal } from '@preact/signals';
 import { Tags } from '../../../domain/model/value-objects/tags.valueObject';
 import { ItemMother } from '../../../domain/__tests__/item.mother';
+import { Id } from '../../../domain/model/value-objects/id.valueObject';
 
 describe('TagsViewModel', () => {
   let mockReadService: ItemReadService;
@@ -36,18 +37,19 @@ describe('TagsViewModel', () => {
 
   it('should load items on initialization', async () => {
     const items = [ItemMother.create()];
-    when(mockReadService.findAll(anything())).thenResolve(items);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve(items);
 
     await viewModel.loadItems();
 
+
     expect(viewModel.items.value).toEqual(items);
-    verify(mockReadService.findAll(anything())).once();
+    verify(mockReadService.findAll(anything() as unknown as Id)).once();
   });
 
   it('should calculate tag statistics correctly', async () => {
     const item1 = ItemMother.create({ tags: Tags.create(['tag1', 'tag2']) });
     const item2 = ItemMother.create({ tags: Tags.create(['tag2', 'tag3']) });
-    when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
 
     await viewModel.loadItems();
 
@@ -62,7 +64,7 @@ describe('TagsViewModel', () => {
   it('should filter items by active tag', async () => {
     const item1 = ItemMother.create({ tags: Tags.create(['A']) });
     const item2 = ItemMother.create({ tags: Tags.create(['B']) });
-    when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
 
     await viewModel.loadItems();
     viewModel.setTag('A');
@@ -73,7 +75,7 @@ describe('TagsViewModel', () => {
 
   it('should case-insensitive filter items', async () => {
     const item1 = ItemMother.create({ tags: Tags.create(['Apple']) });
-    when(mockReadService.findAll(anything())).thenResolve([item1]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1]);
 
     await viewModel.loadItems();
     viewModel.setTag('apple');
@@ -85,7 +87,7 @@ describe('TagsViewModel', () => {
   it('should show all items when no tag is selected', async () => {
     const item1 = ItemMother.create({ tags: Tags.create(['A']) });
     const item2 = ItemMother.create({ tags: Tags.create(['B']) });
-    when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
 
     await viewModel.loadItems();
     viewModel.setTag('');

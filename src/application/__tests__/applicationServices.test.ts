@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { mock, instance, when, verify, anyString, anything } from 'ts-mockito';
+import { mock, instance, when, verify, anyString } from 'ts-mockito';
 import { ItemStateService } from '../item/item.stateService';
 import { ItemReadService } from '../item/item.readService';
 import { ItemWriteService } from '../item/item.writeService';
@@ -19,13 +19,13 @@ describe('Application Services (Unit Tests)', () => {
     it('should find all items using repository', async () => {
       const mockRepo = mock<ItemsRepository>();
       const expectedItems = [ItemMother.create()];
-      when(mockRepo.findAll(anything())).thenResolve(expectedItems);
+      when(mockRepo.findAll(undefined)).thenResolve(expectedItems);
 
       const service = new ItemReadService(instance(mockRepo));
       const items = await service.findAll();
 
       expect(items).toBe(expectedItems);
-      verify(mockRepo.findAll(anything())).once();
+      verify(mockRepo.findAll(undefined)).once();
     });
   });
 
@@ -85,24 +85,24 @@ describe('Application Services (Unit Tests)', () => {
 
     it('should load items and update signal', async () => {
       const items = [ItemMother.create()];
-      when(mockReadService.findAll(anything())).thenResolve(items);
+      when(mockReadService.findAll(undefined)).thenResolve(items);
 
       await service.loadItems();
 
       expect(service.items.value).toEqual(items);
-      verify(mockReadService.findAll(anything())).once();
+      verify(mockReadService.findAll(undefined)).once();
     });
 
     it('should create item and reload', async () => {
       const item = ItemMother.create();
       when(mockWriteService.create(item)).thenResolve();
-      when(mockReadService.findAll(anything())).thenResolve([item]);
+      when(mockReadService.findAll(undefined)).thenResolve([item]);
 
       await service.createItem(item);
 
       verify(mockWriteService.create(item)).once();
-      verify(mockReadService.findAll(anything())).once();
-      verify(mockNotificationService.success(anyString())).once();
+      verify(mockReadService.findAll(undefined)).once();
+      verify(mockNotificationService.success(anyString() as unknown as string)).once();
       expect(service.items.value).toEqual([item]);
     });
   });

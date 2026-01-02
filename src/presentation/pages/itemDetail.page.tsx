@@ -26,7 +26,7 @@ export function ItemDetail({ id }: Props) {
 
   useEffect(() => {
     if (id) {
-      viewModel.loadItem(id);
+      void viewModel.loadItem(id);
     }
   }, [id]);
 
@@ -100,7 +100,7 @@ export function ItemDetail({ id }: Props) {
               <span class="uppercase tracking-widest text-xs font-bold">{t('item_detail.edit')}</span>
             </Link>
             <button
-              onClick={handleDelete}
+              onClick={() => void handleDelete()}
               class="flex items-center gap-2 text-red-500 hover:text-white transition-colors"
             >
               <span class="uppercase tracking-widest text-xs font-bold">{t('item_detail.delete')}</span>
@@ -151,7 +151,7 @@ export function ItemDetail({ id }: Props) {
 
           <div class="pt-4">
             <button
-              onClick={handleToggleComplete}
+              onClick={() => void handleToggleComplete()}
               style="clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);"
               class={`
                 w-full md:w-auto px-8 py-4 font-black uppercase tracking-widest transition-all

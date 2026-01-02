@@ -34,7 +34,7 @@ export function Categories({ categoryName }: Props) {
   const activeCategoryName = (categoryName || 'books').toLowerCase();
 
   useEffect(() => {
-    categoryStateService.loadCategories();
+    void categoryStateService.loadCategories();
   }, []);
 
   useEffect(() => {

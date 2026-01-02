@@ -15,15 +15,16 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     });
   }
 
-  async save(category: Category): Promise<void> {
+  save(category: Category): Promise<void> {
     this.categories.set(category.id.value, category);
+    return Promise.resolve();
   }
 
-  async findAll(): Promise<Category[]> {
-    return Array.from(this.categories.values());
+  findAll(): Promise<Category[]> {
+    return Promise.resolve(Array.from(this.categories.values()));
   }
 
-  async findById(id: Id): Promise<Category | undefined> {
-    return this.categories.get(id.value);
+  findById(id: Id): Promise<Category | undefined> {
+    return Promise.resolve(this.categories.get(id.value));
   }
 }

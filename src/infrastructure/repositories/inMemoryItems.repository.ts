@@ -18,35 +18,38 @@ export class InMemoryItemsRepository implements ItemsRepository {
     console.log(`[InMemoryItemsRepository] Repository size: ${this.items.size}`);
   }
 
-  async save(item: Item): Promise<void> {
+  save(item: Item): Promise<void> {
     this.items.set(item.id.value, item);
+    return Promise.resolve();
   }
 
-  async saveAll(items: Item[]): Promise<void> {
+  saveAll(items: Item[]): Promise<void> {
     items.forEach(item => {
       this.items.set(item.id.value, item);
     });
+    return Promise.resolve();
   }
 
-  async findAll(ownerId?: string): Promise<Item[]> {
+  findAll(ownerId?: string): Promise<Item[]> {
     const allItems = Array.from(this.items.values());
     if (ownerId) {
-      return allItems.filter(item => item.owner.value === ownerId);
+      return Promise.resolve(allItems.filter(item => item.owner.value === ownerId));
     }
-    return allItems;
+    return Promise.resolve(allItems);
   }
 
-  async findById(id: Id): Promise<Item | undefined> {
-    return this.items.get(id.value);
+  findById(id: Id): Promise<Item | undefined> {
+    return Promise.resolve(this.items.get(id.value));
   }
 
-  async delete(id: Id): Promise<void> {
+  delete(id: Id): Promise<void> {
     this.items.delete(id.value);
+    return Promise.resolve();
   }
 
-  async search(query: string): Promise<Item[]> {
+  search(query: string): Promise<Item[]> {
     const lowerQuery = query.toLowerCase();
-    return Array.from(this.items.values()).filter(
+    return Promise.resolve(Array.from(this.items.values()).filter(
       item =>
         item.title.value.toLowerCase().includes(lowerQuery) ||
         item.author.value.toLowerCase().includes(lowerQuery) ||
@@ -59,6 +62,6 @@ export class InMemoryItemsRepository implements ItemsRepository {
         item.tags.value.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
         item.category.name.value.toLowerCase().includes(lowerQuery) ||
         item.reference.value.toLowerCase().includes(lowerQuery)
-    );
+    ));
   }
 }

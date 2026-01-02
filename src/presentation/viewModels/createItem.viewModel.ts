@@ -141,11 +141,11 @@ export class CreateItemViewModel {
 
             if (!normalizedRow.title) return null;
 
-            const coverUrl = await this.imageLookupService.findImage(normalizedRow.title as string);
+            const coverUrl = await this.imageLookupService.findImage(normalizedRow.title);
 
             return Item.create({
               id: Id.create(uuidv4()),
-              title: Title.create(normalizedRow.title as string),
+              title: Title.create(normalizedRow.title),
               description: Description.create(normalizedRow.description as string || ''),
               author: Author.create(normalizedRow.author as string || 'Unknown'),
               cover: Cover.create(coverUrl),

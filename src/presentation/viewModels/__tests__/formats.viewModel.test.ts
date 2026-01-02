@@ -9,6 +9,8 @@ import { NotificationService } from '../../../domain/services/notification.servi
 import { signal } from '@preact/signals';
 import { ItemMother } from '../../../domain/__tests__/item.mother';
 import { Format } from '../../../domain/model/value-objects/stringValues.valueObject';
+import { Id } from '../../../domain/model/value-objects/id.valueObject';
+import { Item } from '../../../domain/model/entities/item.entity';
 
 describe('FormatsViewModel', () => {
   let mockReadService: ItemReadService;
@@ -24,7 +26,7 @@ describe('FormatsViewModel', () => {
     mockNotificationService = mock(NotificationService);
 
     when(mockAuthService.currentUser).thenReturn(signal(null));
-    when(mockReadService.findAll(anything())).thenResolve([]);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([]);
 
     const itemStateService = new ItemStateService(
       instance(mockReadService),
@@ -40,8 +42,7 @@ describe('FormatsViewModel', () => {
     const item1 = ItemMother.create({ format: Format.create('Digital') });
     const item2 = ItemMother.create({ format: Format.create('Physical') });
 
-    when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
-
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
     await viewModel.loadItems();
 
     viewModel.setFormat('Digital');
@@ -52,8 +53,7 @@ describe('FormatsViewModel', () => {
 
   it('should case-insensitive filter items by format', async () => {
     const item1 = ItemMother.create({ format: Format.create('Digital') });
-    when(mockReadService.findAll(anything())).thenResolve([item1]);
-
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1]);
     await viewModel.loadItems();
 
     viewModel.setFormat('digital');
@@ -65,8 +65,7 @@ describe('FormatsViewModel', () => {
   it('should show all items when no format is selected', async () => {
     const item1 = ItemMother.create({ format: Format.create('Digital') });
     const item2 = ItemMother.create({ format: Format.create('Physical') });
-    when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
-
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
     await viewModel.loadItems();
     viewModel.setFormat('');
 
@@ -76,8 +75,7 @@ describe('FormatsViewModel', () => {
   it('should update pagination total items when filters change', async () => {
     const item1 = ItemMother.create({ format: Format.create('Digital') });
     const item2 = ItemMother.create({ format: Format.create('Physical') });
-    when(mockReadService.findAll(anything())).thenResolve([item1, item2]);
-
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve([item1, item2]);
     await viewModel.loadItems();
 
     expect(viewModel.pagination.totalItems.value).toBe(2);
@@ -89,12 +87,12 @@ describe('FormatsViewModel', () => {
 
   it('should correctly calculate font size class based on count', async () => {
     const items = [
-      ...Array(10).fill(ItemMother.create({ format: Format.create('Common') })),
-      ...Array(5).fill(ItemMother.create({ format: Format.create('Medium') })),
-      ...Array(1).fill(ItemMother.create({ format: Format.create('Rare') }))
+      ...Array(10).fill(ItemMother.create({ format: Format.create('Common') })) as Item[],
+      ...Array(5).fill(ItemMother.create({ format: Format.create('Medium') })) as Item[],
+      ...Array(1).fill(ItemMother.create({ format: Format.create('Rare') })) as Item[]
     ];
 
-    when(mockReadService.findAll(anything())).thenResolve(items);
+    when(mockReadService.findAll(anything() as unknown as Id)).thenResolve(items);
     await viewModel.loadItems();
 
     expect(viewModel.getFontSizeClass(10)).toBe('text-3xl font-black');

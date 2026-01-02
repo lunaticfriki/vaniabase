@@ -22,7 +22,7 @@ describe('DashboardViewModel', () => {
     const user = UserMother.create();
     when(mockAuthService.currentUser).thenReturn(signal(user));
 
-    when(mockItemsRepository.findAll(anything())).thenResolve([]);
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve([]);
 
     viewModel = new DashboardViewModel(instance(mockItemsRepository), instance(mockAuthService));
   });
@@ -35,12 +35,12 @@ describe('DashboardViewModel', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(viewModel.totalItems.value).toBe(0);
-    verify(mockItemsRepository.findAll(anything())).never();
+    verify(mockItemsRepository.findAll(anything() as unknown as string)).never();
   });
 
   it('should load data when initialized with logged in user', async () => {
     const items = [ItemMother.create()];
-    when(mockItemsRepository.findAll(anything())).thenResolve(items);
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve(items);
 
     resetCalls(mockItemsRepository);
 
@@ -49,12 +49,12 @@ describe('DashboardViewModel', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
 
     expect(viewModel.totalItems.value).toBe(1);
-    verify(mockItemsRepository.findAll(anything())).once();
+    verify(mockItemsRepository.findAll(anything() as unknown as string)).once();
   });
 
   it('should calculate total items correctly', async () => {
     const items = [ItemMother.create(), ItemMother.create()];
-    when(mockItemsRepository.findAll(anything())).thenResolve(items);
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve(items);
 
     await viewModel.loadData();
 
@@ -69,7 +69,7 @@ describe('DashboardViewModel', () => {
     const item2 = ItemMother.create({ category: cat1 });
     const item3 = ItemMother.create({ category: cat2 });
 
-    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve([item1, item2, item3]);
 
     await viewModel.loadData();
 
@@ -88,7 +88,7 @@ describe('DashboardViewModel', () => {
     const item1 = ItemMother.create({ tags: Tags.create(['tag1', 'tag2']) });
     const item2 = ItemMother.create({ tags: Tags.create(['tag2', 'tag3']) });
 
-    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2]);
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve([item1, item2]);
 
     await viewModel.loadData();
 
@@ -105,7 +105,7 @@ describe('DashboardViewModel', () => {
     const item2 = ItemMother.create({ topic: Topic.create('Topic B') });
     const item3 = ItemMother.create({ topic: Topic.create('Topic A') });
 
-    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve([item1, item2, item3]);
 
     await viewModel.loadData();
 
@@ -121,7 +121,7 @@ describe('DashboardViewModel', () => {
     const item2 = ItemMother.create({ format: Format.create('Physical') });
     const item3 = ItemMother.create({ format: Format.create('Digital') });
 
-    when(mockItemsRepository.findAll(anything())).thenResolve([item1, item2, item3]);
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve([item1, item2, item3]);
 
     await viewModel.loadData();
 
