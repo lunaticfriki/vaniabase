@@ -16,7 +16,8 @@ import {
   CreateIcon,
   AboutIcon,
   LogoutIcon,
-  CompletedIcon
+  CompletedIcon,
+  AuthorsIcon
 } from './pixel-icons';
 
 const Link = RouterLink as unknown as (props: JSX.IntrinsicElements['a'] & { activeClassName?: string }) => JSX.Element;
@@ -69,6 +70,7 @@ export function Menu() {
     { href: '/tags', label: t('menu.tags'), icon: TagsIcon, matcher: '/tags/:rest*' },
     { href: '/topics', label: t('menu.topics'), icon: TopicsIcon, matcher: '/topics/:rest*' },
     { href: '/formats', label: t('menu.formats'), icon: FormatsIcon, matcher: '/formats/:rest*' },
+    { href: '/authors', label: t('menu.authors'), icon: AuthorsIcon, matcher: '/authors/:rest*' },
     { href: '/search', label: t('menu.search'), icon: SearchIcon, matcher: undefined },
     { href: '/create', label: t('menu.create'), icon: CreateIcon, matcher: undefined },
     { href: '/about', label: t('menu.about'), icon: AboutIcon, matcher: undefined }

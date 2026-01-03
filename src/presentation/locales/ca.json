@@ -8,6 +8,7 @@
     "tags": "ETIQUETES",
     "topics": "TEMES",
     "formats": "FORMATS",
+    "authors": "AUTORS",
     "search": "CERCAR",
     "create": "CREAR",
     "about": "INFO",
@@ -38,13 +39,15 @@
       "completed": "Completats",
       "categories": "Categories",
       "tags": "Etiquetes",
-      "topics": "Temes"
+      "topics": "Temes",
+      "authors": "Autors"
     },
     "sections": {
       "categories": "Categories",
       "topics": "Temes",
       "tags": "Etiquetes",
       "formats": "Formats",
+      "authors": "Autors",
       "recently_completed": "Completats Recentment",
       "no_found": "No s'han trobat {{title}}.",
       "no_completed": "Encara no hi ha elements completats."
@@ -169,6 +172,10 @@
     },
     "formats": {
       "title": "FORMATS",
+      "no_items": "No s'han trobat elements."
+    },
+    "authors": {
+      "title": "AUTORS",
       "no_items": "No s'han trobat elements."
     },
     "common": {

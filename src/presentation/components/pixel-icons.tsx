@@ -88,3 +88,9 @@ export const LogoutIcon = (props: IconProps) => (
     <path d="M12 14h2v2h-2v-2z" />
   </PixelIcon>
 );
+
+export const AuthorsIcon = (props: IconProps) => (
+  <PixelIcon {...props}>
+    <path d="M6 2h4v4H6V2zm0 6h4v12H6v-2H4v-2h2V8zm-2 14h8v-2H4v2zM14 6h4v4h-4V6zm0 6h4v8h-4v-8zm2-10h-2v2h2V2z" />
+  </PixelIcon>
+);

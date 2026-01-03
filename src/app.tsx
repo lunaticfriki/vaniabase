@@ -18,6 +18,7 @@ export const EditItem = createLazy(() => import('./presentation/pages/editItem.p
 export const Search = createLazy(() => import('./presentation/pages/search.page').then(m => m.Search));
 export const Topics = createLazy(() => import('./presentation/pages/topics.page').then(m => m.Topics));
 export const Formats = createLazy(() => import('./presentation/pages/formats.page').then(m => m.Formats));
+export const Authors = createLazy(() => import('./presentation/pages/authors.page').then(m => m.Authors));
 export const Dashboard = createLazy(() => import('./presentation/pages/dashboard.page').then(m => m.Dashboard));
 export const CompletedItems = createLazy(() =>
   import('./presentation/pages/completedItems.page').then(m => m.CompletedItems)
@@ -36,6 +37,7 @@ export function App() {
     void Search.preload();
     void Topics.preload();
     void Formats.preload();
+    void Authors.preload();
     void Dashboard.preload();
     void CompletedItems.preload();
   }, []);
@@ -56,6 +58,7 @@ export function App() {
         {authService.currentUser.value && <Search.Component path="/search" />}
         {authService.currentUser.value && <Topics.Component path="/topics/:topicName?" />}
         {authService.currentUser.value && <Formats.Component path="/formats/:formatName?" />}
+        {authService.currentUser.value && <Authors.Component path="/authors/:authorName?" />}
         {authService.currentUser.value && <Dashboard.Component path="/dashboard" />}
         {authService.currentUser.value && <CompletedItems.Component path="/completed" />}
         {!authService.currentUser.value && <Login path="/" />}

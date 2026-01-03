@@ -94,6 +94,22 @@ export class DashboardViewModel {
 
   totalFormats = computed(() => this.formats.value.length);
 
+  authors = computed(() => {
+    const counts = new Map<string, number>();
+    this._items.value.forEach(item => {
+      const author = item.author.value;
+      if (author) {
+        counts.set(author, (counts.get(author) || 0) + 1);
+      }
+    });
+
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  });
+
+  totalAuthors = computed(() => this.authors.value.length);
+
   completedItems = computed(() => {
     return this._items.value
       .filter(item => item.completed.value === true)
