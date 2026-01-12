@@ -16,15 +16,27 @@ import {
 import { Tags } from '../../domain/model/value-objects/tags.valueObject';
 import { Created, Completed, Year } from '../../domain/model/value-objects/dateAndNumberValues.valueObject';
 import { ItemsRepository } from '../../domain/repositories/items.repository';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { db, auth } from '../firebase/firebaseConfig';
-import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, Timestamp, query, where, type DocumentData } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  deleteDoc,
+  Timestamp,
+  query,
+  where,
+  type DocumentData
+} from 'firebase/firestore';
+import { StorageService } from '../../application/services/storage.service';
 
 @injectable()
 export class FirebaseItemsRepository implements ItemsRepository {
   private readonly collectionName = 'items';
 
-  constructor() {}
+  constructor(@inject(StorageService) private storageService: StorageService) {}
 
   async save(item: Item): Promise<void> {
     const itemRef = doc(db, this.collectionName, item.id.value);
@@ -83,6 +95,15 @@ export class FirebaseItemsRepository implements ItemsRepository {
   }
 
   async delete(id: Id): Promise<void> {
+    const item = await this.findById(id);
+    if (item && item.cover.value) {
+      try {
+        await this.storageService.delete(item.cover.value);
+      } catch (error) {
+        console.error('Error deleting image from storage:', error);
+      }
+    }
+
     const docRef = doc(db, this.collectionName, id.value);
     await deleteDoc(docRef);
   }
