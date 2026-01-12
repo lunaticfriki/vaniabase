@@ -118,7 +118,7 @@ export function ItemForm({ initialValues, onSubmit, submitLabel, onUploadCover }
             class="w-full bg-zinc-900 border border-white/10 rounded p-3 text-white focus:border-brand-magenta focus:outline-none transition-colors scheme-dark"
           >
             <option value="books">{t('categories.list.books')}</option>
-            <option value="movies">{t('categories.list.movies')}</option>
+            <option value="video">{t('categories.list.video')}</option>
             <option value="videogames">{t('categories.list.videogames')}</option>
             <option value="music">{t('categories.list.music')}</option>
             <option value="comics">{t('categories.list.comics')}</option>

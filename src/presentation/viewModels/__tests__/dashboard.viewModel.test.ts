@@ -63,7 +63,7 @@ describe('DashboardViewModel', () => {
 
   it('should aggregate categories correctly', async () => {
     const cat1 = CategoryMother.create(undefined, Title.create('Books'));
-    const cat2 = CategoryMother.create(undefined, Title.create('Movies'));
+    const cat2 = CategoryMother.create(undefined, Title.create('Video'));
 
     const item1 = ItemMother.create({ category: cat1 });
     const item2 = ItemMother.create({ category: cat1 });
@@ -78,7 +78,7 @@ describe('DashboardViewModel', () => {
 
     expect(categories[0].name).toBe('Books');
     expect(categories[0].count).toBe(2);
-    expect(categories[1].name).toBe('Movies');
+    expect(categories[1].name).toBe('Video');
     expect(categories[1].count).toBe(1);
 
     expect(viewModel.totalCategories.value).toBe(2);
