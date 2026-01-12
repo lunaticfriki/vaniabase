@@ -133,4 +133,8 @@ export class DashboardViewModel {
   });
 
   totalCompleted = computed(() => this.completedItems.value.length);
+
+  lastCreatedItems = computed(() => {
+    return [...this._items.value].sort((a, b) => b.created.value.getTime() - a.created.value.getTime()).slice(0, 5);
+  });
 }

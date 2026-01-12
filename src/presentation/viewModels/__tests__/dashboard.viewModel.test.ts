@@ -9,6 +9,7 @@ import { CategoryMother } from '../../../domain/__tests__/category.mother';
 import { UserMother } from '../../../domain/__tests__/user.mother';
 import { Tags } from '../../../domain/model/value-objects/tags.valueObject';
 import { Topic, Format, Title, Publisher } from '../../../domain/model/value-objects/stringValues.valueObject';
+import { Created } from '../../../domain/model/value-objects/dateAndNumberValues.valueObject';
 
 describe('DashboardViewModel', () => {
   let mockItemsRepository: ItemsRepository;
@@ -146,5 +147,34 @@ describe('DashboardViewModel', () => {
     expect(publishers[0]).toEqual({ name: 'Publisher A', count: 2 });
     expect(publishers[1]).toEqual({ name: 'Publisher B', count: 1 });
     expect(viewModel.totalPublishers.value).toBe(2);
+  });
+
+  it('should return last 5 created items sorted by date', async () => {
+    const now = new Date();
+    const item1 = ItemMother.create({ created: Created.create(new Date(now.getTime() - 1000)) });
+    const item2 = ItemMother.create({ created: Created.create(new Date(now.getTime() - 2000)) });
+    const item3 = ItemMother.create({ created: Created.create(new Date(now.getTime() - 3000)) });
+    const item4 = ItemMother.create({ created: Created.create(new Date(now.getTime() - 4000)) });
+    const item5 = ItemMother.create({ created: Created.create(new Date(now.getTime() - 5000)) });
+    const item6 = ItemMother.create({ created: Created.create(new Date(now.getTime() - 6000)) });
+
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve([
+      item6,
+      item5,
+      item4,
+      item3,
+      item2,
+      item1
+    ]);
+
+    await viewModel.loadData();
+
+    const lastCreated = viewModel.lastCreatedItems.value;
+    expect(lastCreated).toHaveLength(5);
+    expect(lastCreated[0].id.value).toBe(item1.id.value);
+    expect(lastCreated[1].id.value).toBe(item2.id.value);
+    expect(lastCreated[2].id.value).toBe(item3.id.value);
+    expect(lastCreated[3].id.value).toBe(item4.id.value);
+    expect(lastCreated[4].id.value).toBe(item5.id.value);
   });
 });

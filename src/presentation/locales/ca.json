@@ -55,7 +55,8 @@
       "no_found": "No s'han trobat {{title}}.",
       "no_completed": "Encara no hi ha elements completats."
     },
-    "view_all_completed": "Veure tots els completats"
+    "view_all_completed": "Veure tots els completats",
+    "view_all_collection": "Veure tota la col·lecció"
   },
   "auth": {
     "welcome": "Benvingut a Vaniabase",
@@ -73,7 +74,7 @@
     "to_login": "Ja tens compte? Inicia sessió"
   },
   "collection": {
-    "title": "COL·LECCIÓ CRONOLÒGICA",
+    "title": "COL·LECCIÓ",
     "no_items": "No s'han trobat elements."
   },
   "create_item": {

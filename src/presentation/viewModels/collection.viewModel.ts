@@ -1,4 +1,3 @@
-
 import { signal, computed } from '@preact/signals';
 import { ItemStateService } from '../../application/item/item.stateService';
 
@@ -12,8 +11,8 @@ export class CollectionViewModel {
 
   public allItems = computed(() => {
     return [...this.itemStateService.items.value].sort((a, b) => {
-      const yearDiff = b.year.value - a.year.value;
-      if (yearDiff !== 0) return yearDiff;
+      const dateDiff = b.created.value.getTime() - a.created.value.getTime();
+      if (dateDiff !== 0) return dateDiff;
       return b.id.value.localeCompare(a.id.value);
     });
   });
@@ -23,7 +22,7 @@ export class CollectionViewModel {
   });
 
   public totalItems = computed(() => this.filteredItems.value.length);
-  
+
   public totalPages = computed(() => Math.ceil(this.totalItems.value / this.itemsPerPage));
 
   public paginatedItems = computed(() => {
@@ -33,13 +32,13 @@ export class CollectionViewModel {
   });
 
   public isLoading = computed(() => this.itemStateService.isLoading.value);
-  
+
   public setPage(page: number) {
     if (page < 1) page = 1;
     if (page > this.totalPages.value && this.totalPages.value > 0) page = this.totalPages.value;
     this.currentPage.value = page;
-     
-     if (typeof window !== 'undefined') {
+
+    if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }

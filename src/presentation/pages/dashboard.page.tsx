@@ -127,6 +127,60 @@ export function Dashboard() {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="space-y-4">
           <h2 class="text-xl font-bold text-white border-l-4 border-green-500 pl-4">
+            {t('dashboard.sections.recently_created')}
+          </h2>
+          <div class="bg-white/5 border border-white/10 rounded-lg max-h-[400px] overflow-y-auto custom-scrollbar relative">
+            <div class="sticky top-0 z-10 backdrop-blur-md bg-[#303030]/90 p-4 border-b border-white/10">
+              <Link
+                href="/collection"
+                class="text-green-400 hover:text-green-300 text-sm font-bold uppercase tracking-widest flex items-center gap-2 group no-global-hover"
+              >
+                {t('dashboard.view_all_collection')}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="group-hover:translate-x-1 transition-transform"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+            <div class="p-4 pt-4">
+              {viewModel.lastCreatedItems.value.length === 0 ? (
+                <p class="text-white/30 italic">
+                  {t('dashboard.sections.no_found', { title: t('dashboard.sections.recently_created') })}
+                </p>
+              ) : (
+                <ul class="space-y-2">
+                  {viewModel.lastCreatedItems.value.map(item => (
+                    <li key={item.id.value}>
+                      <Link
+                        href={`/item/${item.id.value}`}
+                        class="text-white/70 hover:text-brand-yellow hover:bg-white/5 px-3 py-2 rounded transition-colors truncate flex justify-between items-center"
+                      >
+                        <span>{item.title.value}</span>
+                        <span class="text-white/30 text-xs font-mono ml-2">
+                          {item.created.value.toLocaleDateString()}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <h2 class="text-xl font-bold text-white border-l-4 border-green-500 pl-4">
             {t('dashboard.sections.recently_completed')}
           </h2>
           <div class="bg-white/5 border border-white/10 rounded-lg max-h-[400px] overflow-y-auto custom-scrollbar relative">

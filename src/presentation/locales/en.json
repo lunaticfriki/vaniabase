@@ -53,9 +53,11 @@
       "publishers": "Publishers",
       "recently_completed": "Recently Completed",
       "no_found": "No {{title}} found.",
-      "no_completed": "No completed items yet."
+      "no_completed": "No completed items yet.",
+      "recently_created": "Recently Created"
     },
-    "view_all_completed": "View All Completed"
+    "view_all_completed": "View All Completed",
+    "view_all_collection": "View All Collection"
   },
   "auth": {
     "welcome": "Welcome to Vaniabase",
@@ -73,12 +75,12 @@
     "to_login": "Already have an account? Log in"
   },
   "collection": {
-    "title": "TIMELINE COLLECTION",
+    "title": "COLLECTION",
     "no_items": "No items found."
   },
   "create_item": {
     "title": "CREATE NEW ITEM",
-    "subtitle": "Add a new entry to the timeline collection.",
+    "subtitle": "Add a new entry to the collection.",
     "labels": {
       "title": "Title",
       "author": "Author",
