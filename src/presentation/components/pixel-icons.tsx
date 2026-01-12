@@ -94,3 +94,9 @@ export const AuthorsIcon = (props: IconProps) => (
     <path d="M6 2h4v4H6V2zm0 6h4v12H6v-2H4v-2h2V8zm-2 14h8v-2H4v2zM14 6h4v4h-4V6zm0 6h4v8h-4v-8zm2-10h-2v2h2V2z" />
   </PixelIcon>
 );
+
+export const PublishersIcon = (props: IconProps) => (
+  <PixelIcon {...props}>
+    <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h8v2H8V8zm0 4h8v2H8v-2z" />
+  </PixelIcon>
+);

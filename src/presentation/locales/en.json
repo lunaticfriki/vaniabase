@@ -9,6 +9,7 @@
     "topics": "TOPICS",
     "formats": "FORMATS",
     "authors": "AUTHORS",
+    "publishers": "PUBLISHERS",
     "search": "SEARCH",
     "create": "CREATE",
     "about": "ABOUT",
@@ -40,7 +41,8 @@
       "categories": "Categories",
       "tags": "Tags",
       "topics": "Topics",
-      "authors": "Authors"
+      "authors": "Authors",
+      "publishers": "Publishers"
     },
     "sections": {
       "categories": "Categories",
@@ -48,6 +50,7 @@
       "tags": "Tags",
       "formats": "Formats",
       "authors": "Authors",
+      "publishers": "Publishers",
       "recently_completed": "Recently Completed",
       "no_found": "No {{title}} found.",
       "no_completed": "No completed items yet."
@@ -176,6 +179,10 @@
     },
     "authors": {
       "title": "AUTHORS",
+      "no_items": "No items found."
+    },
+    "publishers": {
+      "title": "PUBLISHERS",
       "no_items": "No items found."
     },
     "common": {

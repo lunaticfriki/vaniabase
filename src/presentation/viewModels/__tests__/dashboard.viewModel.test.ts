@@ -8,7 +8,7 @@ import { ItemMother } from '../../../domain/__tests__/item.mother';
 import { CategoryMother } from '../../../domain/__tests__/category.mother';
 import { UserMother } from '../../../domain/__tests__/user.mother';
 import { Tags } from '../../../domain/model/value-objects/tags.valueObject';
-import { Topic, Format, Title } from '../../../domain/model/value-objects/stringValues.valueObject';
+import { Topic, Format, Title, Publisher } from '../../../domain/model/value-objects/stringValues.valueObject';
 
 describe('DashboardViewModel', () => {
   let mockItemsRepository: ItemsRepository;
@@ -130,5 +130,21 @@ describe('DashboardViewModel', () => {
     expect(formats[0]).toEqual({ name: 'Digital', count: 2 });
     expect(formats[1]).toEqual({ name: 'Physical', count: 1 });
     expect(viewModel.totalFormats.value).toBe(2);
+  });
+
+  it('should aggregate publishers correctly', async () => {
+    const item1 = ItemMother.create({ publisher: Publisher.create('Publisher A') });
+    const item2 = ItemMother.create({ publisher: Publisher.create('Publisher B') });
+    const item3 = ItemMother.create({ publisher: Publisher.create('Publisher A') });
+
+    when(mockItemsRepository.findAll(anything() as unknown as string)).thenResolve([item1, item2, item3]);
+
+    await viewModel.loadData();
+
+    const publishers = viewModel.publishers.value;
+    expect(publishers).toHaveLength(2);
+    expect(publishers[0]).toEqual({ name: 'Publisher A', count: 2 });
+    expect(publishers[1]).toEqual({ name: 'Publisher B', count: 1 });
+    expect(viewModel.totalPublishers.value).toBe(2);
   });
 });

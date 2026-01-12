@@ -9,6 +9,7 @@
     "topics": "TEMES",
     "formats": "FORMATS",
     "authors": "AUTORS",
+    "publishers": "EDITORS",
     "search": "CERCAR",
     "create": "CREAR",
     "about": "INFO",
@@ -40,7 +41,8 @@
       "categories": "Categories",
       "tags": "Etiquetes",
       "topics": "Temes",
-      "authors": "Autors"
+      "authors": "Autors",
+      "publishers": "Editors"
     },
     "sections": {
       "categories": "Categories",
@@ -48,6 +50,7 @@
       "tags": "Etiquetes",
       "formats": "Formats",
       "authors": "Autors",
+      "publishers": "Editors",
       "recently_completed": "Completats Recentment",
       "no_found": "No s'han trobat {{title}}.",
       "no_completed": "Encara no hi ha elements completats."
@@ -176,6 +179,10 @@
     },
     "authors": {
       "title": "AUTORS",
+      "no_items": "No s'han trobat elements."
+    },
+    "publishers": {
+      "title": "EDITORS",
       "no_items": "No s'han trobat elements."
     },
     "common": {

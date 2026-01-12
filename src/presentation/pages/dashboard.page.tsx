@@ -72,6 +72,11 @@ export function Dashboard() {
         />
         <StatCard label={t('dashboard.stats.categories')} value={totalCategories.value} color="text-brand-magenta" />
         <StatCard label={t('dashboard.stats.authors')} value={viewModel.totalAuthors.value} color="text-orange-500" />
+        <StatCard
+          label={t('dashboard.stats.publishers')}
+          value={viewModel.totalPublishers.value}
+          color="text-pink-500"
+        />
         <StatCard label={t('dashboard.stats.tags')} value={totalTags.value} color="text-cyan-400" />
         <StatCard label={t('dashboard.stats.topics')} value={totalTopics.value} color="text-purple-400" />
       </div>
@@ -98,7 +103,7 @@ export function Dashboard() {
         />
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <ListSection
           title={t('dashboard.sections.formats')}
           items={formats.value}
@@ -110,6 +115,12 @@ export function Dashboard() {
           items={viewModel.authors.value}
           linkPrefix="/authors"
           color="border-orange-500"
+        />
+        <ListSection
+          title={t('dashboard.sections.publishers')}
+          items={viewModel.publishers.value}
+          linkPrefix="/publishers"
+          color="border-pink-500"
         />
       </div>
 
