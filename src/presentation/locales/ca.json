@@ -53,7 +53,8 @@
       "publishers": "Editors",
       "recently_completed": "Completats Recentment",
       "no_found": "No s'han trobat {{title}}.",
-      "no_completed": "Encara no hi ha elements completats."
+      "no_completed": "Encara no hi ha elements completats.",
+      "recently_created": "Creats Recentment"
     },
     "view_all_completed": "Veure tots els completats",
     "view_all_collection": "Veure tota la col·lecció"
