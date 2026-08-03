@@ -25,12 +25,10 @@ import 'package:core/shared/pagination/page_request.dart';
 import 'package:postgres/postgres.dart';
 import 'package:test/test.dart';
 
+import '../../../../../core/test/modules/identity/domain/entities/user_mother.dart';
+
 Future<User> _persistedUser(PostgresUserRepository users) async {
-  final user = User.register(
-    email: Email.create('jane.doe@example.com'),
-    username: Username.create('jane_doe'),
-    passwordHash: PasswordHash.create('hashed-value'),
-  );
+  final user = UserMother.random();
   await users.save(user);
   return user;
 }

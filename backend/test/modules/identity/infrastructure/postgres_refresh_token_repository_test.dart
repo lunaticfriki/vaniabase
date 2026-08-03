@@ -4,19 +4,14 @@ import 'package:backend/shared/db/database.dart';
 import 'package:backend/shared/db/database_config.dart';
 import 'package:core/modules/identity/domain/entities/refresh_token.dart';
 import 'package:core/modules/identity/domain/entities/user.dart';
-import 'package:core/modules/identity/domain/value_objects/email.dart';
-import 'package:core/modules/identity/domain/value_objects/password_hash.dart';
 import 'package:core/modules/identity/domain/value_objects/refresh_token_id.dart';
-import 'package:core/modules/identity/domain/value_objects/username.dart';
 import 'package:postgres/postgres.dart';
 import 'package:test/test.dart';
 
+import '../../../../../core/test/modules/identity/domain/entities/user_mother.dart';
+
 Future<User> _persistedUser(PostgresUserRepository users) async {
-  final user = User.register(
-    email: Email.create('jane.doe@example.com'),
-    username: Username.create('jane_doe'),
-    passwordHash: PasswordHash.create('hashed-value'),
-  );
+  final user = UserMother.random();
   await users.save(user);
   return user;
 }

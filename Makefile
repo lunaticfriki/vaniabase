@@ -69,7 +69,11 @@ test-core:
 	cd core && dart test
 
 test-backend:
-	cd backend && dart test
+	# -j1: the Postgres-backed tests share one database with unscoped
+	# tearDown cleanup (DELETE FROM users, etc.) - running test files
+	# concurrently lets one file's cleanup delete rows another file's
+	# test is still using.
+	cd backend && dart test -j1
 
 test-frontend:
 	cd frontend && flutter test
