@@ -2,6 +2,7 @@ import 'package:core/shared/pagination/page_result.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
+import 'package:frontend/shared/layout/responsive_item_grid.dart';
 import 'package:frontend/shared/pagination/pagination_control_view.dart';
 
 class ItemListView extends StatelessWidget {
@@ -33,16 +34,11 @@ class ItemListView extends StatelessWidget {
           Expanded(
             child: result.items.isEmpty
                 ? const Center(child: Text('No items yet.'))
-                : GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: 0.52,
+                : SingleChildScrollView(
+                    child: ResponsiveItemGrid<ItemReadModel>(
+                      items: result.items,
+                      itemBuilder: (context, item) => ItemCardView(item: item),
                     ),
-                    itemCount: result.items.length,
-                    itemBuilder: (context, index) =>
-                        ItemCardView(item: result.items[index]),
                   ),
           ),
           const SizedBox(height: 12),

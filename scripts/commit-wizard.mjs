@@ -14,8 +14,7 @@ import {
 } from '@clack/prompts';
 
 const REPO_ROOT = execSync('git rev-parse --show-toplevel').toString().trim();
-const GIT_DIR = execSync('git rev-parse --git-dir').toString().trim();
-const MSG_FILE = path.join(GIT_DIR, 'VANIA_COMMIT_MSG');
+const MESSAGE_FILE = process.argv[2];
 
 const PARTS = ['backend', 'core', 'frontend'];
 
@@ -49,6 +48,10 @@ function abort(message) {
 }
 
 async function main() {
+  if (!MESSAGE_FILE) {
+    process.exit(0);
+  }
+
   // No terminal attached (CI, GUI client, etc.) - don't block the commit.
   if (!process.stdin.isTTY) {
     process.exit(0);
@@ -99,7 +102,7 @@ async function main() {
 
   const commitMessage = `${type}(${scope}): ${subject.trim()}`;
 
-  writeFileSync(MSG_FILE, commitMessage, 'utf8');
+  writeFileSync(MESSAGE_FILE, commitMessage, 'utf8');
 
   outro(`Will commit as: ${commitMessage}`);
 }

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/app_router.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/shared/session/session_cubit.dart';
+import 'package:frontend/shared/theme/app_theme.dart';
+import 'package:frontend/shared/theme/theme_cubit.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
@@ -22,13 +24,20 @@ class VaniabaseApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: getIt<SessionCubit>(),
-      child: MaterialApp.router(
-        title: 'vaniabase',
-        theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
-        routerConfig: router,
-        debugShowCheckedModeBanner: false,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: getIt<SessionCubit>()),
+        BlocProvider.value(value: getIt<ThemeCubit>()),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) => MaterialApp.router(
+          title: 'vaniabase',
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeMode,
+          routerConfig: router,
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     );
   }

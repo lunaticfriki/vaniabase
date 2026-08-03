@@ -54,6 +54,25 @@ Copy this folder as-is into the new repository (e.g. `docs/architecture/`),
 then follow [09-git-workflow.md](09-git-workflow.md) to wire up the git
 hooks using the templates in `templates/`.
 
+## vaniabase project documentation
+
+The numbered files above are the portable architecture standard — no
+vaniabase-specific content. What vaniabase actually *does*, feature by
+feature and package by package, lives in three separate documents
+instead, so they can be dropped or replaced without touching the
+standard:
+
+- [core-domain.md](core-domain.md) — the catalog and identity domain
+  model: what an item and an account are, the business rules that
+  govern them (category/format compatibility, password/username
+  policy, token lifecycle).
+- [backend-api.md](backend-api.md) — the API: the register → log in →
+  browse → refresh → log out flow, how the catalog stays private per
+  user, how domain errors become HTTP responses.
+- [frontend-app.md](frontend-app.md) — the app: pages and navigation,
+  the sign-in/sign-up/browse user journey, theming, and what's
+  deliberately not built yet.
+
 ## Non-negotiables (summary)
 
 - DDD tactical patterns in the domain layer: entities, value objects,

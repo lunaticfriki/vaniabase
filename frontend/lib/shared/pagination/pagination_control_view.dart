@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pixelarticons/pixel.dart';
 
 class PaginationControlView extends StatelessWidget {
   const PaginationControlView({
@@ -25,13 +26,13 @@ class PaginationControlView extends StatelessWidget {
       children: [
         IconButton(
           onPressed: hasPreviousPage ? onPrevious : null,
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(Pixel.chevronleft),
           tooltip: 'Previous page',
         ),
         Text('Page $page of $totalPages'),
         IconButton(
           onPressed: hasNextPage ? onNext : null,
-          icon: const Icon(Icons.chevron_right),
+          icon: const Icon(Pixel.chevronright),
           tooltip: 'Next page',
         ),
       ],

@@ -4,12 +4,14 @@ import 'package:frontend/modules/identity/application/identity_write_service.dar
 import 'package:frontend/modules/identity/infrastructure/http_identity_repository.dart';
 import 'package:frontend/shared/http/api_client.dart';
 import 'package:frontend/shared/session/session_cubit.dart';
+import 'package:frontend/shared/theme/theme_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
 
 void configureDependencies({required String apiBaseUrl}) {
   getIt.registerLazySingleton<SessionCubit>(() => SessionCubit());
+  getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
 
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(apiBaseUrl, getIt<SessionCubit>()),

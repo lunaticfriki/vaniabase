@@ -1,9 +1,14 @@
 GIT_DIR="$(git rev-parse --git-dir)"
+MESSAGE_FILE="$1"
+SOURCE="$2"
 
-# We're already inside our own post-commit amend - don't re-run the wizard.
-if [ -n "$VANIA_AMEND_IN_PROGRESS" ]; then
-  exit 0
-fi
+# A message was already supplied some other way (-m, -F, merge, squash,
+# --amend/-C/-c reusing an existing message) - leave it untouched.
+case "$SOURCE" in
+  message|merge|squash|commit)
+    exit 0
+    ;;
+esac
 
 # Don't run the wizard for merges, rebases or cherry-picks in progress.
 if [ -f "$GIT_DIR/MERGE_HEAD" ] || \
@@ -13,10 +18,6 @@ if [ -f "$GIT_DIR/MERGE_HEAD" ] || \
   exit 0
 fi
 
-# Drop any stale message from a previous commit attempt that never made it
-# to post-commit (e.g. a prior aborted commit), so it can't leak onto this one.
-rm -f "$GIT_DIR/VANIA_COMMIT_MSG"
-
 # Reconnect stdin to the terminal so the wizard can prompt interactively.
 # (Guarded: /dev/tty can exist but not actually be attachable, e.g. in CI
 # or a detached process - in that case just leave stdin as-is and let the
@@ -25,4 +26,4 @@ if (exec < /dev/tty) 2>/dev/null; then
   exec < /dev/tty
 fi
 
-node scripts/commit-wizard.mjs
+node scripts/commit-wizard.mjs "$MESSAGE_FILE"

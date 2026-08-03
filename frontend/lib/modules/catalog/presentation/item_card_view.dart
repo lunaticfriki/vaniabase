@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
+import 'package:pixelarticons/pixel.dart';
 
 class ItemCardView extends StatelessWidget {
   const ItemCardView({required this.item, super.key});
@@ -18,14 +19,14 @@ class ItemCardView extends StatelessWidget {
             child: item.imageUrl.isEmpty
                 ? Container(
                     color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: const Icon(Icons.image_not_supported_outlined),
+                    child: const Icon(Pixel.imagebroken),
                   )
                 : Image.network(
                     item.imageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                      child: const Icon(Icons.image_not_supported_outlined),
+                      child: const Icon(Pixel.imagebroken),
                     ),
                   ),
           ),
