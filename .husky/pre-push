@@ -1,0 +1,71 @@
+ZERO_SHA="0000000000000000000000000000000000000000"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+EMPTY_TREE="$(git hash-object -t tree /dev/null)"
+
+cd "$REPO_ROOT"
+
+CHANGED_FILES_TMP="$(mktemp)"
+STASHED=0
+
+cleanup() {
+  rm -f "$CHANGED_FILES_TMP"
+  if [ "$STASHED" = "1" ]; then
+    git stash pop --quiet || echo "pre-push: WARNING - could not restore your stashed changes automatically. Run 'git stash list' to recover them."
+  fi
+}
+trap cleanup EXIT INT TERM
+
+# Collect every file touched by the commits being pushed, across all refs.
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "$local_sha" ] && continue
+  [ "$local_sha" = "$ZERO_SHA" ] && continue # deleting a ref: nothing to test
+
+  if [ "$remote_sha" = "$ZERO_SHA" ]; then
+    base="$EMPTY_TREE" # new branch/tag: diff against the empty tree
+  else
+    base="$remote_sha"
+  fi
+
+  git diff --name-only "$base" "$local_sha" >> "$CHANGED_FILES_TMP" || true
+done
+
+if [ ! -s "$CHANGED_FILES_TMP" ]; then
+  echo "pre-push: no commits to test."
+  exit 0
+fi
+
+TARGETS=""
+if grep -q '^core/' "$CHANGED_FILES_TMP"; then
+  # core is a dependency of both backend and frontend: test all three.
+  TARGETS="test-core test-backend test-frontend"
+else
+  grep -q '^backend/' "$CHANGED_FILES_TMP" && TARGETS="$TARGETS test-backend"
+  grep -q '^frontend/' "$CHANGED_FILES_TMP" && TARGETS="$TARGETS test-frontend"
+fi
+
+if [ -z "$(echo "$TARGETS" | tr -d '[:space:]')" ]; then
+  echo "pre-push: no backend/core/frontend changes, skipping tests."
+  exit 0
+fi
+
+# Test only what's actually committed: stash anything uncommitted first.
+if [ -n "$(git status --porcelain)" ]; then
+  git stash push --include-untracked --quiet -m "vania-pre-push-autostash"
+  STASHED=1
+fi
+
+echo "pre-push: running tests for:$TARGETS"
+
+FAILED=0
+for target in $TARGETS; do
+  if ! make "$target"; then
+    FAILED=1
+  fi
+done
+
+if [ "$FAILED" = "1" ]; then
+  echo "pre-push: tests failed, aborting push."
+  exit 1
+fi
+
+exit 0

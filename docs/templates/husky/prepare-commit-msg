@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if [ -c /dev/tty ]; then
+  exec < /dev/tty
+fi
+
+sh scripts/commit.sh "$1" "$2" "$3"

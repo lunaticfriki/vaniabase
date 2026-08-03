@@ -1,0 +1,23 @@
+{
+  "name": "vaniabase",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tooling for the vaniabase monorepo (backend, core, frontend).",
+  "type": "module",
+  "scripts": {
+    "prepare": "husky",
+    "commit": "git commit -m wip",
+    "test": "make test"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.15.1",
+      "onFail": "download"
+    }
+  },
+  "devDependencies": {
+    "@clack/prompts": "^1.7.0",
+    "husky": "^9.1.7"
+  }
+}

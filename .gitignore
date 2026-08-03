@@ -1,0 +1,31 @@
+# Environment / secrets
+.env
+.env.*.local
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+*.iml
+# .vscode/ contains shared launch/task config; keep tracked by default
+
+# Dart / Flutter (backend, core, frontend)
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec_overrides.yaml
+
+# Logs
+*.log
+
+# Internal notes (not project docs)
+backend/explanation/
+core/explanation/
+
+# Node.js
+node_modules/

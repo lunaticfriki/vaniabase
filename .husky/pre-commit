@@ -1,0 +1,28 @@
+GIT_DIR="$(git rev-parse --git-dir)"
+
+# We're already inside our own post-commit amend - don't re-run the wizard.
+if [ -n "$VANIA_AMEND_IN_PROGRESS" ]; then
+  exit 0
+fi
+
+# Don't run the wizard for merges, rebases or cherry-picks in progress.
+if [ -f "$GIT_DIR/MERGE_HEAD" ] || \
+   [ -f "$GIT_DIR/CHERRY_PICK_HEAD" ] || \
+   [ -d "$GIT_DIR/rebase-merge" ] || \
+   [ -d "$GIT_DIR/rebase-apply" ]; then
+  exit 0
+fi
+
+# Drop any stale message from a previous commit attempt that never made it
+# to post-commit (e.g. a prior aborted commit), so it can't leak onto this one.
+rm -f "$GIT_DIR/VANIA_COMMIT_MSG"
+
+# Reconnect stdin to the terminal so the wizard can prompt interactively.
+# (Guarded: /dev/tty can exist but not actually be attachable, e.g. in CI
+# or a detached process - in that case just leave stdin as-is and let the
+# wizard's own non-TTY check skip the prompts.)
+if (exec < /dev/tty) 2>/dev/null; then
+  exec < /dev/tty
+fi
+
+node scripts/commit-wizard.mjs

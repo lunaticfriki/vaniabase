@@ -1,0 +1,13 @@
+name: core
+description: >
+  Shared domain layer for vaniabase, used unchanged by both backend and
+  frontend. Application and infrastructure layers live in the consuming
+  package (backend, frontend) since each has its own.
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^5.0.0
