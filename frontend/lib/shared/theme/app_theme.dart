@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Brand colors: a light purple as primary. Secondary (used for links) is a
-/// brilliant yellow on dark backgrounds, and a deeper purple on light
-/// backgrounds where a bright yellow wouldn't read well. Dark backgrounds
-/// stay off-black rather than pure `#000000`.
+/// lighter, higher-luminance purple on dark backgrounds so it stays legible
+/// against the near-black background, and a deeper purple on light
+/// backgrounds where a pale purple wouldn't have enough contrast. Dark
+/// backgrounds stay off-black rather than pure `#000000`.
 class AppTheme {
   const AppTheme._();
 
@@ -12,25 +13,24 @@ class AppTheme {
   static const _darkBackground = Color(0xFF161219);
   static const _darkSurface = Color(0xFF1E1A22);
   static const _lightPurpleSecondary = Color(0xFF6C3CE9);
-  static const _darkYellow = Color(0xFFFFDD00);
+  static const _darkPurpleSecondary = Color(0xFFB9A6FF);
 
   static ThemeData get light => _themeFrom(_lightScheme);
 
   static ThemeData get dark => _themeFrom(_darkScheme);
 
-  static ColorScheme get _lightScheme =>
-      ColorScheme.fromSeed(
-        seedColor: _seedPurple,
-        brightness: Brightness.light,
-      ).copyWith(secondary: _lightPurpleSecondary, onSecondary: Colors.white);
+  static ColorScheme get _lightScheme => ColorScheme.fromSeed(
+    seedColor: _seedPurple,
+    brightness: Brightness.light,
+  ).copyWith(secondary: _lightPurpleSecondary, onSecondary: Colors.white);
 
   static ColorScheme get _darkScheme =>
       ColorScheme.fromSeed(
         seedColor: _seedPurple,
         brightness: Brightness.dark,
       ).copyWith(
-        secondary: _darkYellow,
-        onSecondary: const Color(0xFF3A2E00),
+        secondary: _darkPurpleSecondary,
+        onSecondary: const Color(0xFF2A2049),
         surface: _darkSurface,
         onSurface: const Color(0xFFEAE4F0),
       );

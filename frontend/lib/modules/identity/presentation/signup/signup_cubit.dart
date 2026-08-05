@@ -22,8 +22,9 @@ class SignupCubit extends Cubit<SignupState> {
         password: password,
       );
       final session = await _identity.login(email: email, password: password);
-      _session.authenticate(
+      await _session.authenticate(
         accessToken: session.accessToken,
+        accessTokenExpiresAt: session.accessTokenExpiresAt,
         refreshToken: session.refreshToken,
       );
       emit(const SignupIdle());

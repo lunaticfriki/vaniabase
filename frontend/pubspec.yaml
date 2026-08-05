@@ -39,6 +39,7 @@ dependencies:
   go_router: ^14.6.0
   google_fonts: ^8.2.1
   pixelarticons: ^0.4.0
+  shared_preferences: ^2.3.0
   url_launcher: ^6.3.2
 
 dev_dependencies:

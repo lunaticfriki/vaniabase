@@ -7,13 +7,15 @@ import 'package:frontend/shared/theme/app_theme.dart';
 import 'package:frontend/shared/theme/theme_cubit.dart';
 import 'package:go_router/go_router.dart';
 
-void main() {
-  configureDependencies(
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies(
     apiBaseUrl: const String.fromEnvironment(
       'API_BASE_URL',
       defaultValue: 'http://localhost:8080',
     ),
   );
+  await getIt<SessionCubit>().restore();
   runApp(VaniabaseApp(router: buildAppRouter(getIt<SessionCubit>())));
 }
 

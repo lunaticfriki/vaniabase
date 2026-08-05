@@ -13,8 +13,9 @@ class LoginCubit extends Cubit<LoginState> {
     emit(const LoginInProgress());
     try {
       final session = await _identity.login(email: email, password: password);
-      _session.authenticate(
+      await _session.authenticate(
         accessToken: session.accessToken,
+        accessTokenExpiresAt: session.accessTokenExpiresAt,
         refreshToken: session.refreshToken,
       );
       emit(const LoginIdle());

@@ -6,6 +6,7 @@ import 'package:frontend/modules/catalog/presentation/item_list/item_list_cubit.
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_skeleton.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_state.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_view.dart';
+import 'package:go_router/go_router.dart';
 
 class ItemListPage extends StatelessWidget {
   const ItemListPage({super.key});
@@ -22,6 +23,7 @@ class ItemListPage extends StatelessWidget {
             result: result,
             onPrevious: () => context.read<ItemListCubit>().previousPage(),
             onNext: () => context.read<ItemListCubit>().nextPage(),
+            onAddItem: () => context.go('/items/new'),
           ),
         },
       ),

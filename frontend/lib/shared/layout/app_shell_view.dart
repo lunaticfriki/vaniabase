@@ -16,9 +16,9 @@ class AppShellView extends StatelessWidget {
       appBar: AppHeaderView(
         onNavigateHome: () => context.go('/'),
         onNavigateItems: () => context.go('/items'),
-        onLogout: () {
-          context.read<SessionCubit>().clear();
-          context.go('/login');
+        onLogout: () async {
+          await context.read<SessionCubit>().clear();
+          if (context.mounted) context.go('/login');
         },
       ),
       body: Column(

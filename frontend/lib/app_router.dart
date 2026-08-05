@@ -1,3 +1,4 @@
+import 'package:frontend/modules/catalog/presentation/add_item/add_item_page.dart';
 import 'package:frontend/modules/catalog/presentation/home/home_page.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_page.dart';
 import 'package:frontend/modules/identity/presentation/login/login_page.dart';
@@ -32,6 +33,10 @@ GoRouter buildAppRouter(SessionCubit sessionCubit) {
           GoRoute(
             path: '/items',
             builder: (context, state) => const ItemListPage(),
+          ),
+          GoRoute(
+            path: '/items/new',
+            builder: (context, state) => const AddItemPage(),
           ),
         ],
       ),

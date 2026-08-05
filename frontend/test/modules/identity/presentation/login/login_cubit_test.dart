@@ -5,18 +5,35 @@ import 'package:frontend/modules/identity/presentation/login/login_cubit.dart';
 import 'package:frontend/modules/identity/presentation/login/login_state.dart';
 import 'package:frontend/shared/session/session_cubit.dart';
 import 'package:frontend/shared/session/session_state.dart';
+import 'package:frontend/shared/session/session_storage.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class MockIdentityWriteService extends Mock implements IdentityWriteService {}
 
+class MockSessionStorage extends Mock implements SessionStorage {}
+
 void main() {
   late MockIdentityWriteService identity;
+  late MockSessionStorage sessionStorage;
   late SessionCubit session;
+
+  setUpAll(() {
+    registerFallbackValue(
+      StoredSession(
+        accessToken: 'fallback',
+        accessTokenExpiresAt: DateTime.now(),
+        refreshToken: 'fallback',
+      ),
+    );
+  });
 
   setUp(() {
     identity = MockIdentityWriteService();
-    session = SessionCubit();
+    sessionStorage = MockSessionStorage();
+    when(() => sessionStorage.save(any())).thenAnswer((_) async {});
+    when(() => sessionStorage.clear()).thenAnswer((_) async {});
+    session = SessionCubit(sessionStorage);
   });
 
   group('LoginCubit', () {
