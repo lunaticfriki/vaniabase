@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/app_header_view.dart';
-import 'package:frontend/shared/session/session_cubit.dart';
+import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:go_router/go_router.dart';
 
 class AppShellView extends StatelessWidget {
@@ -16,8 +16,9 @@ class AppShellView extends StatelessWidget {
       appBar: AppHeaderView(
         onNavigateHome: () => context.go('/'),
         onNavigateItems: () => context.go('/items'),
+        onNavigateAddItem: () => context.go('/items/new'),
         onLogout: () async {
-          await context.read<SessionCubit>().clear();
+          await context.read<SessionStateService>().clear();
           if (context.mounted) context.go('/login');
         },
       ),

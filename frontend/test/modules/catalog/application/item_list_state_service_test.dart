@@ -1,14 +1,14 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/shared/pagination/page_request.dart';
 import 'package:core/shared/pagination/page_result.dart';
+import 'package:frontend/modules/catalog/application/item_list_state.dart';
+import 'package:frontend/modules/catalog/application/item_list_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/presentation/item_list/item_list_cubit.dart';
-import 'package:frontend/modules/catalog/presentation/item_list/item_list_state.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../application/item_read_model_mother.dart';
+import 'item_read_model_mother.dart';
 
 class MockItemReadService extends Mock implements ItemReadService {}
 
@@ -34,59 +34,59 @@ void main() {
     ).thenAnswer((_) async => _pageOf(2));
   });
 
-  group('ItemListCubit', () {
-    blocTest<ItemListCubit, ItemListState>(
+  group('ItemListStateService', () {
+    blocTest<ItemListStateService, ItemListState>(
       'loads page 1 on construction',
-      build: () => ItemListCubit(readService),
+      build: () => ItemListStateService(readService),
       expect: () => [isA<ItemListLoaded>()],
-      verify: (cubit) {
-        final state = cubit.state as ItemListLoaded;
+      verify: (service) {
+        final state = service.state as ItemListLoaded;
         expect(state.result.page, 1);
       },
     );
 
-    blocTest<ItemListCubit, ItemListState>(
+    blocTest<ItemListStateService, ItemListState>(
       'nextPage loads the following page',
-      build: () => ItemListCubit(readService),
+      build: () => ItemListStateService(readService),
       skip: 1, // the page-1 ItemListLoaded emitted by the constructor's own load
-      act: (cubit) async {
+      act: (service) async {
         await Future<void>.delayed(Duration.zero);
-        await cubit.nextPage();
+        await service.nextPage();
       },
       expect: () => [isA<ItemListLoading>(), isA<ItemListLoaded>()],
-      verify: (cubit) {
-        final state = cubit.state as ItemListLoaded;
+      verify: (service) {
+        final state = service.state as ItemListLoaded;
         expect(state.result.page, 2);
       },
     );
 
-    blocTest<ItemListCubit, ItemListState>(
+    blocTest<ItemListStateService, ItemListState>(
       'previousPage is a no-op on the first page',
-      build: () => ItemListCubit(readService),
+      build: () => ItemListStateService(readService),
       skip: 1, // the page-1 ItemListLoaded emitted by the constructor's own load
-      act: (cubit) async {
+      act: (service) async {
         await Future<void>.delayed(Duration.zero);
-        await cubit.previousPage();
+        await service.previousPage();
       },
       expect: () => [],
-      verify: (cubit) {
-        final state = cubit.state as ItemListLoaded;
+      verify: (service) {
+        final state = service.state as ItemListLoaded;
         expect(state.result.page, 1);
       },
     );
 
-    blocTest<ItemListCubit, ItemListState>(
+    blocTest<ItemListStateService, ItemListState>(
       'nextPage is a no-op when already on the only page',
       setUp: () {
         when(
           () => readService.list(pageRequest: PageRequest.create(page: 1, pageSize: 10)),
         ).thenAnswer((_) async => _pageOf(1, totalItems: 10));
       },
-      build: () => ItemListCubit(readService),
+      build: () => ItemListStateService(readService),
       skip: 1, // the page-1 ItemListLoaded emitted by the constructor's own load
-      act: (cubit) async {
+      act: (service) async {
         await Future<void>.delayed(Duration.zero);
-        await cubit.nextPage();
+        await service.nextPage();
       },
       expect: () => [],
     );

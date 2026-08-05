@@ -2,8 +2,9 @@
 
 Everything in [07-testing-strategy.md](07-testing-strategy.md) tests layers
 in isolation — the domain with no mocks, the application layer with mocked
-ports, presentation with mocked read/write services and Cubit state
-assertions. None of that proves the whole system actually works together on
+ports (including the state service's own state-sequence assertions),
+presentation with plain widget tests. None of that proves the whole system
+actually works together on
 a real device/simulator: real navigation, real rendering, a real app build
 talking to a real (or realistically stubbed) backend. That's what
 end-to-end tests are for, written in **Gherkin** and run through

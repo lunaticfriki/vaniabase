@@ -29,9 +29,11 @@ choice for Dart/Flutter projects here; bindings use explicit
 annotation-based auto-wiring — see
 [08-tech-flutter-dart.md](08-tech-flutter-dart.md#composition-root-get_it).
 
-**Page** — a presentation-layer unit that reads Cubit/Bloc state and
-dispatches commands/queries, choosing which view to render based on status.
-The Flutter/Dart equivalent of what other stacks call a "container."
+**Page** — a presentation-layer unit that subscribes to an application-layer
+state service via `BlocProvider`/`BlocBuilder`, reads its emitted state, and
+dispatches commands/queries by calling the state service's methods,
+choosing which view to render based on status. The Flutter/Dart equivalent
+of what other stacks call a "container."
 
 **View** — a pure, presentation-only unit that receives constructor
 parameters and renders widgets, with no knowledge of application/domain/
@@ -51,7 +53,7 @@ to show it as a warning rather than an error.
 
 **Error Manager** — the shared service that turns a caught
 `DomainError`/`DomainWarning` into a user-facing notification. Stateless
-itself; delegates to `NotificationStateCubit` — see
+itself; delegates to `NotificationStateService` — see
 [10-shared-services.md](10-shared-services.md#error-manager).
 
 **Domain service** — domain logic that spans more than one aggregate or
@@ -74,7 +76,7 @@ outer layers (infrastructure, presentation) provide/consume implementations
 (adapters), with dependencies pointing inward only.
 
 **Notification Service** — the shared service (living in `core`) that
-constructs `Notification` entities; paired with `NotificationStateCubit`
+constructs `Notification` entities; paired with `NotificationStateService`
 (living in `frontend`), which holds the reactive list a `NotificationCenter`
 widget renders — see
 [10-shared-services.md](10-shared-services.md#notification-service).
@@ -105,9 +107,15 @@ two distinct contracts.
 **Skeleton** — a loading-state placeholder widget mirroring the layout of
 the view it stands in for.
 
-**State service** — the reactive state holder a page subscribes to. In this
-stack, this is always a Cubit (or Bloc), living squarely in presentation —
-see [05-presentation-layer.md](05-presentation-layer.md#state-service-the-cubit).
+**State service** — the reactive state holder a page subscribes to.
+Implemented by extending flutter_bloc's `Cubit<State>` (or `Bloc`), but
+lives in the **application** layer, named `XStateService` rather than
+`XCubit` — the one file per feature allowed a Flutter dependency in an
+otherwise Flutter-free application layer. Presentation only ever subscribes
+to it via `BlocProvider`/`BlocBuilder`; it never defines one itself — see
+[03-application-layer-cqrs.md](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state)
+and
+[05-presentation-layer.md](05-presentation-layer.md#consuming-the-state-service).
 
 **Value object** — a domain object with no identity, defined entirely by its
 attributes, immutable, compared structurally.

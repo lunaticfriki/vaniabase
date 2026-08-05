@@ -1,10 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/identity/application/identity_write_service.dart';
+import 'package:frontend/modules/identity/application/login_state.dart';
+import 'package:frontend/modules/identity/application/login_state_service.dart';
 import 'package:frontend/modules/identity/application/session_read_model.dart';
-import 'package:frontend/modules/identity/presentation/login/login_cubit.dart';
-import 'package:frontend/modules/identity/presentation/login/login_state.dart';
-import 'package:frontend/shared/session/session_cubit.dart';
 import 'package:frontend/shared/session/session_state.dart';
+import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/session/session_storage.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,7 +16,7 @@ class MockSessionStorage extends Mock implements SessionStorage {}
 void main() {
   late MockIdentityWriteService identity;
   late MockSessionStorage sessionStorage;
-  late SessionCubit session;
+  late SessionStateService session;
 
   setUpAll(() {
     registerFallbackValue(
@@ -33,11 +33,11 @@ void main() {
     sessionStorage = MockSessionStorage();
     when(() => sessionStorage.save(any())).thenAnswer((_) async {});
     when(() => sessionStorage.clear()).thenAnswer((_) async {});
-    session = SessionCubit(sessionStorage);
+    session = SessionStateService(sessionStorage);
   });
 
-  group('LoginCubit', () {
-    blocTest<LoginCubit, LoginState>(
+  group('LoginStateService', () {
+    blocTest<LoginStateService, LoginState>(
       'authenticates the session and returns to idle on success',
       setUp: () {
         when(
@@ -50,8 +50,8 @@ void main() {
           ),
         );
       },
-      build: () => LoginCubit(identity, session),
-      act: (cubit) => cubit.submit(email: 'jane@example.com', password: 'password123'),
+      build: () => LoginStateService(identity, session),
+      act: (service) => service.submit(email: 'jane@example.com', password: 'password123'),
       expect: () => [isA<LoginInProgress>(), isA<LoginIdle>()],
       verify: (_) {
         expect(session.state, isA<SessionAuthenticated>());
@@ -59,15 +59,15 @@ void main() {
       },
     );
 
-    blocTest<LoginCubit, LoginState>(
+    blocTest<LoginStateService, LoginState>(
       'emits LoginFailure and leaves the session unauthenticated on error',
       setUp: () {
         when(
           () => identity.login(email: 'jane@example.com', password: 'wrong'),
         ).thenThrow(Exception('invalid credentials'));
       },
-      build: () => LoginCubit(identity, session),
-      act: (cubit) => cubit.submit(email: 'jane@example.com', password: 'wrong'),
+      build: () => LoginStateService(identity, session),
+      act: (service) => service.submit(email: 'jane@example.com', password: 'wrong'),
       expect: () => [isA<LoginInProgress>(), isA<LoginFailure>()],
       verify: (_) {
         expect(session.state, isA<SessionUnauthenticated>());

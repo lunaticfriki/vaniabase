@@ -5,17 +5,20 @@ notifications, auth session, feature flags. They live in `shared/`, but
 they follow the exact same architectural patterns a feature module does:
 real domain modeling when the concern has actual data shape, a pure
 application service, and — if the concern needs reactive state in the UI —
-a Cubit in presentation, exactly as described in
-[03-application-layer-cqrs.md](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-cubit-holds-the-reactive-state).
-"Shared" describes *where* the code lives and *who* depends on it, not a
-license to skip the rules.
+a state service, exactly as described in
+[03-application-layer-cqrs.md](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state).
+It's implemented the same way a feature's state service is (extending
+`Cubit<State>`), just named and placed for a cross-cutting concern:
+`frontend/shared/<concern>/`, not any one module's `application/` folder,
+since no single module owns it. "Shared" describes *where* the code lives
+and *who* depends on it, not a license to skip the rules.
 
 This doc walks through the two shared services every project starts with —
-`NotificationService`/`NotificationStateCubit` and `ErrorManager` — as the
-canonical example to copy when building the next one. `NotificationService`
-and its domain model live in `core` (framework-free, so `backend` can raise
-notifications too); `NotificationStateCubit` lives in `frontend`, since it's
-the Flutter-facing reactive holder.
+`NotificationService`/`NotificationStateService` and `ErrorManager` — as
+the canonical example to copy when building the next one.
+`NotificationService` and its domain model live in `core` (framework-free,
+so `backend` can raise notifications too); `NotificationStateService` lives
+in `frontend`, since it's the Flutter-facing reactive holder.
 
 ## Folder structure
 
@@ -37,7 +40,7 @@ core/
 frontend/
   shared/
     notifications/
-      notification_state_cubit.dart
+      notification_state_service.dart
       notification_center.dart
 
 test/
@@ -104,15 +107,17 @@ class NotificationServiceImpl implements NotificationService {
 }
 ```
 
-The reactive list of currently-visible notifications is a Cubit, living in
-`frontend/shared/` — the same "Cubit is presentation's one reactive-state
-dependency" rule as any feature module (see
-[05-presentation-layer.md](05-presentation-layer.md#state-service-the-cubit)):
+The reactive list of currently-visible notifications is a state service,
+living in `frontend/shared/` rather than any module's `application/` —
+same rule as any feature's state service (a page/widget only ever
+subscribes to it, never defines it — see
+[05-presentation-layer.md](05-presentation-layer.md#consuming-the-state-service)),
+just relocated because this concern isn't owned by one feature:
 
 ```dart
-// frontend/shared/notifications/notification_state_cubit.dart
-class NotificationStateCubit extends Cubit<List<Notification>> {
-  NotificationStateCubit(this._notificationService) : super(const []);
+// frontend/shared/notifications/notification_state_service.dart
+class NotificationStateService extends Cubit<List<Notification>> {
+  NotificationStateService(this._notificationService) : super(const []);
 
   final NotificationService _notificationService;
 
@@ -128,18 +133,18 @@ class NotificationStateCubit extends Cubit<List<Notification>> {
 ```
 
 A `NotificationCenter` widget wraps itself in a `BlocBuilder<
-NotificationStateCubit, List<Notification>>` and renders a snackbar/banner
-per entry, calling `dismiss(id)` on close — the same page-reads-a-Cubit
-pattern as any feature module's state service.
+NotificationStateService, List<Notification>>` and renders a snackbar/banner
+per entry, calling `dismiss(id)` on close — the same page-reads-a-state-
+service pattern as any feature module.
 
 ## Error Manager
 
 `ErrorManager` is the single place a thrown `DomainError`/`DomainWarning`
 gets translated into something the user actually sees. It has no reactive
 state of its own — it's a pure orchestrator that delegates to
-`NotificationStateCubit` for the reactive part, so it lives in `core` next
-to the error types it handles, taking the Cubit as a dependency rather than
-being one itself.
+`NotificationStateService` for the reactive part, so it lives in `core` next
+to the error types it handles, taking the state service as a dependency
+rather than being one itself.
 
 ```dart
 // core/shared/errors/error_manager.dart
@@ -150,7 +155,7 @@ abstract class ErrorManager {
 class ErrorManagerImpl implements ErrorManager {
   ErrorManagerImpl(this._notifications);
 
-  final NotificationStateCubit _notifications;
+  final NotificationStateService _notifications;
 
   @override
   void handle(Object error) {
@@ -167,7 +172,7 @@ class ErrorManagerImpl implements ErrorManager {
 }
 ```
 
-Any Cubit in the app that catches a genuine failure calls
+Any state service in the app that catches a genuine failure calls
 `errorManager.handle(error)` in addition to emitting its own local error
 state — the local state drives that one screen's UI (an inline error
 message, a retry button), while `ErrorManager` drives the app-wide
@@ -180,35 +185,40 @@ for that distinction.
 ## Wiring into the composition root
 
 Same `get_it` pattern as any other binding, wired in dependency order —
-`NotificationService` has no deps, `NotificationStateCubit` needs it,
-`ErrorManager` needs `NotificationStateCubit`, and any feature Cubit that
-reports errors needs `ErrorManager`:
+`NotificationService` has no deps, `NotificationStateService` needs it,
+`ErrorManager` needs `NotificationStateService`, and any feature state
+service that reports errors needs `ErrorManager`:
 
 ```dart
 getIt.registerLazySingleton<NotificationService>(() => NotificationServiceImpl());
 
-getIt.registerLazySingleton<NotificationStateCubit>(
-  () => NotificationStateCubit(getIt<NotificationService>()),
+getIt.registerLazySingleton<NotificationStateService>(
+  () => NotificationStateService(getIt<NotificationService>()),
 );
 
 getIt.registerLazySingleton<ErrorManager>(
-  () => ErrorManagerImpl(getIt<NotificationStateCubit>()),
+  () => ErrorManagerImpl(getIt<NotificationStateService>()),
 );
 ```
 
-`NotificationStateCubit` is registered as a singleton (not a per-page
-factory, unlike a feature Cubit) because it's genuinely app-wide state that
-every screen's `ErrorManager` calls into and one `NotificationCenter` at the
-app root renders from.
+`NotificationStateService` is registered as a singleton (not constructed
+per-page, unlike a feature's state service) because it's genuinely app-wide
+state that every screen's `ErrorManager` calls into and one
+`NotificationCenter` at the app root renders from. `SessionStateService`
+and `ThemeStateService` follow the same singleton-plus-`BlocProvider.value`
+shape for the same reason — see
+[08-tech-flutter-dart.md#composition-root-get_it](08-tech-flutter-dart.md#composition-root-get_it).
 
 ## When to build a new shared service this way
 
-Build the full pattern (domain entities/VOs + pure service + Cubit) when the
-concern has real data shape and/or needs reactive state — the next
-candidates are typically auth session, feature flags, or a global
-loading/offline indicator. If a cross-cutting concern is genuinely stateless
-and trivial — a single pure formatting or validation function with no data
-shape of its own — a plain top-level function in a `_util.dart` file is
-enough. Don't force entities and a Cubit onto something that's really just a
-function; don't skip them onto something that's genuinely stateful and
-shared just because it's a small amount of code today.
+Build the full pattern (domain entities/VOs + pure service + state service)
+when the concern has real data shape and/or needs reactive state — the next
+candidates are typically feature flags or a global loading/offline
+indicator (auth session and theme are already built this way — see
+`SessionStateService`/`ThemeStateService` in `frontend/shared/`). If a
+cross-cutting concern is genuinely stateless and trivial — a single pure
+formatting or validation function with no data shape of its own — a plain
+top-level function in a `_util.dart` file is enough. Don't force entities
+and a state service onto something that's really just a function; don't
+skip them onto something that's genuinely stateful and shared just because
+it's a small amount of code today.

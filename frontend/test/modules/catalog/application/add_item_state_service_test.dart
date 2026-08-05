@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:frontend/modules/catalog/application/add_item_state.dart';
+import 'package:frontend/modules/catalog/application/add_item_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
-import 'package:frontend/modules/catalog/presentation/add_item/add_item_cubit.dart';
-import 'package:frontend/modules/catalog/presentation/add_item/add_item_state.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,8 +14,8 @@ void main() {
     writeService = MockItemWriteService();
   });
 
-  group('AddItemCubit', () {
-    blocTest<AddItemCubit, AddItemState>(
+  group('AddItemStateService', () {
+    blocTest<AddItemStateService, AddItemState>(
       'emits success after creating the item',
       setUp: () {
         when(
@@ -28,8 +28,8 @@ void main() {
           ),
         ).thenAnswer((_) async => 'item-1');
       },
-      build: () => AddItemCubit(writeService),
-      act: (cubit) => cubit.submit(
+      build: () => AddItemStateService(writeService),
+      act: (service) => service.submit(
         title: 'Dune',
         creator: ['Frank Herbert'],
         publisher: 'Chilton Books',
@@ -39,7 +39,7 @@ void main() {
       expect: () => [isA<AddItemInProgress>(), isA<AddItemSuccess>()],
     );
 
-    blocTest<AddItemCubit, AddItemState>(
+    blocTest<AddItemStateService, AddItemState>(
       'emits AddItemFailure with the backend message on error',
       setUp: () {
         when(
@@ -52,8 +52,8 @@ void main() {
           ),
         ).thenThrow(Exception('"dvd" is not a valid format for category "book"'));
       },
-      build: () => AddItemCubit(writeService),
-      act: (cubit) => cubit.submit(
+      build: () => AddItemStateService(writeService),
+      act: (service) => service.submit(
         title: 'Dune',
         creator: ['Frank Herbert'],
         publisher: 'Chilton Books',

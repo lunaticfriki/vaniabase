@@ -1,21 +1,29 @@
 # Presentation Layer
 
 Presentation renders state and dispatches user intent. It depends on the
-application layer (commands/queries and their read models) and MUST NOT
-import infrastructure directly. It holds UI state and rendering logic —
-never business rules.
+application layer: its read/write services indirectly, and its **state
+service** directly, subscribed to via `BlocProvider`/`BlocBuilder`. It MUST
+NOT import infrastructure directly, and MUST NOT define reactive state
+itself — presentation holds no state of its own beyond throwaway widget-local
+concerns (a `TextEditingController`, a `GlobalKey<FormState>`); anything
+that outlives a single build (loading/error/loaded, form-submission
+progress) is the state service's job, one layer in. See
+[03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state)
+for why it lives there.
 
 ## Page vs View
 
-- **Page**: knows about the Cubit/Bloc and application layer. Owns the
-  `BlocProvider`/`BlocBuilder`, reads emitted state, dispatches
-  commands/queries, and decides what to render based on state
+- **Page**: knows about the application layer's state service and
+  subscribes to it. Owns the `BlocProvider`/`BlocBuilder`, reads emitted
+  state, dispatches commands/queries by calling the state service's
+  methods, and decides what to render based on state
   (loading/error/loaded). No markup beyond composing views and picking the
-  loading/error/loaded branch.
+  loading/error/loaded branch. Never defines a Cubit/Bloc itself — only
+  ever constructs and reads one that already exists in `application/`.
 - **View**: pure, presentation-only widget. Receives constructor parameters,
   renders widgets, emits events upward via callbacks. Has no knowledge of
-  the Cubit, application layer, or domain. Trivial to test in isolation and
-  reuse.
+  the state service, application layer, or domain. Trivial to test in
+  isolation and reuse.
 
 ```dart
 // presentation/order/order_details_page.dart
@@ -27,18 +35,18 @@ class OrderDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => OrderDetailsCubit(
+      create: (_) => OrderDetailsStateService(
         context.read<OrderReadService>(),
         context.read<OrderWriteService>(),
         orderId,
       ),
-      child: BlocBuilder<OrderDetailsCubit, OrderDetailsState>(
+      child: BlocBuilder<OrderDetailsStateService, OrderDetailsState>(
         builder: (context, state) => switch (state) {
           OrderDetailsLoading() => const OrderDetailsSkeleton(),
           OrderDetailsError(:final message) => OrderDetailsErrorView(message: message),
           OrderDetailsLoaded(:final order) => OrderDetailsView(
               order: order,
-              onConfirm: () => context.read<OrderDetailsCubit>().confirm(),
+              onConfirm: () => context.read<OrderDetailsStateService>().confirm(),
             ),
         },
       ),
@@ -68,7 +76,7 @@ class OrderDetailsView extends StatelessWidget {
 }
 ```
 
-`OrderDetailsView` never imports the Cubit or any application type
+`OrderDetailsView` never imports the state service or its state classes
 directly — its constructor takes a plain read model shape, making it
 layer-agnostic to test and reuse (e.g. in a widgetbook/style-guide app).
 
@@ -86,69 +94,30 @@ presentation/order/
   order_details_skeleton.dart
 ```
 
-## State service: the Cubit
+## Consuming the state service
 
-The Cubit is the reactive holder of "what should the UI currently show,"
-built on top of application queries/commands, that a page subscribes to via
-`BlocBuilder`/`BlocProvider`.
+Presentation never defines a Cubit — it only ever subscribes to one that
+already exists in the application layer. See
+[03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state)
+for why the state service lives in application, and
+[08-tech-flutter-dart.md#application-the-state-service](08-tech-flutter-dart.md#application-the-state-service)
+for the concrete `Cubit<State>` pattern (including when Bloc — event-sourced
+— is a better fit than Cubit's direct method calls).
 
-Responsibilities:
+The Page's contract with it is narrow:
 
-- Expose a sealed state hierarchy (`Loading`/`Loaded`/`Error`, or richer as
-  the screen needs).
-- Update after a command runs (re-run the query, or apply an optimistic
-  update).
-- Hold no business logic — it only decides *when* to call application
-  services and *how* to shape loading/error state for the UI, never *whether*
-  a business rule is satisfied.
+- Construct it in a `BlocProvider.create`, resolving its read/write-service
+  dependencies from `getIt`/`context.read`.
+- Read emitted state via `BlocBuilder`/`BlocConsumer` and pick the
+  loading/error/loaded branch.
+- Call its methods (`confirm()`, `submit()`, ...) in response to a callback
+  a View fired upward — never reach into a read/write service or repository
+  directly from presentation to bypass it.
 
-```dart
-// presentation/order/order_details_cubit.dart
-sealed class OrderDetailsState {}
-
-class OrderDetailsLoading extends OrderDetailsState {}
-
-class OrderDetailsLoaded extends OrderDetailsState {
-  OrderDetailsLoaded(this.order);
-  final OrderReadModel order;
-}
-
-class OrderDetailsError extends OrderDetailsState {
-  OrderDetailsError(this.message);
-  final String message;
-}
-
-class OrderDetailsCubit extends Cubit<OrderDetailsState> {
-  OrderDetailsCubit(this._readService, this._writeService, this._orderId)
-      : super(OrderDetailsLoading()) {
-    _load();
-  }
-
-  final OrderReadService _readService;
-  final OrderWriteService _writeService;
-  final String _orderId;
-
-  Future<void> _load() async {
-    try {
-      final order = await _readService.getById(GetOrderQuery(_orderId));
-      emit(OrderDetailsLoaded(order));
-    } catch (error) {
-      emit(OrderDetailsError(error.toString()));
-    }
-  }
-
-  Future<void> confirm() async {
-    await _writeService.confirm(ConfirmOrderCommand(_orderId));
-    await _load();
-  }
-}
-```
-
-The Cubit lives squarely in presentation — it is the layer's one allowed
-dependency on a reactive-state library (`bloc`/`flutter_bloc`). See
-[08-tech-flutter-dart.md](08-tech-flutter-dart.md#presentation-cubit-as-the-state-service)
-for the full pattern, including when Bloc (event-sourced) is a better fit
-than Cubit (direct method calls).
+A page imports `BlocProvider`/`BlocBuilder`/`BlocConsumer` from
+`flutter_bloc` — the *consumer*-side API — but never `Cubit` itself and
+never extends it. If a file under `presentation/` extends `Cubit<State>`,
+that's the signal it belongs in `application/` instead.
 
 ## Read models are optional — presentation may render a domain entity directly
 
@@ -158,9 +127,9 @@ sees a domain type. That's still the right call for an entity with
 behavior or mutable state (see below) — but for a genuinely read-only
 entity (every field public `final`, no methods that change anything),
 mapping to a hand-written DTO is pure ceremony. It's fine to return the
-entity itself from the read service/Cubit and let presentation render its
-value-object fields with `.toString()` (or a small formatter, for things
-like a date):
+entity itself from the read service/state service and let presentation
+render its value-object fields with `.toString()` (or a small formatter,
+for things like a date):
 
 ```dart
 class PostPreview extends StatelessWidget {
@@ -210,3 +179,7 @@ mutable state.
 - Construct domain entities directly — presentation only ever sees read
   models (DTOs) coming back from queries, or a read-only domain entity per
   the exception above.
+- Define a Cubit/Bloc, or hold any state that outlives a single build beyond
+  throwaway widget-local concerns (a `TextEditingController`, a
+  `GlobalKey<FormState>`) — that's the state service's job in application;
+  presentation only ever subscribes to one via `BlocProvider`/`BlocBuilder`.

@@ -12,6 +12,7 @@ class ItemListView extends StatelessWidget {
     required this.onPrevious,
     required this.onNext,
     required this.onAddItem,
+    required this.onItemTap,
     super.key,
   });
 
@@ -19,6 +20,7 @@ class ItemListView extends StatelessWidget {
   final VoidCallback onPrevious;
   final VoidCallback onNext;
   final VoidCallback onAddItem;
+  final void Function(ItemReadModel item) onItemTap;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,8 @@ class ItemListView extends StatelessWidget {
                 : SingleChildScrollView(
                     child: ResponsiveItemGrid<ItemReadModel>(
                       items: result.items,
-                      itemBuilder: (context, item) => ItemCardView(item: item),
+                      itemBuilder: (context, item) =>
+                          ItemCardView(item: item, onTap: () => onItemTap(item)),
                     ),
                   ),
           ),

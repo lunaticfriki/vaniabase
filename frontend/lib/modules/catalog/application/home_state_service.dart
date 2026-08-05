@@ -1,10 +1,10 @@
 import 'package:core/shared/pagination/page_request.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/modules/catalog/application/home_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/presentation/home/home_state.dart';
 
-class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this._readService) : super(const HomeLoading()) {
+class HomeStateService extends Cubit<HomeState> {
+  HomeStateService(this._readService) : super(const HomeLoading()) {
     load();
   }
 

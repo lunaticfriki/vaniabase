@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/modules/catalog/application/add_item_state.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
-import 'package:frontend/modules/catalog/presentation/add_item/add_item_state.dart';
 
-class AddItemCubit extends Cubit<AddItemState> {
-  AddItemCubit(this._writeService) : super(const AddItemIdle());
+class AddItemStateService extends Cubit<AddItemState> {
+  AddItemStateService(this._writeService) : super(const AddItemIdle());
 
   final ItemWriteService _writeService;
 

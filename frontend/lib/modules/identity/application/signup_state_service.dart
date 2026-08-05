@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/identity/application/identity_write_service.dart';
-import 'package:frontend/modules/identity/presentation/signup/signup_state.dart';
-import 'package:frontend/shared/session/session_cubit.dart';
+import 'package:frontend/modules/identity/application/signup_state.dart';
+import 'package:frontend/shared/session/session_state_service.dart';
 
-class SignupCubit extends Cubit<SignupState> {
-  SignupCubit(this._identity, this._session) : super(const SignupIdle());
+class SignupStateService extends Cubit<SignupState> {
+  SignupStateService(this._identity, this._session) : super(const SignupIdle());
 
   final IdentityWriteService _identity;
-  final SessionCubit _session;
+  final SessionStateService _session;
 
   Future<void> submit({
     required String email,

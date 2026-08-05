@@ -1,15 +1,18 @@
 import 'package:core/shared/pagination/page_request.dart';
 import 'package:core/shared/pagination/page_result.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
+import 'package:frontend/modules/catalog/application/item_read_service.dart';
+import 'package:frontend/modules/catalog/application/item_write_service.dart';
 import 'package:frontend/modules/catalog/infrastructure/acl/item_mapper.dart';
 import 'package:frontend/shared/http/api_client.dart';
 
-class HttpItemRepository {
+class HttpItemRepository implements ItemReadService, ItemWriteService {
   HttpItemRepository(this._client);
 
   final ApiClient _client;
 
-  Future<PageResult<ItemReadModel>> list(PageRequest pageRequest) async {
+  @override
+  Future<PageResult<ItemReadModel>> list({required PageRequest pageRequest}) async {
     final json = await _client.get(
       '/items',
       queryParameters: {
@@ -20,6 +23,13 @@ class HttpItemRepository {
     return ItemMapper.toPageResult(json);
   }
 
+  @override
+  Future<ItemReadModel> getById({required String id}) async {
+    final json = await _client.get('/items/$id');
+    return ItemMapper.toReadModel(json);
+  }
+
+  @override
   Future<String> create({
     required String title,
     required List<String> creator,

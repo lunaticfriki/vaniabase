@@ -1,25 +1,5 @@
 import 'package:flutter/material.dart';
-
-const _categoryOptions = {
-  'book': 'Book',
-  'comic': 'Comic',
-  'magazine': 'Magazine',
-  'movie': 'Movie',
-  'videogame': 'Videogame',
-  'musicAlbum': 'Music album',
-};
-
-const _formatOptions = {
-  'hardcover': 'Hardcover',
-  'paperback': 'Paperback',
-  'ebook': 'Ebook',
-  'dvd': 'DVD',
-  'bluRay': 'Blu-ray',
-  'cd': 'CD',
-  'vinyl': 'Vinyl',
-  'cartridge': 'Cartridge',
-  'digitalDownload': 'Digital download',
-};
+import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
 
 final _languageCodePattern = RegExp(r'^[a-zA-Z]{2}$');
 
@@ -134,7 +114,7 @@ class _AddItemViewState extends State<AddItemView> {
                   initialValue: _category,
                   decoration: const InputDecoration(labelText: 'Category'),
                   items: [
-                    for (final entry in _categoryOptions.entries)
+                    for (final entry in categoryLabels.entries)
                       DropdownMenuItem(value: entry.key, child: Text(entry.value)),
                   ],
                   onChanged: (value) => setState(() => _category = value),
@@ -145,7 +125,7 @@ class _AddItemViewState extends State<AddItemView> {
                   initialValue: _format,
                   decoration: const InputDecoration(labelText: 'Format'),
                   items: [
-                    for (final entry in _formatOptions.entries)
+                    for (final entry in formatLabels.entries)
                       DropdownMenuItem(value: entry.key, child: Text(entry.value)),
                   ],
                   onChanged: (value) => setState(() => _format = value),

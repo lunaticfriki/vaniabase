@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:frontend/shared/session/session_cubit.dart';
+import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:http/http.dart' as http;
 
 class ApiException implements Exception {
@@ -14,11 +14,11 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  ApiClient(this.baseUrl, this._sessionCubit, {http.Client? httpClient})
+  ApiClient(this.baseUrl, this._sessionStateService, {http.Client? httpClient})
     : _httpClient = httpClient ?? http.Client();
 
   final String baseUrl;
-  final SessionCubit _sessionCubit;
+  final SessionStateService _sessionStateService;
   final http.Client _httpClient;
 
   Future<Map<String, dynamic>> get(
@@ -43,7 +43,7 @@ class ApiClient {
   }
 
   Map<String, String> _headers() {
-    final token = _sessionCubit.accessToken;
+    final token = _sessionStateService.accessToken;
     return {
       'content-type': 'application/json',
       if (token != null) 'authorization': 'Bearer $token',

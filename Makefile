@@ -7,7 +7,7 @@ CHROME_EXECUTABLE ?= /Applications/Brave Browser.app/Contents/MacOS/Brave Browse
 	db db-down db-logs \
 	backend frontend dev \
 	test test-core test-backend test-frontend \
-	analyze clean
+	analyze arch-test clean
 
 help:
 	@echo "Available targets:"
@@ -19,6 +19,7 @@ help:
 	@echo "  make dev              Run backend and frontend together"
 	@echo "  make test             Run tests for core, backend, and frontend"
 	@echo "  make analyze          Run static analysis on all packages"
+	@echo "  make arch-test        Enforce frontend's hexagonal layer boundaries"
 	@echo "  make clean            Clean build artifacts for all packages"
 
 ## --- Install ---
@@ -75,7 +76,7 @@ test-backend:
 	# test is still using.
 	cd backend && dart test -j1
 
-test-frontend:
+test-frontend: arch-test
 	cd frontend && flutter test
 
 ## --- Misc ---
@@ -84,6 +85,9 @@ analyze:
 	cd core && dart analyze
 	cd backend && dart analyze
 	cd frontend && flutter analyze
+
+arch-test:
+	cd frontend && dart run tool/arch_test.dart
 
 clean:
 	rm -rf core/.dart_tool

@@ -1,12 +1,14 @@
+import 'package:frontend/modules/identity/application/identity_write_service.dart';
 import 'package:frontend/modules/identity/application/session_read_model.dart';
 import 'package:frontend/modules/identity/infrastructure/acl/session_mapper.dart';
 import 'package:frontend/shared/http/api_client.dart';
 
-class HttpIdentityRepository {
+class HttpIdentityRepository implements IdentityWriteService {
   HttpIdentityRepository(this._client);
 
   final ApiClient _client;
 
+  @override
   Future<SessionReadModel> login({
     required String email,
     required String password,
@@ -18,6 +20,7 @@ class HttpIdentityRepository {
     return SessionMapper.toReadModel(json);
   }
 
+  @override
   Future<void> register({
     required String email,
     required String username,

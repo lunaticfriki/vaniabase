@@ -113,6 +113,8 @@ frontend/
         application/
           order_read_service.dart
           order_write_service.dart
+          order_details_state.dart
+          order_details_state_service.dart
         infrastructure/
           http_order_repository.dart
           acl/
@@ -121,13 +123,12 @@ frontend/
           order_details_page.dart
           order_details_view.dart
           order_details_skeleton.dart
-          order_details_cubit.dart
     composition_root.dart
   test/
     modules/
       ordering/
-        presentation/
-          order_details_cubit_test.dart
+        application/
+          order_details_state_service_test.dart
 ```
 
 `Order` would keep an `order_read_model.dart` (in whichever package's
@@ -135,12 +136,16 @@ frontend/
 state (see
 [05-presentation-layer.md](05-presentation-layer.md#read-models-are-optional--presentation-may-render-a-domain-entity-directly))
 — a simpler, read-only entity would skip that file and have its read
-service/Cubit work with the domain entity directly. `frontend`'s
-`application` here is thinner than `backend`'s — often just a read/write
-service wrapping HTTP calls, with no command/query handler split needed,
-since there's no local business orchestration happening, only a network
-call. `core/shared/` and a package-local `shared/notifications/` are
-covered in [10-shared-services.md](10-shared-services.md).
+service/state service work with the domain entity directly. `frontend`'s
+`application` here is thinner than `backend`'s for the read/write services —
+often just a network call wrapped in a method, with no command/query
+handler split needed, since there's no local business orchestration
+happening. It also carries one file `backend`'s application layer never
+has: the state service, `frontend`'s own reactive-state holder for that
+screen (see
+[03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state)).
+`core/shared/` and a package-local `shared/notifications/` are covered in
+[10-shared-services.md](10-shared-services.md).
 
 ## `lib/` vs `test/`: mirrored trees, not co-located folders
 
@@ -179,8 +184,8 @@ without opening a file.
 | Page (container) | `_page.dart` | `order_details_page.dart` |
 | View (component) | `_view.dart` | `order_details_view.dart` |
 | Skeleton | `_skeleton.dart` | `order_details_skeleton.dart` |
-| Cubit / Bloc (state service) | `_cubit.dart` / `_bloc.dart` | `order_details_cubit.dart` |
-| Cubit/Bloc state | `_state.dart` | `order_details_state.dart` |
+| State service (application's reactive state holder, a `Cubit`/`Bloc` under the hood) | `_state_service.dart` | `order_details_state_service.dart` |
+| State service's state | `_state.dart` | `order_details_state.dart` |
 | Test | append `_test` before the extension | `order_test.dart` |
 
 Rules:

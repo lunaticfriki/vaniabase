@@ -31,7 +31,7 @@ it is strictly technical (I/O, framework wiring, rendering).
 4. [04-infrastructure-layer.md](04-infrastructure-layer.md) — adapters,
    repository implementations, mapping.
 5. [05-presentation-layer.md](05-presentation-layer.md) — pages, views,
-   skeletons, the Cubit as state service.
+   skeletons, consuming the application layer's state service.
 6. [06-vertical-slicing.md](06-vertical-slicing.md) — organizing by feature
    instead of by layer, the `core`/`backend`/`frontend` split, and the file
    naming convention.
@@ -39,7 +39,7 @@ it is strictly technical (I/O, framework wiring, rendering).
    ports, object mothers, and why tests live in a mirrored `test/` tree
    instead of co-located with `lib/`.
 8. [08-tech-flutter-dart.md](08-tech-flutter-dart.md) — the composition
-   root, `get_it` wiring, and Cubit/Bloc specifics.
+   root, `get_it` wiring, and the state service's Cubit/Bloc implementation.
 9. [09-git-workflow.md](09-git-workflow.md) — commit script, pre-push test
    guard, stashing uncommitted work before testing.
 10. [10-shared-services.md](10-shared-services.md) — ErrorManager and
@@ -97,16 +97,17 @@ standard:
   compiled app/binary. Object Mothers live there too.
 - File names are `snake_case.dart`, concept name plus a fixed kind suffix
   (`order_repository.dart`, `order_details_page.dart`,
-  `order_details_cubit.dart`, ...) — see
+  `order_details_state_service.dart`, ...) — see
   [06-vertical-slicing.md](06-vertical-slicing.md#file-naming-convention)
   for the full suffix table.
 - Object Mothers for building test fixtures, never ad-hoc literals scattered
   across tests.
 - Read/write services (`OrderReadService`/`OrderWriteService`) have **zero
   Flutter dependency** — plain Dart classes, fully usable from `core` and
-  `backend` too. The Cubit in `frontend`'s presentation layer is the only
-  place reactive UI state lives — see
-  [03-application-layer-cqrs.md](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-cubit-holds-the-reactive-state).
+  `backend` too. The state service in `frontend`'s **application** layer
+  (not presentation) is the only place reactive UI state lives, and the one
+  file per feature allowed to depend on `flutter_bloc` — see
+  [03-application-layer-cqrs.md](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state).
 - Read models are optional: a query MAY return the domain entity directly
   instead of a hand-written DTO when the entity is read-only (no behavior,
   no mutable state) — see
@@ -118,9 +119,10 @@ standard:
   [01-domain-layer.md](01-domain-layer.md#domain-errors-and-warnings-live-in-the-domain-not-the-application-layer).
 - `ErrorManager` and `NotificationService` in `shared/` are the canonical
   cross-cutting services, following the exact same domain/pure-service/
-  Cubit pattern as a feature module — see
-  [10-shared-services.md](10-shared-services.md). Build future shared
-  services (auth session, feature flags, ...) the same way.
+  state-service pattern as a feature module — see
+  [10-shared-services.md](10-shared-services.md). `SessionStateService` and
+  `ThemeStateService` are built the same way; build future shared services
+  (feature flags, ...) the same way too.
 - Hexagonal architecture: `domain / application / infrastructure /
   presentation`, dependencies point inward only. Only `domain` lives in
   `core`, shared unchanged between `backend` and `frontend`; each of those
@@ -131,12 +133,14 @@ standard:
   services (commands). No "use case" classes, no "data source" abstraction.
 - Vertical slicing: folders organized by feature/bounded context first, by
   layer second.
-- Presentation: pages (data/state-aware) vs views (pure/props-only),
-  skeletons for loading states, a Cubit holding UI-facing reactive state.
+- Presentation: pages (subscribe to the state service, pick a branch) vs
+  views (pure/props-only), skeletons for loading states. Presentation never
+  defines a Cubit/Bloc itself — that's the state service's job, in
+  application.
 - Arch tests enforce the dependency rule in CI — layer violations fail the
   build, not just code review.
 - `mocktail` to mock ports when testing application services; `bloc_test`
-  to assert Cubit/Bloc state sequences.
+  to assert a state service's state sequences.
 - `get_it` as the composition-root service locator — bind ports to
   concretes with explicit factory functions (`registerLazySingleton`/
   `registerFactory`), not annotation-based/codegen auto-wiring (see

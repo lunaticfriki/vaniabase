@@ -1,13 +1,13 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:core/shared/pagination/page_request.dart';
 import 'package:core/shared/pagination/page_result.dart';
+import 'package:frontend/modules/catalog/application/home_state.dart';
+import 'package:frontend/modules/catalog/application/home_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/presentation/home/home_cubit.dart';
-import 'package:frontend/modules/catalog/presentation/home/home_state.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../application/item_read_model_mother.dart';
+import 'item_read_model_mother.dart';
 
 class MockItemReadService extends Mock implements ItemReadService {}
 
@@ -18,8 +18,8 @@ void main() {
     readService = MockItemReadService();
   });
 
-  group('HomeCubit', () {
-    blocTest<HomeCubit, HomeState>(
+  group('HomeStateService', () {
+    blocTest<HomeStateService, HomeState>(
       'starts in HomeLoading and settles on HomeLoaded with the first page of 10 items',
       setUp: () {
         final items = ItemReadModelMother.list(10);
@@ -29,10 +29,10 @@ void main() {
           (_) async => PageResult(items: items, page: 1, pageSize: 10, totalItems: 25),
         );
       },
-      build: () => HomeCubit(readService),
+      build: () => HomeStateService(readService),
       expect: () => [isA<HomeLoaded>()],
-      verify: (cubit) {
-        final state = cubit.state as HomeLoaded;
+      verify: (service) {
+        final state = service.state as HomeLoaded;
         expect(state.items, hasLength(10));
       },
     );
@@ -45,19 +45,19 @@ void main() {
         return PageResult(items: const [], page: 1, pageSize: 10, totalItems: 0);
       });
 
-      final cubit = HomeCubit(readService);
+      final service = HomeStateService(readService);
 
-      expect(cubit.state, isA<HomeLoading>());
+      expect(service.state, isA<HomeLoading>());
     });
 
-    blocTest<HomeCubit, HomeState>(
+    blocTest<HomeStateService, HomeState>(
       'emits HomeError when the read service throws',
       setUp: () {
         when(
           () => readService.list(pageRequest: PageRequest.first(pageSize: 10)),
         ).thenAnswer((_) async => throw Exception('network error'));
       },
-      build: () => HomeCubit(readService),
+      build: () => HomeStateService(readService),
       expect: () => [isA<HomeError>()],
     );
   });

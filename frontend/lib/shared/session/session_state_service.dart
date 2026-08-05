@@ -2,8 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/shared/session/session_state.dart';
 import 'package:frontend/shared/session/session_storage.dart';
 
-class SessionCubit extends Cubit<SessionState> {
-  SessionCubit(this._storage) : super(const SessionUnauthenticated());
+class SessionStateService extends Cubit<SessionState> {
+  SessionStateService(this._storage) : super(const SessionUnauthenticated());
 
   final SessionStorage _storage;
 

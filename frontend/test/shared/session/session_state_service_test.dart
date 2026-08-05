@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/shared/session/session_cubit.dart';
 import 'package:frontend/shared/session/session_state.dart';
+import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/session/session_storage.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,12 +24,12 @@ void main() {
     storage = MockSessionStorage();
   });
 
-  group('SessionCubit', () {
-    blocTest<SessionCubit, SessionState>(
+  group('SessionStateService', () {
+    blocTest<SessionStateService, SessionState>(
       'authenticate persists the session and emits SessionAuthenticated',
       setUp: () => when(() => storage.save(any())).thenAnswer((_) async {}),
-      build: () => SessionCubit(storage),
-      act: (cubit) => cubit.authenticate(
+      build: () => SessionStateService(storage),
+      act: (service) => service.authenticate(
         accessToken: 'access-token',
         accessTokenExpiresAt: DateTime.now().add(const Duration(minutes: 15)),
         refreshToken: 'refresh-token',
@@ -50,16 +50,16 @@ void main() {
       },
     );
 
-    blocTest<SessionCubit, SessionState>(
+    blocTest<SessionStateService, SessionState>(
       'clear wipes storage and emits SessionUnauthenticated',
       setUp: () => when(() => storage.clear()).thenAnswer((_) async {}),
-      build: () => SessionCubit(storage),
-      act: (cubit) => cubit.clear(),
+      build: () => SessionStateService(storage),
+      act: (service) => service.clear(),
       expect: () => [isA<SessionUnauthenticated>()],
       verify: (_) => verify(() => storage.clear()).called(1),
     );
 
-    blocTest<SessionCubit, SessionState>(
+    blocTest<SessionStateService, SessionState>(
       'restore rehydrates a non-expired stored session',
       setUp: () => when(() => storage.load()).thenAnswer(
         (_) async => StoredSession(
@@ -68,12 +68,12 @@ void main() {
           refreshToken: 'refresh-token',
         ),
       ),
-      build: () => SessionCubit(storage),
-      act: (cubit) => cubit.restore(),
+      build: () => SessionStateService(storage),
+      act: (service) => service.restore(),
       expect: () => [isA<SessionAuthenticated>()],
     );
 
-    blocTest<SessionCubit, SessionState>(
+    blocTest<SessionStateService, SessionState>(
       'restore discards and clears an expired stored session',
       setUp: () {
         when(() => storage.load()).thenAnswer(
@@ -85,17 +85,17 @@ void main() {
         );
         when(() => storage.clear()).thenAnswer((_) async {});
       },
-      build: () => SessionCubit(storage),
-      act: (cubit) => cubit.restore(),
+      build: () => SessionStateService(storage),
+      act: (service) => service.restore(),
       expect: () => [],
       verify: (_) => verify(() => storage.clear()).called(1),
     );
 
-    blocTest<SessionCubit, SessionState>(
+    blocTest<SessionStateService, SessionState>(
       'restore is a no-op when nothing was stored',
       setUp: () => when(() => storage.load()).thenAnswer((_) async => null),
-      build: () => SessionCubit(storage),
-      act: (cubit) => cubit.restore(),
+      build: () => SessionStateService(storage),
+      act: (service) => service.restore(),
       expect: () => [],
     );
   });

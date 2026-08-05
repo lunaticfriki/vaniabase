@@ -25,8 +25,11 @@ Orchestrates domain objects to fulfill a command or answer a query. Depends
 only on domain. Talks to the outside world exclusively through ports (the
 contracts domain declared) — never imports a concrete infrastructure class
 directly. Lives in whichever package actually has a real implementation to
-orchestrate against (`backend` today) — not in `core`. See
-[03-application-layer-cqrs.md](03-application-layer-cqrs.md).
+orchestrate against (`backend` today) — not in `core`. In `frontend`,
+application also holds the **state service** — the reactive holder (a
+`Cubit`/`Bloc`) a page subscribes to. It's the one file per feature allowed
+a Flutter dependency (`flutter_bloc`); the read/write services it wraps stay
+Flutter-free. See [03-application-layer-cqrs.md](03-application-layer-cqrs.md).
 
 ### Infrastructure
 Adapters. Implements the ports declared by domain/application: repository
@@ -39,9 +42,11 @@ depend on application only for wiring/DI registration — never the other way
 around. See [04-infrastructure-layer.md](04-infrastructure-layer.md).
 
 ### Presentation
-UI and its glue code: pages, views, Cubits/Blocs. Depends on application
-(dispatches commands, runs queries) — MUST NOT import infrastructure
-directly. If presentation needs a concrete adapter, it's wired through
+UI and its glue code: pages, views. Subscribes to an application-layer state
+service via `BlocProvider`/`BlocBuilder` and dispatches commands/queries
+through it — MUST NOT import infrastructure directly, and MUST NOT define
+reactive state itself; holding/updating state is the state service's job,
+one layer in. If presentation needs a concrete adapter, it's wired through
 dependency injection at the composition root, not imported inline. See
 [05-presentation-layer.md](05-presentation-layer.md).
 

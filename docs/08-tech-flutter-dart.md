@@ -18,11 +18,11 @@ widgets).
   loose sense of "how a request becomes a response" (HTTP handlers),
   depending on `core`.
 - **`frontend`** — a Flutter app. Owns its own `application` layer (usually
-  thin read/write services wrapping HTTP calls to `backend`), its own
-  infrastructure adapters (an HTTP client talking to `backend`, local
-  storage, platform channels) and its own composition root, plus the
-  actual Flutter presentation layer (pages, views, Cubits), depending on
-  `core`.
+  thin read/write services wrapping HTTP calls to `backend`, plus a state
+  service per feature — see below), its own infrastructure adapters (an
+  HTTP client talking to `backend`, local storage, platform channels) and
+  its own composition root, plus the actual Flutter presentation layer
+  (pages, views only), depending on `core`.
 
 `backend` implements the repository ports `core`'s domain declares
 (`PostgresItemRepository`, etc.) and its `application` layer's command/query
@@ -46,6 +46,8 @@ lib/
       application/
         order_read_service.dart
         order_write_service.dart
+        order_details_state.dart
+        order_details_state_service.dart
       infrastructure/
         http_order_repository.dart
         acl/
@@ -54,8 +56,6 @@ lib/
         order_details_page.dart
         order_details_view.dart
         order_details_skeleton.dart
-        order_details_cubit.dart
-        order_details_state.dart
   shared/
     di/
       injection.dart
@@ -66,8 +66,8 @@ test/
     ordering/
       infrastructure/
         http_order_repository_test.dart
-      presentation/
-        order_details_cubit_test.dart
+      application/
+        order_details_state_service_test.dart
 ```
 
 `ordering`'s `domain/` folder physically lives in `core` (see
@@ -88,14 +88,25 @@ reasoning. `frontend`'s equivalent read/write services are typically
 thinner — a network call, not a command/query handler pair — since the
 orchestration already happened in `backend`.
 
-## Presentation: Cubit as the state service
+## Application: the state service
 
-The Cubit sits in the presentation layer, inside `frontend`. It depends on
-`OrderReadService`/`OrderWriteService` (`frontend`'s own `application`
-layer), emits states that the widget tree consumes, and contains zero
-business logic — only orchestration of loading/error/loaded states.
+The state service sits in the **application** layer, inside `frontend` —
+not presentation. It depends on `OrderReadService`/`OrderWriteService`
+(sitting right beside it in the same `application/` folder), emits states
+that the widget tree consumes, and contains zero business logic — only
+orchestration of loading/error/loaded states. It's implemented by extending
+flutter_bloc's `Cubit<State>`, which makes it the one file per feature
+allowed a Flutter dependency in an otherwise Flutter-free application layer
+— see
+[03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state).
+
+The class is named `XStateService`, not `XCubit` — the file/class naming
+says what role it plays (application's reactive state holder), not which
+library implements it; see the naming convention in
+[06-vertical-slicing.md](06-vertical-slicing.md#file-naming-convention).
 
 ```dart
+// application/order/order_details_state.dart
 sealed class OrderDetailsState {}
 
 class OrderDetailsLoading extends OrderDetailsState {}
@@ -110,8 +121,9 @@ class OrderDetailsError extends OrderDetailsState {
   final String message;
 }
 
-class OrderDetailsCubit extends Cubit<OrderDetailsState> {
-  OrderDetailsCubit(this._readService, this._writeService, this._orderId)
+// application/order/order_details_state_service.dart
+class OrderDetailsStateService extends Cubit<OrderDetailsState> {
+  OrderDetailsStateService(this._readService, this._writeService, this._orderId)
       : super(OrderDetailsLoading()) {
     _load();
   }
@@ -140,14 +152,16 @@ Cubit is the default because most screens just need "call a method, react
 to the result." Reach for Bloc instead only when a screen genuinely needs to
 react to a stream of discrete events (e.g. debounced search-as-you-type,
 combining multiple input streams) rather than direct method invocation —
-the layering and CQRS rules are identical either way.
+the layering and CQRS rules are identical either way, and the class still
+lives in `application/` either way.
 
 ## Widgets: page (container) vs view (component)
 
 `OrderDetailsPage` is the container — it owns the
-`BlocProvider`/`BlocBuilder` and picks the loading/error/loaded branch.
+`BlocProvider`/`BlocBuilder` wired around the application layer's
+`OrderDetailsStateService` and picks the loading/error/loaded branch.
 `OrderDetailsView` is the pure component — plain constructor parameters, no
-Cubit/Bloc awareness. See
+state-service awareness. See
 [05-presentation-layer.md](05-presentation-layer.md#page-vs-view) for the
 full pattern.
 
@@ -160,18 +174,18 @@ class OrderDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => OrderDetailsCubit(
+      create: (_) => OrderDetailsStateService(
         context.read<OrderReadService>(),
         context.read<OrderWriteService>(),
         orderId,
       ),
-      child: BlocBuilder<OrderDetailsCubit, OrderDetailsState>(
+      child: BlocBuilder<OrderDetailsStateService, OrderDetailsState>(
         builder: (context, state) => switch (state) {
           OrderDetailsLoading() => const OrderDetailsSkeleton(),
           OrderDetailsError(:final message) => OrderDetailsErrorView(message: message),
           OrderDetailsLoaded(:final order) => OrderDetailsView(
               order: order,
-              onConfirm: () => context.read<OrderDetailsCubit>().confirm(),
+              onConfirm: () => context.read<OrderDetailsStateService>().confirm(),
             ),
         },
       ),
@@ -219,6 +233,18 @@ orchestration to do; the request just needs to reach the API. Compare with
 `backend`'s composition root (see
 [04-infrastructure-layer.md](04-infrastructure-layer.md#composition-root)),
 which does wire a real repository behind its command/query handlers.
+
+A per-feature state service (`OrderDetailsStateService`) is typically **not**
+registered in `getIt` at all — its `BlocProvider.create` in the Page
+constructs it directly, resolving its read/write-service dependencies from
+`getIt`/`context.read`, since it's cheap to build and only needs to exist
+for as long as that page is on screen. An app-wide state service that other
+code depends on before the widget tree even exists (a session holder read by
+the router's redirect logic, gating what's on screen before anything is
+built) is the exception — register that one as a `registerLazySingleton`,
+same as any other singleton adapter, and provide it at the app root via
+`BlocProvider.value`. See [10-shared-services.md](10-shared-services.md) for
+that shape.
 
 `registerLazySingleton` for adapters that should be built once and reused
 (an HTTP client, a repository); `registerFactory` for application services

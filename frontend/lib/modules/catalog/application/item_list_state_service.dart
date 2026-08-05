@@ -1,10 +1,10 @@
 import 'package:core/shared/pagination/page_request.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/modules/catalog/application/item_list_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/presentation/item_list/item_list_state.dart';
 
-class ItemListCubit extends Cubit<ItemListState> {
-  ItemListCubit(this._readService) : super(const ItemListLoading()) {
+class ItemListStateService extends Cubit<ItemListState> {
+  ItemListStateService(this._readService) : super(const ItemListLoading()) {
     _load(PageRequest.first());
   }
 

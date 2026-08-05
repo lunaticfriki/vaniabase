@@ -1,9 +1,11 @@
 # Testing Strategy
 
 Testing mirrors the layers: the domain is tested with no mocks at all, the
-application layer is tested by mocking ports, infrastructure is tested with
-real or containerized dependencies, and presentation is tested by mocking
-the read/write services and asserting Cubit state transitions.
+application layer is tested by mocking ports — including the state service,
+tested by mocking the read/write services it depends on and asserting its
+state transitions — infrastructure is tested with real or containerized
+dependencies, and presentation (pages/views) is tested with plain widget
+tests, no mocking needed since a view takes only constructor parameters.
 Architecture rules are enforced by dedicated arch tests, not just
 convention.
 
@@ -85,32 +87,46 @@ they exist to verify the adapter honors the port contract and the mapping is
 correct in both directions, not to re-verify business rules already covered
 by domain tests.
 
-## Presentation tests
+## State service tests (`frontend`'s `application/`)
 
-Cubits are tested with **bloc_test**, mocking the read/write services and
-asserting the exact state sequence emitted (loading → loaded, or loading →
-error). Views are tested in isolation with `flutter_test`'s widget testing,
-passing plain constructor parameters — no mocking needed since they have no
-dependencies.
+The state service lives in application (see
+[03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state)),
+so its test sits in `test/modules/<feature>/application/`, right alongside
+the read/write-service tests, not under `presentation/`. It's tested with
+**bloc_test**, mocking the read/write services it depends on and asserting
+the exact state sequence emitted (loading → loaded, or loading → error) —
+mechanically the same shape as mocking a port for a command handler test,
+just asserting a state sequence instead of a return value/repository call.
 
 ```dart
 void main() {
-  group('OrderDetailsCubit', () {
+  group('OrderDetailsStateService', () {
     final order = OrderMother.random();
 
-    blocTest<OrderDetailsCubit, OrderDetailsState>(
+    blocTest<OrderDetailsStateService, OrderDetailsState>(
       'emits loading then loaded',
       build: () {
         final readService = MockOrderReadService();
         when(() => readService.getById(any()))
             .thenAnswer((_) async => OrderReadModel.fromDomain(order));
-        return OrderDetailsCubit(readService, MockOrderWriteService(), order.id.toString());
+        return OrderDetailsStateService(readService, MockOrderWriteService(), order.id.toString());
       },
       expect: () => [isA<OrderDetailsLoading>(), isA<OrderDetailsLoaded>()],
     );
   });
 }
 ```
+
+## Presentation tests
+
+A View takes only constructor parameters, so it's tested in isolation with
+`flutter_test`'s widget testing — no mocking needed since it has no
+dependencies at all, not even the state service. Pump it with a handful of
+representative prop combinations (loaded with data, empty state, error
+message set) and assert on rendered widgets/text, plus that tapping a
+control invokes the right callback. A Page is thin enough (wire
+`BlocProvider`/`BlocBuilder`, pick a branch) that it's usually left to the
+state service test plus a View test to cover, rather than tested separately.
 
 ## End-to-end tests — the whole system, for real
 

@@ -4,10 +4,11 @@ import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({required this.items, required this.onSeeAll, super.key});
+  const HomeView({required this.items, required this.onSeeAll, required this.onItemTap, super.key});
 
   final List<ItemReadModel> items;
   final VoidCallback onSeeAll;
+  final void Function(ItemReadModel item) onItemTap;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,8 @@ class HomeView extends StatelessWidget {
                   ? const Text('No items yet.')
                   : ResponsiveItemGrid<ItemReadModel>(
                       items: items,
-                      itemBuilder: (context, item) => ItemCardView(item: item),
+                      itemBuilder: (context, item) =>
+                          ItemCardView(item: item, onTap: () => onItemTap(item)),
                     ),
             ),
           ),
