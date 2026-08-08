@@ -1,23 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/shared/layout/app_header_view.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
-import 'package:frontend/shared/session/session_storage.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pixelarticons/pixel.dart';
 
-class MockSessionStorage extends Mock implements SessionStorage {}
+class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
 void main() {
   late SessionStateService session;
   late ThemeStateService theme;
 
   setUp(() {
-    final storage = MockSessionStorage();
-    when(() => storage.load()).thenAnswer((_) async => null);
-    session = SessionStateService(storage);
+    final firebaseAuth = MockFirebaseAuth();
+    when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => const Stream.empty());
+    session = SessionStateService(firebaseAuth);
     theme = ThemeStateService();
   });
 
@@ -32,6 +32,7 @@ void main() {
           appBar: AppHeaderView(
             onNavigateHome: () {},
             onNavigateItems: () {},
+            onNavigateCategories: () {},
             onNavigateAddItem: () {},
             onLogout: () {},
           ),
@@ -89,6 +90,7 @@ void main() {
             appBar: AppHeaderView(
               onNavigateHome: () => homeTapped = true,
               onNavigateItems: () {},
+              onNavigateCategories: () {},
               onNavigateAddItem: () {},
               onLogout: () {},
             ),

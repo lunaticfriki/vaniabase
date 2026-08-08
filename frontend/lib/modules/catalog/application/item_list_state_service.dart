@@ -4,16 +4,19 @@ import 'package:frontend/modules/catalog/application/item_list_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 
 class ItemListStateService extends Cubit<ItemListState> {
-  ItemListStateService(this._readService) : super(const ItemListLoading()) {
+  ItemListStateService(this._readService, {String? category})
+    : _category = category,
+      super(const ItemListLoading()) {
     _load(PageRequest.first());
   }
 
   final ItemReadService _readService;
+  final String? _category;
 
   Future<void> _load(PageRequest pageRequest) async {
     if (state is! ItemListLoading) emit(const ItemListLoading());
     try {
-      final result = await _readService.list(pageRequest: pageRequest);
+      final result = await _readService.list(pageRequest: pageRequest, category: _category);
       emit(ItemListLoaded(result));
     } catch (error) {
       emit(ItemListError(error.toString()));

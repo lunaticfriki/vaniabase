@@ -2,10 +2,10 @@
 
 Shared reference for how `vaniabase` is built: Domain-Driven Design,
 Hexagonal Architecture (Ports & Adapters), CQRS at the application layer,
-and Vertical Slicing across features — all in Dart, split across three
-packages: `core` (domain only, shared), `backend` (Dart server — owns its
-own application + infrastructure + presentation layers), and `frontend`
-(Flutter app — same, its own application + infrastructure + presentation).
+and Vertical Slicing across features — all in Dart, split across two
+packages: `core` (domain only, shared) and `frontend` (Flutter app, which
+owns its own application + infrastructure + presentation layers, backed by
+Firebase Auth and Cloud Firestore rather than a custom server).
 
 These documents are written for both human developers and AI coding
 assistants. Rules are stated as MUST / MUST NOT / SHOULD so they can be
@@ -65,13 +65,11 @@ standard:
 - [core-domain.md](core-domain.md) — the catalog and identity domain
   model: what an item and an account are, the business rules that
   govern them (category/format compatibility, password/username
-  policy, token lifecycle).
-- [backend-api.md](backend-api.md) — the API: the register → log in →
-  browse → refresh → log out flow, how the catalog stays private per
-  user, how domain errors become HTTP responses.
+  policy).
 - [frontend-app.md](frontend-app.md) — the app: pages and navigation,
-  the sign-in/sign-up/browse user journey, theming, and what's
-  deliberately not built yet.
+  the sign-in/sign-up/browse user journey, theming, how Firebase Auth
+  and Firestore back the catalog, and what's deliberately not built
+  yet.
 
 ## Non-negotiables (summary)
 

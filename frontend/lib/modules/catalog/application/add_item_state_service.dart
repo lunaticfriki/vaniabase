@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/add_item_state.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
@@ -18,7 +20,7 @@ class AddItemStateService extends Cubit<AddItemState> {
     int? year,
     String? description,
     String? language,
-    String? imageUrl,
+    Uint8List? imageBytes,
   }) async {
     emit(const AddItemInProgress());
     try {
@@ -33,7 +35,7 @@ class AddItemStateService extends Cubit<AddItemState> {
         year: year,
         description: description,
         language: language,
-        imageUrl: imageUrl,
+        imageBytes: imageBytes,
       );
       emit(const AddItemSuccess());
     } catch (error) {

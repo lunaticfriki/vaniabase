@@ -10,7 +10,7 @@
 *.iml
 # .vscode/ contains shared launch/task config; keep tracked by default
 
-# Dart / Flutter (backend, core, frontend)
+# Dart / Flutter (core, frontend)
 .dart_tool/
 .packages
 .pub/
@@ -24,8 +24,11 @@ pubspec_overrides.yaml
 *.log
 
 # Internal notes (not project docs)
-backend/explanation/
 core/explanation/
 
 # Node.js
 node_modules/
+
+# Firebase CLI
+.firebase/
+firebase-debug.log

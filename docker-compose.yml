@@ -1,50 +1,7 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: vaniabase
-      POSTGRES_USER: vaniabase
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-vaniabase}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vaniabase"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: vaniabase
-      DB_USER: vaniabase
-      DB_PASSWORD: ${DB_PASSWORD:-vaniabase}
-      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
-      ACCESS_TOKEN_TTL_MINUTES: ${ACCESS_TOKEN_TTL_MINUTES:-15}
-      REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-30}
-      PORT: 8080
-    ports:
-      - "8080:8080"
-
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-      args:
-        API_BASE_URL: ${FRONTEND_API_BASE_URL:-http://localhost:8080}
-    depends_on:
-      - backend
     ports:
       - "8081:80"
-
-volumes:
-  postgres_data:

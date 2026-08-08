@@ -4,12 +4,17 @@ import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_list_state.dart';
 import 'package:frontend/modules/catalog/application/item_list_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
+import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_skeleton.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_view.dart';
 import 'package:go_router/go_router.dart';
 
 class ItemListContainer extends StatefulWidget {
-  const ItemListContainer({super.key});
+  const ItemListContainer({this.category, super.key});
+
+  /// When set, restricts the list to this category and titles the page
+  /// with its label instead of "All items".
+  final String? category;
 
   @override
   State<ItemListContainer> createState() => _ItemListContainerState();
@@ -21,7 +26,7 @@ class _ItemListContainerState extends State<ItemListContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = ItemListStateService(getIt<ItemReadService>());
+    _stateService = ItemListStateService(getIt<ItemReadService>(), category: widget.category);
   }
 
   @override
@@ -39,10 +44,10 @@ class _ItemListContainerState extends State<ItemListContainer> {
           ItemListLoading() => const ItemListSkeleton(),
           ItemListError(:final message) => Center(child: Text(message)),
           ItemListLoaded(:final result) => ItemListView(
+            title: widget.category == null ? 'All items' : categoryLabel(widget.category!),
             result: result,
             onPrevious: () => context.read<ItemListStateService>().previousPage(),
             onNext: () => context.read<ItemListStateService>().nextPage(),
-            onAddItem: () => context.go('/items/new'),
             onItemTap: (item) => context.push('/items/${item.id}'),
           ),
         },

@@ -2,8 +2,8 @@
 
 `core` is a plain Dart package with no Flutter, no HTTP, no database
 driver — just the two bounded contexts that define what vaniabase *is*,
-independent of how it's served (backend) or shown (frontend). Both other
-packages depend on it; it depends on nothing project-specific.
+independent of how it's shown (`frontend`). `frontend` depends on it; it
+depends on nothing project-specific.
 
 For the architectural rules this package follows (entities, value
 objects, private constructors, ports), see
@@ -57,18 +57,24 @@ not something either owns alone):
 `Item.create` and `Item.update` both check this policy and throw
 `InvalidFormatForCategoryError` if it's violated — so an invalid
 category/format pairing can never exist in the system, not even
-transiently, regardless of which layer (backend command handler,
-future admin tool, ...) is constructing the item.
+transiently, regardless of which layer is constructing the item.
 
 An item can only ever be read, edited, or deleted by the user who owns
-it — `Item.isOwnedBy(userId)` is the check every catalog operation runs
-before touching an item; see [backend-api.md](backend-api.md) for how
-that surfaces as a `404` (not a `403`) for someone else's item.
+it. In the current Firebase-backed setup this is enforced by
+`firestore.rules` at the data layer (`request.auth.uid ==
+resource.data.ownerId`) rather than by `Item.isOwnedBy(userId)` — see
+[frontend-app.md](frontend-app.md) for how the frontend talks to
+Firestore.
 
 ## Identity — accounts and sessions
 
 The second bounded context: registering an account and proving who you
-are on each request. Two entities:
+are on each request. Authentication itself is now handled by Firebase
+Auth directly from `frontend` (see
+[frontend-app.md](frontend-app.md)) rather than by a backend built on
+this domain model, so the entities below currently describe the
+identity rules as modeled in `core` without a consuming
+application/infrastructure layer. Two entities:
 
 **User** (`modules/identity/domain/entities/user.dart`) — an email,
 a username, and a password hash. Business rules live in the value
@@ -81,30 +87,33 @@ objects, not scattered across handlers:
 - **Username** — 3-30 characters, letters/digits/underscore only.
 - **Password** — 8-128 characters, at least one letter and one digit.
   The domain only ever sees the raw password long enough to validate
-  its shape; hashing happens in infrastructure
-  (`BcryptPasswordHasher` in `backend`) — `PasswordHash` is what
-  actually gets stored and compared.
+  its shape; hashing would happen in an infrastructure adapter (e.g. a
+  `PasswordHasher` implementation) — `PasswordHash` is what actually
+  gets stored and compared. Firebase Auth handles this itself for the
+  credentials it manages.
 
 Both email and username are unique account-wide — registering with one
 already taken fails with `EmailAlreadyRegisteredError` /
 `UsernameAlreadyTakenError` rather than silently overwriting anything.
 
 **RefreshToken** (`modules/identity/domain/entities/refresh_token.dart`)
-— a long-lived credential issued alongside a short-lived access token at
-login, so the app doesn't need to ask for a password again every 15
-minutes. It knows its own validity: `isExpired` (past `expiresAt`),
+— models a long-lived credential issued alongside a short-lived access
+token at login, so an app wouldn't need to ask for a password again every
+15 minutes. It knows its own validity: `isExpired` (past `expiresAt`),
 `isRevoked` (explicitly logged out via `revoke()`), and `isValid`
-(neither). See [backend-api.md](backend-api.md#sessions-access-vs-refresh-tokens)
-for how access and refresh tokens divide the work.
+(neither). Firebase Auth manages its own token refresh under the hood, so
+`frontend` doesn't currently construct this entity — it's kept here as
+domain modeling for a self-issued session, should the project ever need
+one again.
 
 ## Shared building blocks
 
 `shared/` holds the handful of concepts that don't belong to either
 bounded context: `Timestamp` and `DomainNumber` (base value-object
 patterns other value objects build on), `PageRequest`/`PageResult` (the
-pagination contract every list query in the system uses — see
-[backend-api.md](backend-api.md#browsing-the-catalog)), and
-`DomainError`/`DomainWarning`, the base types every business-rule
-violation in this document (`WeakPasswordError`,
-`InvalidFormatForCategoryError`, `ItemNotFoundError`, ...) extends —
-see [01-domain-layer.md](01-domain-layer.md#domain-errors-and-warnings-live-in-the-domain-not-the-application-layer).
+offset-based pagination contract `frontend`'s catalog list query uses —
+see [frontend-app.md](frontend-app.md)), and `DomainError`/`DomainWarning`,
+the base types every business-rule violation in this document
+(`WeakPasswordError`, `InvalidFormatForCategoryError`,
+`ItemNotFoundError`, ...) extends — see
+[01-domain-layer.md](01-domain-layer.md#domain-errors-and-warnings-live-in-the-domain-not-the-application-layer).

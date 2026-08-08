@@ -4,7 +4,7 @@ import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/add_item_state.dart';
 import 'package:frontend/modules/catalog/application/add_item_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
-import 'package:frontend/modules/catalog/presentation/add_item/add_item_view.dart';
+import 'package:frontend/modules/catalog/presentation/item_form/item_form_view.dart';
 import 'package:go_router/go_router.dart';
 
 class AddItemContainer extends StatefulWidget {
@@ -37,7 +37,9 @@ class _AddItemContainerState extends State<AddItemContainer> {
         listener: (context, state) {
           if (state is AddItemSuccess) context.go('/items');
         },
-        builder: (context, state) => AddItemView(
+        builder: (context, state) => ItemFormView(
+          formTitle: 'Add item',
+          submitLabel: 'Add item',
           isSubmitting: state is AddItemInProgress,
           errorMessage: state is AddItemFailure ? state.message : null,
           onSubmit:
@@ -52,7 +54,8 @@ class _AddItemContainerState extends State<AddItemContainer> {
                 year,
                 description,
                 language,
-                imageUrl,
+                imageBytes,
+                removeImage = false,
               }) => context.read<AddItemStateService>().submit(
                 title: title,
                 creator: creator,
@@ -64,7 +67,7 @@ class _AddItemContainerState extends State<AddItemContainer> {
                 year: year,
                 description: description,
                 language: language,
-                imageUrl: imageUrl,
+                imageBytes: imageBytes,
               ),
           onCancel: () => context.go('/items'),
         ),

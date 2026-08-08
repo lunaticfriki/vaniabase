@@ -1,7 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/app_router.dart';
 import 'package:frontend/composition_root.dart';
+import 'package:frontend/firebase_options.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/theme/app_theme.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
@@ -9,13 +12,10 @@ import 'package:go_router/go_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await configureDependencies(
-    apiBaseUrl: const String.fromEnvironment(
-      'API_BASE_URL',
-      defaultValue: 'http://localhost:8080',
-    ),
-  );
-  await getIt<SessionStateService>().restore();
+  await dotenv.load();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await configureDependencies();
+  await getIt<SessionStateService>().ready;
   runApp(VaniabaseApp(router: buildAppRouter(getIt<SessionStateService>())));
 }
 

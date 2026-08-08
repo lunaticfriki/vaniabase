@@ -1,62 +1,38 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/shared/session/session_state.dart';
-import 'package:frontend/shared/session/session_storage.dart';
 
 class SessionStateService extends Cubit<SessionState> {
-  SessionStateService(this._storage) : super(const SessionUnauthenticated());
+  SessionStateService(this._firebaseAuth) : super(const SessionUnauthenticated()) {
+    _subscription = _firebaseAuth.authStateChanges().listen(_onUserChanged);
+  }
 
-  final SessionStorage _storage;
+  final FirebaseAuth _firebaseAuth;
+  late final StreamSubscription<User?> _subscription;
 
   bool get isAuthenticated => state is SessionAuthenticated;
 
-  String? get accessToken => switch (state) {
-    SessionAuthenticated(:final accessToken) => accessToken,
-    SessionUnauthenticated() => null,
-  };
+  /// Resolves once the initial (persisted) auth state has been reported by
+  /// Firebase, so the router's first redirect decision reflects the real
+  /// signed-in/out state instead of the Cubit's `SessionUnauthenticated`
+  /// starting value.
+  Future<void> get ready => _firebaseAuth.authStateChanges().first;
 
-  /// Rehydrates a previously-persisted session (survives a page reload).
-  /// A stored access token past its expiry is discarded rather than
-  /// restored, so the UI doesn't come up "authenticated" only to have the
-  /// first API call fail with a 401.
-  Future<void> restore() async {
-    final stored = await _storage.load();
-    if (stored == null) return;
-    if (stored.accessTokenExpiresAt.isBefore(DateTime.now())) {
-      await _storage.clear();
-      return;
-    }
+  void _onUserChanged(User? user) {
     emit(
-      SessionAuthenticated(
-        accessToken: stored.accessToken,
-        accessTokenExpiresAt: stored.accessTokenExpiresAt,
-        refreshToken: stored.refreshToken,
-      ),
+      user == null
+          ? const SessionUnauthenticated()
+          : SessionAuthenticated(uid: user.uid, email: user.email),
     );
   }
 
-  Future<void> authenticate({
-    required String accessToken,
-    required DateTime accessTokenExpiresAt,
-    required String refreshToken,
-  }) async {
-    emit(
-      SessionAuthenticated(
-        accessToken: accessToken,
-        accessTokenExpiresAt: accessTokenExpiresAt,
-        refreshToken: refreshToken,
-      ),
-    );
-    await _storage.save(
-      StoredSession(
-        accessToken: accessToken,
-        accessTokenExpiresAt: accessTokenExpiresAt,
-        refreshToken: refreshToken,
-      ),
-    );
-  }
+  Future<void> clear() => _firebaseAuth.signOut();
 
-  Future<void> clear() async {
-    emit(const SessionUnauthenticated());
-    await _storage.clear();
+  @override
+  Future<void> close() async {
+    await _subscription.cancel();
+    return super.close();
   }
 }

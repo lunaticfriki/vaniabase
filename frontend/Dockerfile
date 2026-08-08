@@ -28,11 +28,7 @@ COPY frontend ./frontend
 WORKDIR /app/frontend
 RUN flutter pub get
 
-# Baked in at build time: Flutter web reads this via String.fromEnvironment,
-# and the compiled JS runs in the browser, not in this container, so it must
-# point at wherever the backend is reachable from the browser.
-ARG API_BASE_URL=http://localhost:8080
-RUN flutter build web --release --dart-define=API_BASE_URL=${API_BASE_URL}
+RUN flutter build web --release
 
 FROM nginx:1.27-alpine
 COPY --from=build /app/frontend/build/web /usr/share/nginx/html

@@ -13,22 +13,38 @@ const itemDetailWideBreakpoint = 700.0;
 const itemDetailImageKey = Key('itemDetailImage');
 
 class ItemDetailView extends StatelessWidget {
-  const ItemDetailView({required this.item, required this.onBack, super.key});
+  const ItemDetailView({
+    required this.item,
+    required this.onBack,
+    required this.onEdit,
+    super.key,
+  });
 
   final ItemReadModel item;
   final VoidCallback onBack;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.sizeOf(context).width >= itemDetailWideBreakpoint;
-    final backButton = TextButton.icon(
-      onPressed: onBack,
-      icon: const Icon(Pixel.arrowleft),
-      label: const Text('Back'),
+    final topRow = Row(
+      children: [
+        TextButton.icon(
+          onPressed: onBack,
+          icon: const Icon(Pixel.arrowleft),
+          label: const Text('Back'),
+        ),
+        const Spacer(),
+        TextButton.icon(
+          onPressed: onEdit,
+          icon: const Icon(Pixel.edit),
+          label: const Text('Edit'),
+        ),
+      ],
     );
 
     if (isWide) {
-      // Fills the page: the back button takes its natural height, the Row
+      // Fills the page: the top row takes its natural height, the Row
       // below claims the rest via Expanded, so the image can stretch to the
       // full available height instead of just following its aspect ratio.
       return Padding(
@@ -36,7 +52,7 @@ class ItemDetailView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            backButton,
+            topRow,
             const SizedBox(height: 12),
             Expanded(child: _WideLayout(item: item)),
           ],
@@ -49,7 +65,7 @@ class ItemDetailView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          backButton,
+          topRow,
           const SizedBox(height: 12),
           _NarrowLayout(item: item),
         ],

@@ -44,7 +44,11 @@ class _ItemDetailContainerState extends State<ItemDetailContainer> {
             message: message,
             onBack: () => _goBack(context),
           ),
-          ItemDetailLoaded(:final item) => ItemDetailView(item: item, onBack: () => _goBack(context)),
+          ItemDetailLoaded(:final item) => ItemDetailView(
+            item: item,
+            onBack: () => _goBack(context),
+            onEdit: () => context.go('/items/${item.id}/edit'),
+          ),
         },
       ),
     );

@@ -40,7 +40,6 @@ class _HomeContainerState extends State<HomeContainer> {
           HomeError(:final message) => Center(child: Text(message)),
           HomeLoaded(:final items) => HomeView(
             items: items,
-            onSeeAll: () => context.go('/items'),
             onItemTap: (item) => context.push('/items/${item.id}'),
           ),
         },

@@ -5,7 +5,6 @@ import 'package:frontend/modules/identity/application/identity_write_service.dar
 import 'package:frontend/modules/identity/application/signup_state.dart';
 import 'package:frontend/modules/identity/application/signup_state_service.dart';
 import 'package:frontend/modules/identity/presentation/signup/signup_view.dart';
-import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupContainer extends StatefulWidget {
@@ -21,10 +20,7 @@ class _SignupContainerState extends State<SignupContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = SignupStateService(
-      getIt<IdentityWriteService>(),
-      context.read<SessionStateService>(),
-    );
+    _stateService = SignupStateService(getIt<IdentityWriteService>());
   }
 
   @override

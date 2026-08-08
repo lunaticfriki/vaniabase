@@ -9,7 +9,7 @@ void main() {
 
   Widget buildApp() {
     return MaterialApp(
-      home: Scaffold(body: ItemDetailView(item: item, onBack: () {})),
+      home: Scaffold(body: ItemDetailView(item: item, onBack: () {}, onEdit: () {})),
     );
   }
 
@@ -64,7 +64,9 @@ void main() {
     var backPressed = false;
     await tester.pumpWidget(
       MaterialApp(
-        home: Scaffold(body: ItemDetailView(item: item, onBack: () => backPressed = true)),
+        home: Scaffold(
+          body: ItemDetailView(item: item, onBack: () => backPressed = true, onEdit: () {}),
+        ),
       ),
     );
     await tester.tap(find.text('Back'));

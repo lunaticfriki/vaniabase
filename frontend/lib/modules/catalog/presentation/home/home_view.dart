@@ -4,10 +4,9 @@ import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({required this.items, required this.onSeeAll, required this.onItemTap, super.key});
+  const HomeView({required this.items, required this.onItemTap, super.key});
 
   final List<ItemReadModel> items;
-  final VoidCallback onSeeAll;
   final void Function(ItemReadModel item) onItemTap;
 
   @override
@@ -17,15 +16,9 @@ class HomeView extends StatelessWidget {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           sliver: SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Recently added',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                TextButton(onPressed: onSeeAll, child: const Text('See all items')),
-              ],
+            child: Text(
+              'Recently added',
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
         ),

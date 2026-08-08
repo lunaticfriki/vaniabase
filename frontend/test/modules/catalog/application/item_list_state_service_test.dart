@@ -27,10 +27,16 @@ void main() {
   setUp(() {
     readService = MockItemReadService();
     when(
-      () => readService.list(pageRequest: PageRequest.create(page: 1, pageSize: 10)),
+      () => readService.list(
+        pageRequest: PageRequest.create(page: 1, pageSize: 10),
+        category: null,
+      ),
     ).thenAnswer((_) async => _pageOf(1));
     when(
-      () => readService.list(pageRequest: PageRequest.create(page: 2, pageSize: 10)),
+      () => readService.list(
+        pageRequest: PageRequest.create(page: 2, pageSize: 10),
+        category: null,
+      ),
     ).thenAnswer((_) async => _pageOf(2));
   });
 
@@ -79,7 +85,10 @@ void main() {
       'nextPage is a no-op when already on the only page',
       setUp: () {
         when(
-          () => readService.list(pageRequest: PageRequest.create(page: 1, pageSize: 10)),
+          () => readService.list(
+            pageRequest: PageRequest.create(page: 1, pageSize: 10),
+            category: null,
+          ),
         ).thenAnswer((_) async => _pageOf(1, totalItems: 10));
       },
       build: () => ItemListStateService(readService),

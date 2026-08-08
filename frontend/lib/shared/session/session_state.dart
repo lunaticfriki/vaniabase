@@ -7,13 +7,8 @@ class SessionUnauthenticated extends SessionState {
 }
 
 class SessionAuthenticated extends SessionState {
-  const SessionAuthenticated({
-    required this.accessToken,
-    required this.accessTokenExpiresAt,
-    required this.refreshToken,
-  });
+  const SessionAuthenticated({required this.uid, this.email});
 
-  final String accessToken;
-  final DateTime accessTokenExpiresAt;
-  final String refreshToken;
+  final String uid;
+  final String? email;
 }

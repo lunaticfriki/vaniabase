@@ -1,8 +1,8 @@
 # `frontend` — the app
 
 A Flutter web app: the visual front door to the catalog described in
-[core-domain.md](core-domain.md), talking to the API described in
-[backend-api.md](backend-api.md). Like `backend`, it owns its own
+[core-domain.md](core-domain.md), talking directly to Firebase Auth and
+Cloud Firestore — there is no custom backend in between. It owns its own
 application/infrastructure/presentation layers on top of the shared
 `core` domain.
 
@@ -35,14 +35,14 @@ shell.
 
 Both `LoginStateService` and `SignupStateService` follow the same shape:
 idle → in-progress → either back to idle (success) or a failure state
-carrying a message pulled straight from the backend's `{"error": ...}`
-body (see
-[backend-api.md](backend-api.md#turning-a-domain-error-into-an-http-response)),
-so "email already registered" or "password must be 8-128 characters..."
-reaches the user close to verbatim rather than a generic "something
-went wrong." On success, the returned session is handed to
-`SessionStateService.authenticate`, which is what flips the router's
-redirect logic and reveals the authenticated shell.
+carrying the message from the `FirebaseAuthException` Firebase Auth
+throws (translated in `FirebaseIdentityRepository`), so "email already
+in use" or "wrong password" reaches the user close to verbatim rather
+than a generic "something went wrong." Neither state service touches
+`SessionStateService` directly — on success, Firebase Auth's own
+`authStateChanges` stream fires, `SessionStateService` (which subscribes
+to it) updates itself, and that's what flips the router's redirect logic
+and reveals the authenticated shell.
 
 ### Home vs. "All items"
 
@@ -51,8 +51,11 @@ with a "See all items" link — it is deliberately not paginated, so it
 reads as a preview, not a second copy of the list page. `/items` is the
 real browse experience: every item, `PaginationControlView` stepping
 one page at a time via
-`ItemListStateService.nextPage`/`previousPage`, each page fetched fresh
-from the backend (no client-side caching of pages you've already seen).
+`ItemListStateService.nextPage`/`previousPage`, each page sliced fresh
+from Firestore (no client-side caching of pages you've already seen —
+see the pagination note in `FirestoreItemRepository`, which fetches the
+full matching result set and slices it in memory since the Firestore
+client SDK has no server-side `offset()`).
 An "Add item" button on `/items` opens `/items/new`.
 
 Both pages lay out items with the same `ResponsiveItemGrid`
@@ -66,15 +69,15 @@ an otherwise empty page. Tapping a card on either page opens
 
 ### Adding and viewing an item
 
-`/items/new` is a form (`AddItemStateService`) covering every field
-`POST /items` accepts — title, creator(s), publisher, category, format,
-and the optional tags/topic/year/description/language/image URL — client-
+`/items/new` is a form (`AddItemStateService`) covering every field an
+item has — title, creator(s), publisher, category, format, and the
+optional tags/topic/year/description/language/image URL — client-
 validated against the same constraints the domain value objects enforce
-(so a bad category/format combination still surfaces the backend's exact
+(so a bad category/format combination still surfaces the domain's exact
 `InvalidFormatForCategoryError` message rather than being silently
 prevented). The image is a plain URL text field for now; there is no
-upload flow yet — see [backend-api.md](backend-api.md) for where
-Cloudinary or similar would plug in.
+upload flow yet — Firebase Storage would be the natural place to plug
+one in.
 
 `/items/:id` (`ItemDetailStateService`) shows the image beside the rest
 of the item's fields on a wide screen, and stacks title/creator → image →
@@ -84,23 +87,19 @@ directly, e.g. from a shared link).
 
 ### What isn't here yet
 
-Editing and deleting an item. The backend supports both
-(see [backend-api.md](backend-api.md)), but there's no page for either
-yet; doing so today means calling the API directly (`curl`, the `/docs`
-Swagger UI, or another client).
+Deleting an item — `ItemWriteService` has no `delete` method yet, and
+there's no page for it; doing so today means deleting the document
+directly in the Firebase console.
 
-### Known gap: no automatic token refresh
+### Session persistence
 
-`SessionStateService` persists the access token, its expiry, and the
-refresh token to local storage (`SessionStorage`, backed by
-`shared_preferences`) on login and restores it on app start — see
-`restore()`, called before `runApp` in `main.dart` — so a page reload no
-longer signs the user out. What's still missing: nothing calls
-`POST /auth/refresh`, not on a timer, not on a `401`. In practice that
-means a session still silently stops working 15 minutes after login (the
-access token's TTL) until the user logs in again. Wiring `ApiClient` to
-retry a `401` through `/auth/refresh` is the natural next step here, not
-a design decision to leave as-is.
+`SessionStateService` doesn't manage tokens itself — it wraps
+`FirebaseAuth.instance.authStateChanges()`, so it just reflects whatever
+Firebase Auth's own (browser-persisted, auto-refreshing) session state
+is. `main.dart` awaits `SessionStateService.ready`
+(`FirebaseAuth.authStateReady()`) before `runApp`, so a page reload
+resolves the real signed-in/out state before the router makes its first
+redirect decision, rather than flashing `/login` first.
 
 ## Look and feel
 
@@ -140,13 +139,18 @@ a design decision to leave as-is.
   see [08-tech-flutter-dart.md](08-tech-flutter-dart.md). Only the two
   app-wide state services are registered in `getIt`; a per-page one is
   constructed directly in its Page's `BlocProvider.create`.
-- **HTTP** — a thin `ApiClient` wrapping `package:http`, attaching the
-  bearer token from `SessionStateService` to every request and turning a
-  non-2xx response into an `ApiException` carrying the backend's error
-  message.
-- **Where the backend lives** — `API_BASE_URL`, read via
-  `String.fromEnvironment` at *build* time (`--dart-define`), defaulting
-  to `http://localhost:8080`. Because Flutter web ships as static JS
-  that runs in the browser, this has to point wherever the browser can
-  reach the backend from — not wherever the frontend container itself
-  runs.
+- **Firebase** — `firebase_auth` and `cloud_firestore` are called
+  directly from infrastructure (`FirebaseIdentityRepository`,
+  `FirestoreItemRepository`); nothing above the infrastructure layer
+  imports either package, so the application/presentation layers stay
+  ignorant of Firebase the same way they were previously ignorant of
+  `package:http`.
+- **Firebase configuration** — `firebase_options.dart` builds the
+  project's `FirebaseOptions` from environment variables (`FIREBASE_API_KEY`,
+  ...) rather than hardcoding them, read via `flutter_dotenv` from
+  `frontend/.env` (gitignored; `main.dart` calls `dotenv.load()` before
+  `Firebase.initializeApp`, which runs before anything else). Copy
+  `frontend/.env.example` to `frontend/.env` and fill in your project's
+  web config to run locally. Per-user data isolation is enforced
+  server-side by `firestore.rules` at the repo root, not by anything in
+  the Flutter app.

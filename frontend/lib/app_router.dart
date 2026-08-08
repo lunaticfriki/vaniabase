@@ -1,4 +1,6 @@
 import 'package:frontend/modules/catalog/presentation/add_item/add_item_container.dart';
+import 'package:frontend/modules/catalog/presentation/category_list/category_list_container.dart';
+import 'package:frontend/modules/catalog/presentation/edit_item/edit_item_container.dart';
 import 'package:frontend/modules/catalog/presentation/home/home_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_container.dart';
@@ -42,6 +44,19 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
           GoRoute(
             path: '/items/:id',
             builder: (context, state) => ItemDetailContainer(itemId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: '/items/:id/edit',
+            builder: (context, state) => EditItemContainer(itemId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: '/categories',
+            builder: (context, state) => const CategoryListContainer(),
+          ),
+          GoRoute(
+            path: '/categories/:category',
+            builder: (context, state) =>
+                ItemListContainer(category: state.pathParameters['category']),
           ),
         ],
       ),

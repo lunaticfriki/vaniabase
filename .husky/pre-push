@@ -36,15 +36,14 @@ fi
 
 TARGETS=""
 if grep -q '^core/' "$CHANGED_FILES_TMP"; then
-  # core is a dependency of both backend and frontend: test all three.
-  TARGETS="test-core test-backend test-frontend"
+  # core is a dependency of frontend: test both.
+  TARGETS="test-core test-frontend"
 else
-  grep -q '^backend/' "$CHANGED_FILES_TMP" && TARGETS="$TARGETS test-backend"
   grep -q '^frontend/' "$CHANGED_FILES_TMP" && TARGETS="$TARGETS test-frontend"
 fi
 
 if [ -z "$(echo "$TARGETS" | tr -d '[:space:]')" ]; then
-  echo "pre-push: no backend/core/frontend changes, skipping tests."
+  echo "pre-push: no core/frontend changes, skipping tests."
   exit 0
 fi
 
