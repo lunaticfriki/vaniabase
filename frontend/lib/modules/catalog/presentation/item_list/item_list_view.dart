@@ -41,20 +41,24 @@ class ItemListView extends StatelessWidget {
                 : SingleChildScrollView(
                     child: ResponsiveItemGrid<ItemReadModel>(
                       items: result.items,
-                      itemBuilder: (context, item) =>
-                          ItemCardView(item: item, onTap: () => onItemTap(item)),
+                      itemBuilder: (context, item) => ItemCardView(
+                        item: item,
+                        onTap: () => onItemTap(item),
+                      ),
                     ),
                   ),
           ),
-          const SizedBox(height: 12),
-          PaginationControlView(
-            page: result.page,
-            totalPages: result.totalPages,
-            hasPreviousPage: result.hasPreviousPage,
-            hasNextPage: result.hasNextPage,
-            onPrevious: onPrevious,
-            onNext: onNext,
-          ),
+          if (result.totalPages > 1) ...[
+            const SizedBox(height: 12),
+            PaginationControlView(
+              page: result.page,
+              totalPages: result.totalPages,
+              hasPreviousPage: result.hasPreviousPage,
+              hasNextPage: result.hasNextPage,
+              onPrevious: onPrevious,
+              onNext: onNext,
+            ),
+          ],
         ],
       ),
     );

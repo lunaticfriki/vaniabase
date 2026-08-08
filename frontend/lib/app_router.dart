@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/presentation/add_item/add_item_container.dart';
 import 'package:frontend/modules/catalog/presentation/category_list/category_list_container.dart';
 import 'package:frontend/modules/catalog/presentation/edit_item/edit_item_container.dart';
@@ -13,50 +14,85 @@ import 'package:go_router/go_router.dart';
 
 const _publicRoutes = {'/login', '/signup'};
 
+// The default MaterialPageRoute transition (~300ms zoom/slide) reads as
+// sluggish for this app's snappy, keyboard-driven navigation, so every
+// route uses this shorter fade instead.
+CustomTransitionPage<void> _fastPage(GoRouterState state, Widget child) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 120),
+    reverseTransitionDuration: const Duration(milliseconds: 120),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        FadeTransition(opacity: animation, child: child),
+  );
+}
+
 GoRouter buildAppRouter(SessionStateService sessionStateService) {
   return GoRouter(
     initialLocation: '/',
     refreshListenable: GoRouterRefreshStream(sessionStateService.stream),
     redirect: (context, state) {
       final isPublicRoute = _publicRoutes.contains(state.matchedLocation);
-      if (!sessionStateService.isAuthenticated && !isPublicRoute) return '/login';
+      if (!sessionStateService.isAuthenticated && !isPublicRoute)
+        return '/login';
       if (sessionStateService.isAuthenticated && isPublicRoute) return '/';
       return null;
     },
     routes: [
-      GoRoute(path: '/login', builder: (context, state) => const LoginContainer()),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) =>
+            _fastPage(state, const LoginContainer()),
+      ),
       GoRoute(
         path: '/signup',
-        builder: (context, state) => const SignupContainer(),
+        pageBuilder: (context, state) =>
+            _fastPage(state, const SignupContainer()),
       ),
       ShellRoute(
         builder: (context, state, child) => AppShellView(child: child),
         routes: [
-          GoRoute(path: '/', builder: (context, state) => const HomeContainer()),
+          GoRoute(
+            path: '/',
+            pageBuilder: (context, state) =>
+                _fastPage(state, const HomeContainer()),
+          ),
           GoRoute(
             path: '/items',
-            builder: (context, state) => const ItemListContainer(),
+            pageBuilder: (context, state) =>
+                _fastPage(state, const ItemListContainer()),
           ),
           GoRoute(
             path: '/items/new',
-            builder: (context, state) => const AddItemContainer(),
+            pageBuilder: (context, state) =>
+                _fastPage(state, const AddItemContainer()),
           ),
           GoRoute(
             path: '/items/:id',
-            builder: (context, state) => ItemDetailContainer(itemId: state.pathParameters['id']!),
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              ItemDetailContainer(itemId: state.pathParameters['id']!),
+            ),
           ),
           GoRoute(
             path: '/items/:id/edit',
-            builder: (context, state) => EditItemContainer(itemId: state.pathParameters['id']!),
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              EditItemContainer(itemId: state.pathParameters['id']!),
+            ),
           ),
           GoRoute(
             path: '/categories',
-            builder: (context, state) => const CategoryListContainer(),
+            pageBuilder: (context, state) =>
+                _fastPage(state, const CategoryListContainer()),
           ),
           GoRoute(
             path: '/categories/:category',
-            builder: (context, state) =>
-                ItemListContainer(category: state.pathParameters['category']),
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              ItemListContainer(category: state.pathParameters['category']),
+            ),
           ),
         ],
       ),

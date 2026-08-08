@@ -79,18 +79,32 @@ class ItemFormView extends StatefulWidget {
 
 class _ItemFormViewState extends State<ItemFormView> {
   final _formKey = GlobalKey<FormState>();
-  late final _titleController = TextEditingController(text: widget.initial?.title);
+  late final _titleController = TextEditingController(
+    text: widget.initial?.title,
+  );
   late final _creatorController = TextEditingController(
     text: widget.initial?.creator.join(', '),
   );
-  late final _publisherController = TextEditingController(text: widget.initial?.publisher);
-  late final _tagsController = TextEditingController(text: widget.initial?.tags.join(', '));
-  late final _topicController = TextEditingController(text: widget.initial?.topic);
-  late final _yearController = TextEditingController(
-    text: widget.initial != null && widget.initial!.year > 0 ? '${widget.initial!.year}' : null,
+  late final _publisherController = TextEditingController(
+    text: widget.initial?.publisher,
   );
-  late final _descriptionController = TextEditingController(text: widget.initial?.description);
-  late final _languageController = TextEditingController(text: widget.initial?.language);
+  late final _tagsController = TextEditingController(
+    text: widget.initial?.tags.join(', '),
+  );
+  late final _topicController = TextEditingController(
+    text: widget.initial?.topic,
+  );
+  late final _yearController = TextEditingController(
+    text: widget.initial != null && widget.initial!.year > 0
+        ? '${widget.initial!.year}'
+        : null,
+  );
+  late final _descriptionController = TextEditingController(
+    text: widget.initial?.description,
+  );
+  late final _languageController = TextEditingController(
+    text: widget.initial?.language,
+  );
 
   late String? _category = widget.initial?.category;
   late String? _format = widget.initial?.format;
@@ -140,7 +154,10 @@ class _ItemFormViewState extends State<ItemFormView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(widget.formTitle, style: Theme.of(context).textTheme.headlineSmall),
+                Text(
+                  widget.formTitle,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: _titleController,
@@ -148,7 +165,8 @@ class _ItemFormViewState extends State<ItemFormView> {
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
                     if (trimmed.isEmpty) return 'Title is required';
-                    if (trimmed.length > 200) return 'Title must be at most 200 characters';
+                    if (trimmed.length > 200)
+                      return 'Title must be at most 200 characters';
                     return null;
                   },
                 ),
@@ -157,10 +175,12 @@ class _ItemFormViewState extends State<ItemFormView> {
                   controller: _creatorController,
                   decoration: const InputDecoration(
                     labelText: 'Creator',
-                    helperText: 'Comma-separated names, e.g. "Author One, Author Two"',
+                    helperText:
+                        'Comma-separated names, e.g. "Author One, Author Two"',
                   ),
-                  validator: (value) =>
-                      _parseNames(value).isEmpty ? 'At least one creator is required' : null,
+                  validator: (value) => _parseNames(value).isEmpty
+                      ? 'At least one creator is required'
+                      : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -169,7 +189,8 @@ class _ItemFormViewState extends State<ItemFormView> {
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
                     if (trimmed.isEmpty) return 'Publisher is required';
-                    if (trimmed.length > 150) return 'Publisher must be at most 150 characters';
+                    if (trimmed.length > 150)
+                      return 'Publisher must be at most 150 characters';
                     return null;
                   },
                 ),
@@ -179,10 +200,14 @@ class _ItemFormViewState extends State<ItemFormView> {
                   decoration: const InputDecoration(labelText: 'Category'),
                   items: [
                     for (final entry in categoryLabels.entries)
-                      DropdownMenuItem(value: entry.key, child: Text(entry.value)),
+                      DropdownMenuItem(
+                        value: entry.key,
+                        child: Text(entry.value),
+                      ),
                   ],
                   onChanged: (value) => setState(() => _category = value),
-                  validator: (value) => value == null ? 'Category is required' : null,
+                  validator: (value) =>
+                      value == null ? 'Category is required' : null,
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
@@ -190,10 +215,14 @@ class _ItemFormViewState extends State<ItemFormView> {
                   decoration: const InputDecoration(labelText: 'Format'),
                   items: [
                     for (final entry in formatLabels.entries)
-                      DropdownMenuItem(value: entry.key, child: Text(entry.value)),
+                      DropdownMenuItem(
+                        value: entry.key,
+                        child: Text(entry.value),
+                      ),
                   ],
                   onChanged: (value) => setState(() => _format = value),
-                  validator: (value) => value == null ? 'Format is required' : null,
+                  validator: (value) =>
+                      value == null ? 'Format is required' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -214,17 +243,22 @@ class _ItemFormViewState extends State<ItemFormView> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _topicController,
-                  decoration: const InputDecoration(labelText: 'Topic (optional)'),
+                  decoration: const InputDecoration(
+                    labelText: 'Topic (optional)',
+                  ),
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
-                    if (trimmed.length > 100) return 'Topic must be at most 100 characters';
+                    if (trimmed.length > 100)
+                      return 'Topic must be at most 100 characters';
                     return null;
                   },
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _yearController,
-                  decoration: const InputDecoration(labelText: 'Publication year (optional)'),
+                  decoration: const InputDecoration(
+                    labelText: 'Publication year (optional)',
+                  ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
@@ -240,8 +274,10 @@ class _ItemFormViewState extends State<ItemFormView> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description (optional)'),
-                  maxLines: 4,
+                  decoration: const InputDecoration(
+                    labelText: 'Description (optional)',
+                  ),
+                  maxLines: 50,
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
                     if (trimmed.length > 2000) {
@@ -269,7 +305,9 @@ class _ItemFormViewState extends State<ItemFormView> {
                 const SizedBox(height: 12),
                 _ImagePickerField(
                   pickedImageBytes: _pickedImageBytes,
-                  existingImageUrl: _imageRemoved ? '' : (widget.initial?.imageUrl ?? ''),
+                  existingImageUrl: _imageRemoved
+                      ? ''
+                      : (widget.initial?.imageUrl ?? ''),
                   onPick: _pickImage,
                   onRemove: _removeImage,
                 ),
@@ -279,7 +317,9 @@ class _ItemFormViewState extends State<ItemFormView> {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
                       widget.errorMessage!,
-                      style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
                   ),
                 Row(
@@ -303,13 +343,20 @@ class _ItemFormViewState extends State<ItemFormView> {
                       const Spacer(),
                       OutlinedButton.icon(
                         onPressed: widget.isSubmitting ? null : widget.onDelete,
-                        icon: Icon(Pixel.trash, color: Theme.of(context).colorScheme.error),
+                        icon: Icon(
+                          Pixel.trash,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                         label: Text(
                           'Delete',
-                          style: TextStyle(color: Theme.of(context).colorScheme.error),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Theme.of(context).colorScheme.error),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                         ),
                       ),
                     ],
@@ -394,12 +441,16 @@ class _ImagePickerField extends StatelessWidget {
                     existingImageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
                       child: const Icon(Pixel.imagebroken),
                     ),
                   )
                 : Container(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     child: const Icon(Pixel.imagebroken),
                   ),
           ),
@@ -415,7 +466,10 @@ class _ImagePickerField extends StatelessWidget {
               label: const Text('Choose image'),
             ),
             if (hasImage)
-              TextButton(onPressed: onRemove, child: const Text('Remove image')),
+              TextButton(
+                onPressed: onRemove,
+                child: const Text('Remove image'),
+              ),
           ],
         ),
       ],
