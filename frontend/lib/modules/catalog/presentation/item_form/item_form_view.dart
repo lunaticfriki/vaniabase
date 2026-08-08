@@ -277,7 +277,7 @@ class _ItemFormViewState extends State<ItemFormView> {
                   decoration: const InputDecoration(
                     labelText: 'Description (optional)',
                   ),
-                  maxLines: 50,
+                  maxLines: 20,
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
                     if (trimmed.length > 2000) {
