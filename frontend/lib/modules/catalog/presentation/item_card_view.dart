@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
+import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class ItemCardView extends StatelessWidget {
@@ -21,14 +22,18 @@ class ItemCardView extends StatelessWidget {
               aspectRatio: 3 / 4,
               child: item.imageUrl.isEmpty
                   ? Container(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
                       child: const Icon(Pixel.imagebroken),
                     )
                   : Image.network(
                       item.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
                         child: const Icon(Pixel.imagebroken),
                       ),
                     ),
@@ -52,10 +57,10 @@ class ItemCardView extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${item.category} · ${item.format}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary),
+                    '${categoryLabel(item.category)} · ${formatLabel(item.format)}',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ],
               ),
