@@ -34,6 +34,7 @@ Fields:
 | `year` | no | Publication year |
 | `description` | no | Free text |
 | `language` | no | — |
+| `reference` | no | ISBN or other catalog/reference number |
 | `imageUrl` | no | Cover art |
 
 ### The category/format rule
@@ -65,6 +66,36 @@ it. In the current Firebase-backed setup this is enforced by
 resource.data.ownerId`) rather than by `Item.isOwnedBy(userId)` — see
 [frontend-app.md](frontend-app.md) for how the frontend talks to
 Firestore.
+
+### Search
+
+`modules/catalog/domain/search/` holds the actual "does this item match
+what the user typed" logic, kept independent of any storage or query
+mechanism:
+
+- **`SearchTerm`** — a value object (trimmed, 1-100 characters) whose
+  `matchesAny(candidates)` method is the matching algorithm itself:
+  case-insensitive substring matching against whatever list of strings
+  it's given. This is deliberately generic — it doesn't know about
+  `Item` at all — so it can be reused anywhere a "does this text match
+  this query" check is needed.
+- **`Item.matches(SearchTerm)`** — the entity's own predicate, in the
+  same spirit as `isOwnedBy`: it hands `SearchTerm.matchesAny` its own
+  title, creator, publisher, topic, reference, and tags.
+- **`ItemSearch.filter(items, term)`** — a small domain service that
+  filters a `List<Item>` down to the matches (or returns every item
+  unfiltered when the term is empty).
+- **`ItemCriteria.search`** — the existing query-criteria pattern
+  (`ownerId` + `pageRequest` + optional `category`) gained an optional
+  `SearchTerm` field, so a search is just another criterion, not a
+  separate query mechanism.
+
+`frontend` doesn't hold full `Item` entities (see
+[frontend-app.md](frontend-app.md)), so its search page calls
+`SearchTerm.matchesAny` directly against its own read model's fields
+rather than going through `Item.matches`/`ItemSearch` — the reusable
+part is the matching algorithm on `SearchTerm`, not the entity-shaped
+wrapper around it.
 
 ## Identity — accounts and sessions
 

@@ -24,12 +24,20 @@ screen on-screen.
 | `/items` | The full catalog, paginated | yes |
 | `/items/new` | Add an item | yes |
 | `/items/:id` | Item detail | yes |
+| `/items/:id/edit` | Edit an item | yes |
+| `/categories` | Categories, each with a preview of its items | yes |
+| `/categories/:category` | Items in one category, paginated (reuses `/items`'s list view) | yes |
+| `/tags` | Tag cloud; click a tag to filter items below | yes |
+| `/search` | Debounced text search across the catalog | yes |
 
-`/` and `/items` share a persistent shell (`AppShellView`): a header
-with **Home** / **All items** links, a light/dark theme toggle, and a
-logout button when signed in; a footer with a GitHub link and the
-current year. `/login` and `/signup` render standalone, outside the
-shell.
+`/`, `/items`, `/categories`, `/tags`, and `/search` share a persistent
+shell (`AppShellView`): a header with links to each of those pages plus
+**Add item**, a light/dark theme toggle, and a logout button when
+signed in; a footer with a GitHub link and the current year. On wide
+screens the nav renders as icon-only buttons with tooltips (kept
+compact so the row doesn't overflow as pages get added — text labels
+only show in the narrow-screen hamburger menu). `/login` and `/signup`
+render standalone, outside the shell.
 
 ### Signing in and up
 
@@ -67,26 +75,71 @@ when there are only a few items, rather than pinning it to the top of
 an otherwise empty page. Tapping a card on either page opens
 `/items/:id`.
 
+### Browsing: categories, tags, and search
+
+Three more ways into the same catalog, all reachable from the header nav:
+
+- **`/categories`** (`CategoryListContainer`/`CategoriesStateService`) —
+  one tile per category, each showing up to a handful of that
+  category's most recent item covers as small thumbnails next to the
+  name, so a tile reads as a preview rather than just a label. The
+  thumbnail count is computed from the tile's actual width
+  (`LayoutBuilder` in `category_list_view.dart`), so a wider window
+  shows more covers instead of a fixed number. Tapping a tile opens
+  `/categories/:category`, which reuses the same `ItemListView` as
+  `/items` with a category filter.
+- **`/tags`** (`TagsContainer`/`TagsStateService`) — every tag used
+  across the catalog, laid out as a tag cloud where font size scales
+  with how often that tag appears (computed client-side: `fetchAllItems`
+  pulls every item once, then a `Map<String, int>` frequency count drives
+  a linear min↔max font-size mapping). Tapping a tag filters the same
+  page's item grid, shown below the cloud, without navigating away;
+  tapping the same tag again clears the filter. The item detail page's
+  tag chips link here too, via `/tags?tag=<tag>`, which pre-selects that
+  tag on load (`TagsContainer.initialTag` → `TagsStateService`'s
+  constructor).
+- **`/search`** (`SearchContainer`/`SearchStateService`) — a single text
+  field, debounced 300ms (`Timer`-based cancel-and-restart in
+  `SearchStateService.onQueryChanged`) before it searches, so it doesn't
+  re-query on every keystroke. Firestore has no server-side text search,
+  so this fetches every item via the same `fetchAllItems` helper `/tags`
+  uses, then filters in memory using `core`'s `SearchTerm.matchesAny`
+  against each item's title, creator, publisher, topic, reference, and
+  tags — see [core-domain.md](core-domain.md#search) for why that
+  matching logic lives in `core` rather than being reimplemented here.
+
+`fetchAllItems` (`application/fetch_all_items_util.dart`) is the one
+place that loops `ItemReadService.list()` across pages until it has
+every item for the signed-in user — both `/tags` and `/search` need the
+full set (to count tags / search everything) rather than one page at a
+time, unlike `/items`'s and `/categories/:category`'s paginated
+browsing.
+
 ### Adding and viewing an item
 
 `/items/new` and editing an existing item both use the same
 `ItemFormView` (`initial: null` means "add" mode) covering every field
 an item has — title, creator(s), publisher, category, format, a
 completed checkbox, and the optional tags/topic/year/description/
-language/image — client-validated against the same constraints the
-domain value objects enforce (so a bad category/format combination
-still surfaces the domain's exact `InvalidFormatForCategoryError`
-message rather than being silently prevented). The image is picked from
-the gallery (`image_picker`) and uploaded to Firebase Storage
-(`FirestoreItemRepository._uploadImage`); removing it clears the
-`image_url` field and deletes the stored object.
+language/reference/image — client-validated against the same
+constraints the domain value objects enforce (so a bad category/format
+combination still surfaces the domain's exact
+`InvalidFormatForCategoryError` message rather than being silently
+prevented). The image is picked from the gallery (`image_picker`) and
+uploaded to Firebase Storage (`FirestoreItemRepository._uploadImage`);
+removing it clears the `image_url` field and deletes the stored object.
 
 `/items/:id` (`ItemDetailStateService`) shows the image beside the rest
 of the item's fields on a wide screen, and stacks title/creator → image →
 the rest of the fields on a narrow one, with a back button that pops the
 navigation stack (falling back to `/items` if the page was opened
 directly, e.g. from a shared link). A chip next to the title reflects
-`completed` ("Completed" vs. "In progress").
+`completed` ("Completed" vs. "Not completed") and is itself tappable —
+toggling it calls `ItemDetailStateService.toggleCompleted()`, which
+writes through `ItemWriteService.update` and updates the chip in place,
+without a full page reload. Each tag chip in the field list is also
+tappable, navigating to `/tags?tag=<tag>` with that tag pre-selected
+(see "Browsing: categories, tags, and search" below).
 
 Editing an item also offers **Delete**, which confirms via a dialog
 before calling `EditItemStateService.delete()` — this removes both the
@@ -126,9 +179,11 @@ redirect decision, rather than flashing `/login` first.
 - **State management** — one state service per page/concern, living in
   that feature's `application/` layer, not presentation (`LoginStateService`,
   `SignupStateService`, `HomeStateService`, `ItemListStateService`,
-  `AddItemStateService`, `ItemDetailStateService`), plus two app-wide ones
-  outside any single page, in `shared/`: `SessionStateService` (who's
-  signed in) and `ThemeStateService` (light/dark). Each is implemented as
+  `AddItemStateService`, `EditItemStateService`, `ItemDetailStateService`,
+  `CategoriesStateService`, `TagsStateService`, `SearchStateService`),
+  plus two app-wide ones outside any single page, in `shared/`:
+  `SessionStateService` (who's signed in) and `ThemeStateService`
+  (light/dark). Each is implemented as
   a `Cubit<State>`, but named/placed to say what it *is* (application's
   reactive state holder) rather than which library implements it — see
   [03-application-layer-cqrs.md](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state).
@@ -151,8 +206,9 @@ redirect decision, rather than flashing `/login` first.
   see `ItemMapper.toReadModel`). It's set via the checkbox in
   `ItemFormView` (shared by add/edit), threaded through
   `ItemWriteService.create`/`update` and the two state services, and
-  rendered as a status chip on the detail page (`_CompletedBadge` in
-  `item_detail_view.dart`).
+  rendered as a tappable status chip on the detail page (`_CompletedBadge`
+  in `item_detail_view.dart`) that toggles it directly without opening
+  the edit form.
 - **Firebase configuration** — `firebase_options.dart` builds the
   project's `FirebaseOptions` per platform (web/android/ios/macos) from
   environment variables (`FIREBASE_API_KEY`, `FIREBASE_API_KEY_ANDROID`,
