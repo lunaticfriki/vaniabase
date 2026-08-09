@@ -21,6 +21,7 @@ void main() {
         'description': 'A desert planet.',
         'language': 'en',
         'image_url': 'https://example.com/dune.jpg',
+        'completed': true,
         'created_at': Timestamp.fromDate(createdAt),
         'updated_at': Timestamp.fromDate(updatedAt),
       });
@@ -31,6 +32,7 @@ void main() {
       expect(model.creator, ['Frank Herbert']);
       expect(model.category, 'book');
       expect(model.year, 1965);
+      expect(model.completed, isTrue);
       expect(model.createdAt, createdAt);
       expect(model.updatedAt, updatedAt);
     });
@@ -55,6 +57,7 @@ void main() {
       expect(model.description, '');
       expect(model.language, '');
       expect(model.imageUrl, '');
+      expect(model.completed, isFalse);
     });
   });
 }

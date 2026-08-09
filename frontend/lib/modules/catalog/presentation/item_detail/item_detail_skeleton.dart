@@ -44,8 +44,6 @@ class ItemDetailSkeleton extends StatelessWidget {
     );
 
     if (isWide) {
-      // Mirrors ItemDetailView's wide layout: the image fills the full
-      // available height (not just its aspect ratio), same as the real view.
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

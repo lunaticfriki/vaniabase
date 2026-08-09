@@ -2,7 +2,7 @@ import 'package:core/shared/generate_uuid_util.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 
 class ItemReadModelMother {
-  static ItemReadModel random({String? id, String? title}) {
+  static ItemReadModel random({String? id, String? title, bool completed = false}) {
     final now = DateTime.now();
     return ItemReadModel(
       id: id ?? generateUuidV4Util(),
@@ -18,6 +18,7 @@ class ItemReadModelMother {
       description: 'A desert planet epic.',
       language: 'en',
       imageUrl: 'https://picsum.photos/seed/mother/400/600',
+      completed: completed,
       createdAt: now,
       updatedAt: now,
     );

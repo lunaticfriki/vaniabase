@@ -54,7 +54,7 @@ void main() {
     blocTest<ItemListStateService, ItemListState>(
       'nextPage loads the following page',
       build: () => ItemListStateService(readService),
-      skip: 1, // the page-1 ItemListLoaded emitted by the constructor's own load
+      skip: 1,
       act: (service) async {
         await Future<void>.delayed(Duration.zero);
         await service.nextPage();
@@ -69,7 +69,7 @@ void main() {
     blocTest<ItemListStateService, ItemListState>(
       'previousPage is a no-op on the first page',
       build: () => ItemListStateService(readService),
-      skip: 1, // the page-1 ItemListLoaded emitted by the constructor's own load
+      skip: 1,
       act: (service) async {
         await Future<void>.delayed(Duration.zero);
         await service.previousPage();
@@ -92,7 +92,7 @@ void main() {
         ).thenAnswer((_) async => _pageOf(1, totalItems: 10));
       },
       build: () => ItemListStateService(readService),
-      skip: 1, // the page-1 ItemListLoaded emitted by the constructor's own load
+      skip: 1,
       act: (service) async {
         await Future<void>.delayed(Duration.zero);
         await service.nextPage();

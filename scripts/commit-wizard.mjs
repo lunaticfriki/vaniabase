@@ -52,7 +52,6 @@ async function main() {
     process.exit(0);
   }
 
-  // No terminal attached (CI, GUI client, etc.) - don't block the commit.
   if (!process.stdin.isTTY) {
     process.exit(0);
   }

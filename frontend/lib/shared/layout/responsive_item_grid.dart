@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Lays out [items] in up to [targetColumns] columns (two rows for a
-/// 10-item page on a wide screen), centered in the available width, and
-/// reflows to fewer (but never narrower than [_minItemWidth]) columns as the
-/// screen narrows. Only the width of each item is constrained — its height
-/// is left to size itself naturally, so item content is never clipped or
-/// overflows regardless of font metrics.
 class ResponsiveItemGrid<T> extends StatelessWidget {
   const ResponsiveItemGrid({
     required this.items,
@@ -19,13 +13,6 @@ class ResponsiveItemGrid<T> extends StatelessWidget {
   final Widget Function(BuildContext context, T item) itemBuilder;
   final int targetColumns;
 
-  /// Horizontal space already consumed by ancestors (e.g. an outer
-  /// `Padding`) that [MediaQuery]'s full window width doesn't account for.
-  /// A plain [LayoutBuilder] would read this directly off incoming
-  /// constraints, but some ancestors this grid is used under (a
-  /// `SliverFillRemaining` with `hasScrollBody: false`, on the home page)
-  /// query their child's *intrinsic* size, and `LayoutBuilder` cannot
-  /// answer that — so width is derived from `MediaQuery` instead.
   final double horizontalPadding;
 
   static const _spacing = 12.0;

@@ -5,8 +5,6 @@ import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:pixelarticons/pixel.dart';
 
-/// Below this width the inline nav links no longer fit comfortably, so they
-/// collapse into a hamburger menu instead.
 const navWideBreakpoint = 640.0;
 
 class _NavItem {

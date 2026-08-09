@@ -41,11 +41,6 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     }
   }
 
-  // The Firestore client SDK has no server-side offset() - only cursor-based
-  // pagination - while this app's PageRequest/PageResult contract is
-  // offset-shaped and the catalog is a single user's own collection (not a
-  // shared/public dataset), so fetching the full matching set and slicing it
-  // in memory is the pragmatic fit here over building cursor plumbing.
   @override
   Future<PageResult<ItemReadModel>> list({
     required PageRequest pageRequest,
@@ -89,6 +84,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     String? description,
     String? language,
     Uint8List? imageBytes,
+    bool completed = false,
   }) async {
     final doc = _items.doc();
     final imageUrl = imageBytes != null ? await _uploadImage(doc.id, imageBytes) : '';
@@ -105,6 +101,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
       'description': description ?? '',
       'language': language ?? '',
       'image_url': imageUrl,
+      'completed': completed,
       'created_at': FieldValue.serverTimestamp(),
       'updated_at': FieldValue.serverTimestamp(),
     });
@@ -126,6 +123,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     String? language,
     Uint8List? imageBytes,
     bool removeImage = false,
+    bool? completed,
   }) async {
     String? imageUrl;
     if (imageBytes != null) {
@@ -146,6 +144,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
       'description': ?description,
       'language': ?language,
       'image_url': ?imageUrl,
+      'completed': ?completed,
       'updated_at': FieldValue.serverTimestamp(),
     });
   }

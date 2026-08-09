@@ -56,6 +56,7 @@ class _AddItemContainerState extends State<AddItemContainer> {
                 language,
                 imageBytes,
                 removeImage = false,
+                completed = false,
               }) => context.read<AddItemStateService>().submit(
                 title: title,
                 creator: creator,
@@ -68,6 +69,7 @@ class _AddItemContainerState extends State<AddItemContainer> {
                 description: description,
                 language: language,
                 imageBytes: imageBytes,
+                completed: completed,
               ),
           onCancel: () => context.go('/items'),
         ),

@@ -14,10 +14,6 @@ class SessionStateService extends Cubit<SessionState> {
 
   bool get isAuthenticated => state is SessionAuthenticated;
 
-  /// Resolves once the initial (persisted) auth state has been reported by
-  /// Firebase, so the router's first redirect decision reflects the real
-  /// signed-in/out state instead of the Cubit's `SessionUnauthenticated`
-  /// starting value.
   Future<void> get ready => _firebaseAuth.authStateChanges().first;
 
   void _onUserChanged(User? user) {

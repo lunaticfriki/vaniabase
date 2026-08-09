@@ -16,7 +16,7 @@ CQRS + Vertical Slicing) as much as it is an app — see
 | Package | What it is |
 |---|---|
 | [`core/`](core/) | Plain Dart domain layer — entities, value objects, business rules. No Flutter, no HTTP, no database. Shared by `frontend`. |
-| [`frontend/`](frontend/) | Flutter web app — the UI, backed directly by Firebase Auth and Cloud Firestore. |
+| [`frontend/`](frontend/) | Flutter app (web, macOS, iOS, Android) — the UI, backed directly by Firebase Auth and Cloud Firestore. |
 | [`docs/`](docs/) | Architecture standard (portable, numbered `01-...` files) plus vaniabase-specific docs (business + technical, one per package above). |
 
 ## Quickstart
@@ -26,20 +26,38 @@ directly.
 
 1. Create a Firebase project (console.firebase.google.com), enable
    **Authentication** (Email/Password provider) and **Cloud Firestore**.
-2. `cp frontend/.env.example frontend/.env`, then fill it in with your
-   project's web config (Firebase console → Project settings → General →
-   Your apps → Web app → SDK setup and configuration).
-   `frontend/.env` is gitignored — real credentials never get committed;
-   `frontend/lib/firebase_options.dart` just reads them at runtime via
-   `flutter_dotenv`.
+   Register an app per platform you want to run (Web, Android, iOS — macOS
+   reuses the iOS app since they share a bundle ID) via `flutterfire
+   configure`, or add them by hand in the console.
+2. `cp frontend/.env.example frontend/.env`, then fill it in with each
+   registered app's config (Firebase console → Project settings → General
+   → Your apps → pick the app → SDK setup and configuration): the
+   unsuffixed `FIREBASE_*` keys are the web app, `_ANDROID`/`_IOS` keys
+   are the respective native apps. `frontend/.env` is gitignored — real
+   credentials never get committed; `frontend/lib/firebase_options.dart`
+   just reads them at runtime via `flutter_dotenv`.
 3. Deploy the security rules/indexes at the repo root (`firestore.rules`,
    `firestore.indexes.json`) with `firebase deploy --only
    firestore:rules,firestore:indexes`, or paste `firestore.rules` into
    the console's Rules editor.
-4. `make install && make frontend` — pub get, then the Flutter web app
-   with hot reload.
+4. `make install && make frontend` — pub get, then the Flutter app on
+   macOS desktop with hot reload (`make frontend-web` runs it in Chrome
+   instead).
 
 Run `make help` for the full target list.
+
+### Supported platforms
+
+| Platform | Status | Notes |
+|---|---|---|
+| Web | Supported | `make frontend-web`, or `docker compose up` (serves the release build via nginx). |
+| macOS desktop | Supported | `make frontend` (default). Deployment target 10.15+. Needs Xcode + CocoaPods locally. |
+| iOS | Supported | `flutter run -d <device>` from `frontend/`. Deployment target 15.0+ (required by the Firebase SDKs). Needs Xcode + CocoaPods. |
+| Android | Supported | `flutter run -d <device>` from `frontend/`. minSdk 24, targetSdk/compileSdk 36. Needs Android Studio + the Android SDK installed locally. |
+| Windows / Linux desktop | Not supported | Firebase's Flutter plugins (`firebase_core`/`auth`/`firestore`/`storage`) and `image_picker` don't target these platforms. |
+
+Flutter 3.44.7 / Dart SDK `^3.12.2` (`frontend/pubspec.yaml`), pinned to
+match what the Docker build image installs.
 
 ## Where to go next
 

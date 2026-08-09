@@ -11,9 +11,6 @@ class MockItemReadService extends Mock implements ItemReadService {}
 
 class MockItemWriteService extends Mock implements ItemWriteService {}
 
-// Lets the initial async _load() triggered by the Cubit's constructor
-// resolve before act runs submit()/delete() against it - both bail out
-// early if the state isn't EditItemReady yet.
 Future<void> _settleLoad() => Future<void>.delayed(Duration.zero);
 
 void main() {
@@ -34,6 +31,7 @@ void main() {
     description: '',
     language: 'en',
     imageUrl: '',
+    completed: false,
     createdAt: DateTime(2024),
     updatedAt: DateTime(2024),
   );
@@ -80,6 +78,7 @@ void main() {
             language: any(named: 'language'),
             imageBytes: any(named: 'imageBytes'),
             removeImage: any(named: 'removeImage'),
+            completed: any(named: 'completed'),
           ),
         ).thenAnswer((_) async {});
       },
@@ -115,6 +114,7 @@ void main() {
             language: any(named: 'language'),
             imageBytes: any(named: 'imageBytes'),
             removeImage: any(named: 'removeImage'),
+            completed: any(named: 'completed'),
           ),
         ).thenThrow(Exception('update failed'));
       },

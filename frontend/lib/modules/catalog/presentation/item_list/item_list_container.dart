@@ -12,8 +12,6 @@ import 'package:go_router/go_router.dart';
 class ItemListContainer extends StatefulWidget {
   const ItemListContainer({this.category, super.key});
 
-  /// When set, restricts the list to this category and titles the page
-  /// with its label instead of "All items".
   final String? category;
 
   @override

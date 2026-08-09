@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Brand colors: a light purple as primary. Secondary (used for links) is a
-/// lighter, higher-luminance purple on dark backgrounds so it stays legible
-/// against the near-black background, and a deeper purple on light
-/// backgrounds where a pale purple wouldn't have enough contrast. Dark
-/// backgrounds stay off-black rather than pure `#000000`.
 class AppTheme {
   const AppTheme._();
 

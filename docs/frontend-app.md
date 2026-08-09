@@ -69,27 +69,28 @@ an otherwise empty page. Tapping a card on either page opens
 
 ### Adding and viewing an item
 
-`/items/new` is a form (`AddItemStateService`) covering every field an
-item has — title, creator(s), publisher, category, format, and the
-optional tags/topic/year/description/language/image URL — client-
-validated against the same constraints the domain value objects enforce
-(so a bad category/format combination still surfaces the domain's exact
-`InvalidFormatForCategoryError` message rather than being silently
-prevented). The image is a plain URL text field for now; there is no
-upload flow yet — Firebase Storage would be the natural place to plug
-one in.
+`/items/new` and editing an existing item both use the same
+`ItemFormView` (`initial: null` means "add" mode) covering every field
+an item has — title, creator(s), publisher, category, format, a
+completed checkbox, and the optional tags/topic/year/description/
+language/image — client-validated against the same constraints the
+domain value objects enforce (so a bad category/format combination
+still surfaces the domain's exact `InvalidFormatForCategoryError`
+message rather than being silently prevented). The image is picked from
+the gallery (`image_picker`) and uploaded to Firebase Storage
+(`FirestoreItemRepository._uploadImage`); removing it clears the
+`image_url` field and deletes the stored object.
 
 `/items/:id` (`ItemDetailStateService`) shows the image beside the rest
 of the item's fields on a wide screen, and stacks title/creator → image →
 the rest of the fields on a narrow one, with a back button that pops the
 navigation stack (falling back to `/items` if the page was opened
-directly, e.g. from a shared link).
+directly, e.g. from a shared link). A chip next to the title reflects
+`completed` ("Completed" vs. "In progress").
 
-### What isn't here yet
-
-Deleting an item — `ItemWriteService` has no `delete` method yet, and
-there's no page for it; doing so today means deleting the document
-directly in the Firebase console.
+Editing an item also offers **Delete**, which confirms via a dialog
+before calling `EditItemStateService.delete()` — this removes both the
+Firestore document and its stored image.
 
 ### Session persistence
 
@@ -145,12 +146,23 @@ redirect decision, rather than flashing `/login` first.
   imports either package, so the application/presentation layers stay
   ignorant of Firebase the same way they were previously ignorant of
   `package:http`.
+- **Completed status** — items carry a `completed` flag (Firestore field
+  `completed`, defaulting to `false` when absent on older documents —
+  see `ItemMapper.toReadModel`). It's set via the checkbox in
+  `ItemFormView` (shared by add/edit), threaded through
+  `ItemWriteService.create`/`update` and the two state services, and
+  rendered as a status chip on the detail page (`_CompletedBadge` in
+  `item_detail_view.dart`).
 - **Firebase configuration** — `firebase_options.dart` builds the
-  project's `FirebaseOptions` from environment variables (`FIREBASE_API_KEY`,
-  ...) rather than hardcoding them, read via `flutter_dotenv` from
-  `frontend/.env` (gitignored; `main.dart` calls `dotenv.load()` before
-  `Firebase.initializeApp`, which runs before anything else). Copy
-  `frontend/.env.example` to `frontend/.env` and fill in your project's
-  web config to run locally. Per-user data isolation is enforced
-  server-side by `firestore.rules` at the repo root, not by anything in
-  the Flutter app.
+  project's `FirebaseOptions` per platform (web/android/ios/macos) from
+  environment variables (`FIREBASE_API_KEY`, `FIREBASE_API_KEY_ANDROID`,
+  `FIREBASE_API_KEY_IOS`, ...) rather than hardcoding them, read via
+  `flutter_dotenv` from `frontend/.env` (gitignored; `main.dart` calls
+  `dotenv.load()` before `Firebase.initializeApp`, which runs before
+  anything else). Copy `frontend/.env.example` to `frontend/.env` and fill
+  in your project's config to run locally — the committed
+  `google-services.json` / `GoogleService-Info.plist` that `flutterfire
+  configure` normally generates are gitignored and unused here for the same
+  reason. Linux/Windows aren't supported since Firebase's Flutter plugins
+  don't target them. Per-user data isolation is enforced server-side by
+  `firestore.rules` at the repo root, not by anything in the Flutter app.

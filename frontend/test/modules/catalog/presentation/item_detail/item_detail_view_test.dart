@@ -28,13 +28,8 @@ void main() {
       final imageRect = tester.getRect(find.byKey(itemDetailImageKey));
       final titleBox = tester.getTopLeft(find.text('Dune'));
 
-      // Image is to the left of (smaller x than) the title/info column.
       expect(imageRect.left, lessThan(titleBox.dx));
-      // And roughly level with it vertically (same row), not stacked above it.
       expect((imageRect.top - titleBox.dy).abs(), lessThan(50));
-      // The image should dominate the page, not just follow a fixed aspect
-      // ratio in a corner: most of the 900px viewport height (minus back
-      // button/padding) and a large share of the 1200px width.
       expect(imageRect.height, greaterThan(750));
       expect(imageRect.width, greaterThan(450));
     },

@@ -37,6 +37,7 @@ class EditItemStateService extends Cubit<EditItemState> {
     String? language,
     Uint8List? imageBytes,
     bool removeImage = false,
+    bool? completed,
   }) async {
     final current = state;
     if (current is! EditItemReady) return;
@@ -56,6 +57,7 @@ class EditItemStateService extends Cubit<EditItemState> {
         language: language,
         imageBytes: imageBytes,
         removeImage: removeImage,
+        completed: completed,
       );
       emit(EditItemSuccess(_itemId));
     } catch (error) {

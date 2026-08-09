@@ -7,8 +7,6 @@ import 'package:pixelarticons/pixel.dart';
 
 final _languageCodePattern = RegExp(r'^[a-zA-Z]{2}$');
 
-/// Pre-fills [ItemFormView]'s fields for editing an existing item. `null`
-/// means "add" mode, where the form starts blank.
 class ItemFormInitialValues {
   const ItemFormInitialValues({
     required this.title,
@@ -22,6 +20,7 @@ class ItemFormInitialValues {
     required this.description,
     required this.language,
     required this.imageUrl,
+    required this.completed,
   });
 
   final String title;
@@ -35,6 +34,7 @@ class ItemFormInitialValues {
   final String description;
   final String language;
   final String imageUrl;
+  final bool completed;
 }
 
 class ItemFormView extends StatefulWidget {
@@ -68,6 +68,7 @@ class ItemFormView extends StatefulWidget {
     String? language,
     Uint8List? imageBytes,
     bool removeImage,
+    bool completed,
   })
   onSubmit;
   final VoidCallback onCancel;
@@ -108,6 +109,7 @@ class _ItemFormViewState extends State<ItemFormView> {
 
   late String? _category = widget.initial?.category;
   late String? _format = widget.initial?.format;
+  late bool _completed = widget.initial?.completed ?? false;
   Uint8List? _pickedImageBytes;
   bool _imageRemoved = false;
 
@@ -311,6 +313,14 @@ class _ItemFormViewState extends State<ItemFormView> {
                   onPick: _pickImage,
                   onRemove: _removeImage,
                 ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: const Text('Completed'),
+                  value: _completed,
+                  onChanged: (value) =>
+                      setState(() => _completed = value ?? false),
+                ),
                 const SizedBox(height: 16),
                 if (widget.errorMessage != null)
                   Padding(
@@ -406,6 +416,7 @@ class _ItemFormViewState extends State<ItemFormView> {
       language: language.isEmpty ? null : language.toLowerCase(),
       imageBytes: _pickedImageBytes,
       removeImage: _imageRemoved,
+      completed: _completed,
     );
   }
 }

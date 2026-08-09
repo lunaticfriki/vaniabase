@@ -21,6 +21,7 @@ class AddItemStateService extends Cubit<AddItemState> {
     String? description,
     String? language,
     Uint8List? imageBytes,
+    bool completed = false,
   }) async {
     emit(const AddItemInProgress());
     try {
@@ -36,6 +37,7 @@ class AddItemStateService extends Cubit<AddItemState> {
         description: description,
         language: language,
         imageBytes: imageBytes,
+        completed: completed,
       );
       emit(const AddItemSuccess());
     } catch (error) {

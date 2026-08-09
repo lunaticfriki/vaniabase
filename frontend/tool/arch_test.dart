@@ -1,9 +1,5 @@
 import 'dart:io';
 
-/// Enforces the hexagonal dependency rule for each module under
-/// `lib/modules/`: dependencies point inward only. `frontend` has no local
-/// `domain/` (that lives in `core`), so the edges checked here are the ones
-/// that apply to `application`/`infrastructure`/`presentation`.
 const _forbiddenEdges = <String, List<String>>{
   'application': ['infrastructure', 'presentation'],
   'infrastructure': ['presentation'],
@@ -59,9 +55,6 @@ Iterable<String> _importsOf(File file) {
   return _importPattern.allMatches(file.readAsStringSync()).map((m) => m.group(1)!);
 }
 
-/// True if [import] reaches into [layer] — whether via a `package:frontend/`
-/// import or a relative `../layer/...` one, and regardless of which module
-/// it belongs to, so a cross-module leak is caught too.
 bool _crossesInto(String import, String layer) {
   return import.contains('/$layer/');
 }

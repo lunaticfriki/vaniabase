@@ -3,13 +3,8 @@ import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
 import 'package:pixelarticons/pixel.dart';
 
-/// Below this width the image no longer fits comfortably beside the info
-/// column, so the layout stacks instead. Shared with [ItemDetailSkeleton] so
-/// the loading state mirrors whichever layout is about to render.
 const itemDetailWideBreakpoint = 700.0;
 
-/// Identifies the item image in the widget tree regardless of which layout
-/// (wide/narrow) rendered it — the two use different widgets under the hood.
 const itemDetailImageKey = Key('itemDetailImage');
 
 class ItemDetailView extends StatelessWidget {
@@ -44,9 +39,6 @@ class ItemDetailView extends StatelessWidget {
     );
 
     if (isWide) {
-      // Fills the page: the top row takes its natural height, the Row
-      // below claims the rest via Expanded, so the image can stretch to the
-      // full available height instead of just following its aspect ratio.
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -146,16 +138,34 @@ class _TitleAndCreator extends StatelessWidget {
             context,
           ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
+        const SizedBox(height: 8),
+        _CompletedBadge(completed: item.completed),
       ],
     );
   }
 }
 
-/// Unlike [_ItemImage], this doesn't hold to a fixed aspect ratio — it fills
-/// whatever box the wide layout's [Expanded] gives it (full page height,
-/// half the width), cropping via [BoxFit.cover]. Used only in [_WideLayout];
-/// the narrow/stacked layout keeps [_ItemImage]'s fixed aspect ratio since
-/// there it's sized by width alone.
+class _CompletedBadge extends StatelessWidget {
+  const _CompletedBadge({required this.completed});
+
+  final bool completed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Chip(
+      avatar: Icon(
+        completed ? Pixel.check : Pixel.clock,
+        size: 16,
+        color: completed ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
+      ),
+      label: Text(completed ? 'Completed' : 'In progress'),
+      backgroundColor: completed ? colorScheme.primary : colorScheme.surfaceContainerHighest,
+      labelStyle: TextStyle(color: completed ? colorScheme.onPrimary : colorScheme.onSurfaceVariant),
+    );
+  }
+}
+
 class _ItemImageFill extends StatelessWidget {
   const _ItemImageFill({required this.imageUrl});
 

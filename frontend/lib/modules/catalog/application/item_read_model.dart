@@ -13,6 +13,7 @@ class ItemReadModel {
     required this.description,
     required this.language,
     required this.imageUrl,
+    required this.completed,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -30,6 +31,7 @@ class ItemReadModel {
   final String description;
   final String language;
   final String imageUrl;
+  final bool completed;
   final DateTime createdAt;
   final DateTime updatedAt;
 }

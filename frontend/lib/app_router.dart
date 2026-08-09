@@ -14,9 +14,6 @@ import 'package:go_router/go_router.dart';
 
 const _publicRoutes = {'/login', '/signup'};
 
-// The default MaterialPageRoute transition (~300ms zoom/slide) reads as
-// sluggish for this app's snappy, keyboard-driven navigation, so every
-// route uses this shorter fade instead.
 CustomTransitionPage<void> _fastPage(GoRouterState state, Widget child) {
   return CustomTransitionPage<void>(
     key: state.pageKey,
