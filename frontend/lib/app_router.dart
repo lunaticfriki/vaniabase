@@ -88,8 +88,10 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
           ),
           GoRoute(
             path: '/tags',
-            pageBuilder: (context, state) =>
-                _fastPage(state, const TagsContainer()),
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              TagsContainer(initialTag: state.uri.queryParameters['tag']),
+            ),
           ),
           GoRoute(
             path: '/categories',

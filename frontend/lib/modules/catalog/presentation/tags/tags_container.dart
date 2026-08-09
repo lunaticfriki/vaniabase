@@ -8,7 +8,9 @@ import 'package:frontend/modules/catalog/presentation/tags/tags_view.dart';
 import 'package:go_router/go_router.dart';
 
 class TagsContainer extends StatefulWidget {
-  const TagsContainer({super.key});
+  const TagsContainer({this.initialTag, super.key});
+
+  final String? initialTag;
 
   @override
   State<TagsContainer> createState() => _TagsContainerState();
@@ -20,7 +22,7 @@ class _TagsContainerState extends State<TagsContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = TagsStateService(getIt<ItemReadService>());
+    _stateService = TagsStateService(getIt<ItemReadService>(), initialTag: widget.initialTag);
   }
 
   @override

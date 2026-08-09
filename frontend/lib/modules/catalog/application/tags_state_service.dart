@@ -4,11 +4,14 @@ import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/tags_state.dart';
 
 class TagsStateService extends Cubit<TagsState> {
-  TagsStateService(this._readService) : super(const TagsLoading()) {
+  TagsStateService(this._readService, {String? initialTag})
+    : _initialTag = initialTag,
+      super(const TagsLoading()) {
     _load();
   }
 
   final ItemReadService _readService;
+  final String? _initialTag;
 
   Future<void> _load() async {
     try {
@@ -21,7 +24,7 @@ class TagsStateService extends Cubit<TagsState> {
       }
       final tagCounts = counts.entries.map((entry) => TagCount(entry.key, entry.value)).toList()
         ..sort((a, b) => a.tag.compareTo(b.tag));
-      emit(TagsLoaded(tagCounts, items));
+      emit(TagsLoaded(tagCounts, items, selectedTag: _initialTag));
     } catch (error) {
       emit(TagsError(error.toString()));
     }

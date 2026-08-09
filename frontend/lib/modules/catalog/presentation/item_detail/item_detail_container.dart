@@ -54,6 +54,7 @@ class _ItemDetailContainerState extends State<ItemDetailContainer> {
             onBack: () => _goBack(context),
             onEdit: () => context.go('/items/${item.id}/edit'),
             onToggleCompleted: () => context.read<ItemDetailStateService>().toggleCompleted(),
+            onTagTap: (tag) => context.push('/tags?tag=${Uri.encodeQueryComponent(tag)}'),
           ),
         },
       ),

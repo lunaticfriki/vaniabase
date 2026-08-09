@@ -10,7 +10,13 @@ void main() {
   Widget buildApp() {
     return MaterialApp(
       home: Scaffold(
-        body: ItemDetailView(item: item, onBack: () {}, onEdit: () {}, onToggleCompleted: () {}),
+        body: ItemDetailView(
+          item: item,
+          onBack: () {},
+          onEdit: () {},
+          onToggleCompleted: () {},
+          onTagTap: (tag) {},
+        ),
       ),
     );
   }
@@ -67,6 +73,7 @@ void main() {
             onBack: () => backPressed = true,
             onEdit: () {},
             onToggleCompleted: () {},
+            onTagTap: (tag) {},
           ),
         ),
       ),
@@ -85,6 +92,7 @@ void main() {
             onBack: () {},
             onEdit: () {},
             onToggleCompleted: () => toggled = true,
+            onTagTap: (tag) {},
           ),
         ),
       ),
@@ -94,5 +102,25 @@ void main() {
 
     await tester.tap(find.text('Not completed'));
     expect(toggled, isTrue);
+  });
+
+  testWidgets('tapping a tag invokes onTagTap with that tag', (tester) async {
+    String? tappedTag;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ItemDetailView(
+            item: item,
+            onBack: () {},
+            onEdit: () {},
+            onToggleCompleted: () {},
+            onTagTap: (tag) => tappedTag = tag,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('sci-fi'));
+    expect(tappedTag, 'sci-fi');
   });
 }

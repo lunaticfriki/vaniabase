@@ -13,6 +13,7 @@ class ItemDetailView extends StatelessWidget {
     required this.onBack,
     required this.onEdit,
     required this.onToggleCompleted,
+    required this.onTagTap,
     super.key,
   });
 
@@ -20,6 +21,7 @@ class ItemDetailView extends StatelessWidget {
   final VoidCallback onBack;
   final VoidCallback onEdit;
   final VoidCallback onToggleCompleted;
+  final void Function(String tag) onTagTap;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,13 @@ class ItemDetailView extends StatelessWidget {
           children: [
             topRow,
             const SizedBox(height: 12),
-            Expanded(child: _WideLayout(item: item, onToggleCompleted: onToggleCompleted)),
+            Expanded(
+              child: _WideLayout(
+                item: item,
+                onToggleCompleted: onToggleCompleted,
+                onTagTap: onTagTap,
+              ),
+            ),
           ],
         ),
       );
@@ -61,7 +69,7 @@ class ItemDetailView extends StatelessWidget {
         children: [
           topRow,
           const SizedBox(height: 12),
-          _NarrowLayout(item: item, onToggleCompleted: onToggleCompleted),
+          _NarrowLayout(item: item, onToggleCompleted: onToggleCompleted, onTagTap: onTagTap),
         ],
       ),
     );
@@ -69,10 +77,11 @@ class ItemDetailView extends StatelessWidget {
 }
 
 class _WideLayout extends StatelessWidget {
-  const _WideLayout({required this.item, required this.onToggleCompleted});
+  const _WideLayout({required this.item, required this.onToggleCompleted, required this.onTagTap});
 
   final ItemReadModel item;
   final VoidCallback onToggleCompleted;
+  final void Function(String tag) onTagTap;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +97,7 @@ class _WideLayout extends StatelessWidget {
               children: [
                 _TitleAndCreator(item: item, onToggleCompleted: onToggleCompleted),
                 const SizedBox(height: 20),
-                _DetailFields(item: item),
+                _DetailFields(item: item, onTagTap: onTagTap),
               ],
             ),
           ),
@@ -99,10 +108,11 @@ class _WideLayout extends StatelessWidget {
 }
 
 class _NarrowLayout extends StatelessWidget {
-  const _NarrowLayout({required this.item, required this.onToggleCompleted});
+  const _NarrowLayout({required this.item, required this.onToggleCompleted, required this.onTagTap});
 
   final ItemReadModel item;
   final VoidCallback onToggleCompleted;
+  final void Function(String tag) onTagTap;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +128,7 @@ class _NarrowLayout extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        _DetailFields(item: item),
+        _DetailFields(item: item, onTagTap: onTagTap),
       ],
     );
   }
@@ -233,9 +243,10 @@ class _ItemImage extends StatelessWidget {
 }
 
 class _DetailFields extends StatelessWidget {
-  const _DetailFields({required this.item});
+  const _DetailFields({required this.item, required this.onTagTap});
 
   final ItemReadModel item;
+  final void Function(String tag) onTagTap;
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +272,10 @@ class _DetailFields extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: [for (final tag in item.tags) Chip(label: Text(tag))],
+            children: [
+              for (final tag in item.tags)
+                ActionChip(label: Text(tag), onPressed: () => onTagTap(tag)),
+            ],
           ),
         ],
         if (item.description.isNotEmpty) ...[
