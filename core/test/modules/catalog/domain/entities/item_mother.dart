@@ -8,6 +8,7 @@ import 'package:core/modules/catalog/domain/value_objects/item_tags.dart';
 import 'package:core/modules/catalog/domain/value_objects/language.dart';
 import 'package:core/modules/catalog/domain/value_objects/publication_year.dart';
 import 'package:core/modules/catalog/domain/value_objects/publisher.dart';
+import 'package:core/modules/catalog/domain/value_objects/reference.dart';
 import 'package:core/modules/catalog/domain/value_objects/tag.dart';
 import 'package:core/modules/catalog/domain/value_objects/title.dart';
 import 'package:core/modules/catalog/domain/value_objects/topic.dart';
@@ -33,6 +34,7 @@ class ItemMother {
       'A guide to pragmatic software development.',
     ),
     language: Language.create('en'),
+    reference: Reference.create('978-0135957059'),
     imageUrl: ImageUrl.create(
       'https://example.com/pragmatic-programmer.jpg',
     ),

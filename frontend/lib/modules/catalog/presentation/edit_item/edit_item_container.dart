@@ -67,6 +67,7 @@ class _EditItemContainerState extends State<EditItemContainer> {
               language: item.language,
               imageUrl: item.imageUrl,
               completed: item.completed,
+              reference: item.reference,
             ),
             onSubmit:
                 ({
@@ -83,6 +84,7 @@ class _EditItemContainerState extends State<EditItemContainer> {
                   imageBytes,
                   removeImage = false,
                   completed = false,
+                  reference,
                 }) => context.read<EditItemStateService>().submit(
                   title: title,
                   creator: creator,
@@ -97,6 +99,7 @@ class _EditItemContainerState extends State<EditItemContainer> {
                   imageBytes: imageBytes,
                   removeImage: removeImage,
                   completed: completed,
+                  reference: reference,
                 ),
             onCancel: () => context.go('/items/${item.id}'),
             onDelete: () => _confirmAndDelete(context),
@@ -119,6 +122,7 @@ class _EditItemContainerState extends State<EditItemContainer> {
               language: item.language,
               imageUrl: item.imageUrl,
               completed: item.completed,
+              reference: item.reference,
             ),
             onSubmit: ({
               required title,
@@ -134,6 +138,7 @@ class _EditItemContainerState extends State<EditItemContainer> {
               imageBytes,
               removeImage = false,
               completed = false,
+              reference,
             }) {},
             onCancel: () {},
           ),

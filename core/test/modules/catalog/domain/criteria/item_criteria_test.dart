@@ -1,4 +1,5 @@
 import 'package:core/modules/catalog/domain/criteria/item_criteria.dart';
+import 'package:core/modules/catalog/domain/search/search_term.dart';
 import 'package:core/shared/pagination/page_request.dart';
 import 'package:test/test.dart';
 
@@ -32,6 +33,22 @@ void main() {
       final b = ItemCriteria(
         ownerId: ownerId,
         pageRequest: PageRequest.create(page: 2, pageSize: 10),
+      );
+
+      expect(a == b, isFalse);
+    });
+
+    test('differs when search differs', () {
+      final ownerId = UserMother.random().id;
+
+      final a = ItemCriteria(
+        ownerId: ownerId,
+        pageRequest: PageRequest.create(page: 1, pageSize: 10),
+        search: SearchTerm.create('Dune'),
+      );
+      final b = ItemCriteria(
+        ownerId: ownerId,
+        pageRequest: PageRequest.create(page: 1, pageSize: 10),
       );
 
       expect(a == b, isFalse);

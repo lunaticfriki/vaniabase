@@ -1,5 +1,6 @@
 import 'package:core/modules/catalog/domain/entities/item.dart';
 import 'package:core/modules/catalog/domain/errors/invalid_format_for_category_error.dart';
+import 'package:core/modules/catalog/domain/search/search_term.dart';
 import 'package:core/modules/catalog/domain/value_objects/category.dart';
 import 'package:core/modules/catalog/domain/value_objects/creator.dart';
 import 'package:core/modules/catalog/domain/value_objects/format.dart';
@@ -10,6 +11,7 @@ import 'package:core/modules/catalog/domain/value_objects/item_tags.dart';
 import 'package:core/modules/catalog/domain/value_objects/language.dart';
 import 'package:core/modules/catalog/domain/value_objects/publication_year.dart';
 import 'package:core/modules/catalog/domain/value_objects/publisher.dart';
+import 'package:core/modules/catalog/domain/value_objects/reference.dart';
 import 'package:core/modules/catalog/domain/value_objects/title.dart';
 import 'package:core/modules/catalog/domain/value_objects/topic.dart';
 import 'package:core/modules/identity/domain/value_objects/user_id.dart';
@@ -158,6 +160,7 @@ void main() {
         year: PublicationYear.empty(),
         description: ItemDescription.empty(),
         language: Language.empty(),
+        reference: Reference.empty(),
         imageUrl: ImageUrl.empty(),
         createdAt: createdAt,
         updatedAt: updatedAt,
@@ -186,12 +189,31 @@ void main() {
           year: PublicationYear.empty(),
           description: ItemDescription.empty(),
           language: Language.empty(),
+          reference: Reference.empty(),
           imageUrl: ImageUrl.empty(),
           createdAt: Timestamp.now(),
           updatedAt: Timestamp.now(),
         ),
         throwsA(isA<InvalidFormatForCategoryError>()),
       );
+    });
+
+    test('matches is true when the search term is found in the title', () {
+      final item = ItemMother.book();
+
+      expect(item.matches(SearchTerm.create('Pragmatic')), isTrue);
+    });
+
+    test('matches is true when the search term is found in the creator', () {
+      final item = ItemMother.book();
+
+      expect(item.matches(SearchTerm.create('Andrew Hunt')), isTrue);
+    });
+
+    test('matches is false when the search term is found nowhere', () {
+      final item = ItemMother.book();
+
+      expect(item.matches(SearchTerm.create('nonexistent')), isFalse);
     });
   });
 }

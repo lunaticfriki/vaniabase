@@ -32,6 +32,7 @@ void main() {
     language: 'en',
     imageUrl: '',
     completed: false,
+    reference: '',
     createdAt: DateTime(2024),
     updatedAt: DateTime(2024),
   );
@@ -79,6 +80,7 @@ void main() {
             imageBytes: any(named: 'imageBytes'),
             removeImage: any(named: 'removeImage'),
             completed: any(named: 'completed'),
+            reference: any(named: 'reference'),
           ),
         ).thenAnswer((_) async {});
       },
@@ -115,6 +117,7 @@ void main() {
             imageBytes: any(named: 'imageBytes'),
             removeImage: any(named: 'removeImage'),
             completed: any(named: 'completed'),
+            reference: any(named: 'reference'),
           ),
         ).thenThrow(Exception('update failed'));
       },

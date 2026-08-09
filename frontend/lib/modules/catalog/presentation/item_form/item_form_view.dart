@@ -21,6 +21,7 @@ class ItemFormInitialValues {
     required this.language,
     required this.imageUrl,
     required this.completed,
+    required this.reference,
   });
 
   final String title;
@@ -35,6 +36,7 @@ class ItemFormInitialValues {
   final String language;
   final String imageUrl;
   final bool completed;
+  final String reference;
 }
 
 class ItemFormView extends StatefulWidget {
@@ -69,6 +71,7 @@ class ItemFormView extends StatefulWidget {
     Uint8List? imageBytes,
     bool removeImage,
     bool completed,
+    String? reference,
   })
   onSubmit;
   final VoidCallback onCancel;
@@ -88,6 +91,9 @@ class _ItemFormViewState extends State<ItemFormView> {
   );
   late final _publisherController = TextEditingController(
     text: widget.initial?.publisher,
+  );
+  late final _referenceController = TextEditingController(
+    text: widget.initial?.reference,
   );
   late final _tagsController = TextEditingController(
     text: widget.initial?.tags.join(', '),
@@ -118,6 +124,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     _titleController.dispose();
     _creatorController.dispose();
     _publisherController.dispose();
+    _referenceController.dispose();
     _tagsController.dispose();
     _topicController.dispose();
     _yearController.dispose();
@@ -193,6 +200,20 @@ class _ItemFormViewState extends State<ItemFormView> {
                     if (trimmed.isEmpty) return 'Publisher is required';
                     if (trimmed.length > 150)
                       return 'Publisher must be at most 150 characters';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _referenceController,
+                  decoration: const InputDecoration(
+                    labelText: 'Reference (optional)',
+                    helperText: 'ISBN or other reference number',
+                  ),
+                  validator: (value) {
+                    final trimmed = value?.trim() ?? '';
+                    if (trimmed.length > 50)
+                      return 'Reference must be at most 50 characters';
                     return null;
                   },
                 ),
@@ -403,6 +424,7 @@ class _ItemFormViewState extends State<ItemFormView> {
     final year = int.tryParse(_yearController.text.trim());
     final description = _descriptionController.text.trim();
     final language = _languageController.text.trim();
+    final reference = _referenceController.text.trim();
     widget.onSubmit(
       title: _titleController.text.trim(),
       creator: _parseNames(_creatorController.text),
@@ -417,6 +439,7 @@ class _ItemFormViewState extends State<ItemFormView> {
       imageBytes: _pickedImageBytes,
       removeImage: _imageRemoved,
       completed: _completed,
+      reference: reference.isEmpty ? null : reference,
     );
   }
 }

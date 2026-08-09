@@ -33,6 +33,8 @@ void main() {
             onNavigateHome: () {},
             onNavigateItems: () {},
             onNavigateCategories: () {},
+            onNavigateTags: () {},
+            onNavigateSearch: () {},
             onNavigateAddItem: () {},
             onLogout: () {},
           ),
@@ -50,10 +52,12 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('All items'), findsOneWidget);
-    expect(find.text('Add item'), findsOneWidget);
-    expect(find.widgetWithIcon(TextButton, Pixel.grid), findsOneWidget);
-    expect(find.widgetWithIcon(TextButton, Pixel.fileplus), findsOneWidget);
+    expect(find.text('All items'), findsNothing);
+    expect(find.widgetWithIcon(IconButton, Pixel.grid), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Pixel.bookmarks), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Pixel.label), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Pixel.search), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Pixel.fileplus), findsOneWidget);
     expect(find.byIcon(Pixel.menu), findsNothing);
   });
 
@@ -91,6 +95,8 @@ void main() {
               onNavigateHome: () => homeTapped = true,
               onNavigateItems: () {},
               onNavigateCategories: () {},
+              onNavigateTags: () {},
+              onNavigateSearch: () {},
               onNavigateAddItem: () {},
               onLogout: () {},
             ),

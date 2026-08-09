@@ -85,6 +85,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     String? language,
     Uint8List? imageBytes,
     bool completed = false,
+    String? reference,
   }) async {
     final doc = _items.doc();
     final imageUrl = imageBytes != null ? await _uploadImage(doc.id, imageBytes) : '';
@@ -102,6 +103,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
       'language': language ?? '',
       'image_url': imageUrl,
       'completed': completed,
+      'reference': reference ?? '',
       'created_at': FieldValue.serverTimestamp(),
       'updated_at': FieldValue.serverTimestamp(),
     });
@@ -124,6 +126,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     Uint8List? imageBytes,
     bool removeImage = false,
     bool? completed,
+    String? reference,
   }) async {
     String? imageUrl;
     if (imageBytes != null) {
@@ -145,6 +148,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
       'language': ?language,
       'image_url': ?imageUrl,
       'completed': ?completed,
+      'reference': ?reference,
       'updated_at': FieldValue.serverTimestamp(),
     });
   }

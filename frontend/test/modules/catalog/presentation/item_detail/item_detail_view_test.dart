@@ -9,7 +9,9 @@ void main() {
 
   Widget buildApp() {
     return MaterialApp(
-      home: Scaffold(body: ItemDetailView(item: item, onBack: () {}, onEdit: () {})),
+      home: Scaffold(
+        body: ItemDetailView(item: item, onBack: () {}, onEdit: () {}, onToggleCompleted: () {}),
+      ),
     );
   }
 
@@ -60,11 +62,37 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: ItemDetailView(item: item, onBack: () => backPressed = true, onEdit: () {}),
+          body: ItemDetailView(
+            item: item,
+            onBack: () => backPressed = true,
+            onEdit: () {},
+            onToggleCompleted: () {},
+          ),
         ),
       ),
     );
     await tester.tap(find.text('Back'));
     expect(backPressed, isTrue);
+  });
+
+  testWidgets('shows "Not completed" and toggles it on tap', (tester) async {
+    var toggled = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ItemDetailView(
+            item: item,
+            onBack: () {},
+            onEdit: () {},
+            onToggleCompleted: () => toggled = true,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Not completed'), findsOneWidget);
+
+    await tester.tap(find.text('Not completed'));
+    expect(toggled, isTrue);
   });
 }

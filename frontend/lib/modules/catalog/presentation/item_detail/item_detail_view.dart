@@ -12,12 +12,14 @@ class ItemDetailView extends StatelessWidget {
     required this.item,
     required this.onBack,
     required this.onEdit,
+    required this.onToggleCompleted,
     super.key,
   });
 
   final ItemReadModel item;
   final VoidCallback onBack;
   final VoidCallback onEdit;
+  final VoidCallback onToggleCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class ItemDetailView extends StatelessWidget {
           children: [
             topRow,
             const SizedBox(height: 12),
-            Expanded(child: _WideLayout(item: item)),
+            Expanded(child: _WideLayout(item: item, onToggleCompleted: onToggleCompleted)),
           ],
         ),
       );
@@ -59,7 +61,7 @@ class ItemDetailView extends StatelessWidget {
         children: [
           topRow,
           const SizedBox(height: 12),
-          _NarrowLayout(item: item),
+          _NarrowLayout(item: item, onToggleCompleted: onToggleCompleted),
         ],
       ),
     );
@@ -67,9 +69,10 @@ class ItemDetailView extends StatelessWidget {
 }
 
 class _WideLayout extends StatelessWidget {
-  const _WideLayout({required this.item});
+  const _WideLayout({required this.item, required this.onToggleCompleted});
 
   final ItemReadModel item;
+  final VoidCallback onToggleCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +86,7 @@ class _WideLayout extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _TitleAndCreator(item: item),
+                _TitleAndCreator(item: item, onToggleCompleted: onToggleCompleted),
                 const SizedBox(height: 20),
                 _DetailFields(item: item),
               ],
@@ -96,16 +99,17 @@ class _WideLayout extends StatelessWidget {
 }
 
 class _NarrowLayout extends StatelessWidget {
-  const _NarrowLayout({required this.item});
+  const _NarrowLayout({required this.item, required this.onToggleCompleted});
 
   final ItemReadModel item;
+  final VoidCallback onToggleCompleted;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _TitleAndCreator(item: item),
+        _TitleAndCreator(item: item, onToggleCompleted: onToggleCompleted),
         const SizedBox(height: 16),
         Center(
           child: ConstrainedBox(
@@ -121,9 +125,10 @@ class _NarrowLayout extends StatelessWidget {
 }
 
 class _TitleAndCreator extends StatelessWidget {
-  const _TitleAndCreator({required this.item});
+  const _TitleAndCreator({required this.item, required this.onToggleCompleted});
 
   final ItemReadModel item;
+  final VoidCallback onToggleCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -139,27 +144,29 @@ class _TitleAndCreator extends StatelessWidget {
           ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: 8),
-        _CompletedBadge(completed: item.completed),
+        _CompletedBadge(completed: item.completed, onTap: onToggleCompleted),
       ],
     );
   }
 }
 
 class _CompletedBadge extends StatelessWidget {
-  const _CompletedBadge({required this.completed});
+  const _CompletedBadge({required this.completed, required this.onTap});
 
   final bool completed;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Chip(
+    return ActionChip(
       avatar: Icon(
         completed ? Pixel.check : Pixel.clock,
         size: 16,
         color: completed ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
       ),
-      label: Text(completed ? 'Completed' : 'In progress'),
+      label: Text(completed ? 'Completed' : 'Not completed'),
+      onPressed: onTap,
       backgroundColor: completed ? colorScheme.primary : colorScheme.surfaceContainerHighest,
       labelStyle: TextStyle(color: completed ? colorScheme.onPrimary : colorScheme.onSurfaceVariant),
     );
@@ -236,6 +243,7 @@ class _DetailFields extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DetailRow(label: 'Publisher', value: item.publisher),
+        if (item.reference.isNotEmpty) _DetailRow(label: 'Reference', value: item.reference),
         _DetailRow(label: 'Category', value: categoryLabel(item.category)),
         _DetailRow(label: 'Format', value: formatLabel(item.format)),
         if (item.year > 0) _DetailRow(label: 'Year', value: '${item.year}'),

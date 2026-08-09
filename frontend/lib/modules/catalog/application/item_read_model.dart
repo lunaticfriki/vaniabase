@@ -14,6 +14,7 @@ class ItemReadModel {
     required this.language,
     required this.imageUrl,
     required this.completed,
+    required this.reference,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -32,6 +33,29 @@ class ItemReadModel {
   final String language;
   final String imageUrl;
   final bool completed;
+  final String reference;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  ItemReadModel copyWith({bool? completed}) {
+    return ItemReadModel(
+      id: id,
+      ownerId: ownerId,
+      title: title,
+      creator: creator,
+      publisher: publisher,
+      category: category,
+      format: format,
+      tags: tags,
+      topic: topic,
+      year: year,
+      description: description,
+      language: language,
+      imageUrl: imageUrl,
+      completed: completed ?? this.completed,
+      reference: reference,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
 }

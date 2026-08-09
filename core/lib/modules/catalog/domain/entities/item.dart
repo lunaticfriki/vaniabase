@@ -1,4 +1,5 @@
 import 'package:core/modules/catalog/domain/errors/invalid_format_for_category_error.dart';
+import 'package:core/modules/catalog/domain/search/search_term.dart';
 import 'package:core/modules/catalog/domain/services/item_format_policy.dart';
 import 'package:core/modules/catalog/domain/value_objects/category.dart';
 import 'package:core/modules/catalog/domain/value_objects/creator.dart';
@@ -10,6 +11,7 @@ import 'package:core/modules/catalog/domain/value_objects/item_tags.dart';
 import 'package:core/modules/catalog/domain/value_objects/language.dart';
 import 'package:core/modules/catalog/domain/value_objects/publication_year.dart';
 import 'package:core/modules/catalog/domain/value_objects/publisher.dart';
+import 'package:core/modules/catalog/domain/value_objects/reference.dart';
 import 'package:core/modules/catalog/domain/value_objects/title.dart';
 import 'package:core/modules/catalog/domain/value_objects/topic.dart';
 import 'package:core/modules/identity/domain/value_objects/user_id.dart';
@@ -30,6 +32,7 @@ class Item {
     this._year,
     this._description,
     this._language,
+    this._reference,
     this._imageUrl,
     this._updatedAt,
   );
@@ -46,6 +49,7 @@ class Item {
     PublicationYear? year,
     ItemDescription? description,
     Language? language,
+    Reference? reference,
     ImageUrl? imageUrl,
   }) {
     if (!ItemFormatPolicy.allows(category, format)) {
@@ -66,6 +70,7 @@ class Item {
       year ?? PublicationYear.empty(),
       description ?? ItemDescription.empty(),
       language ?? Language.empty(),
+      reference ?? Reference.empty(),
       imageUrl ?? ImageUrl.empty(),
       now,
     );
@@ -84,6 +89,7 @@ class Item {
     required PublicationYear year,
     required ItemDescription description,
     required Language language,
+    required Reference reference,
     required ImageUrl imageUrl,
     required Timestamp createdAt,
     required Timestamp updatedAt,
@@ -105,6 +111,7 @@ class Item {
       year,
       description,
       language,
+      reference,
       imageUrl,
       updatedAt,
     );
@@ -126,6 +133,7 @@ class Item {
       PublicationYear.empty(),
       ItemDescription.empty(),
       Language.empty(),
+      Reference.empty(),
       ImageUrl.empty(),
       now,
     );
@@ -145,6 +153,7 @@ class Item {
   PublicationYear _year;
   ItemDescription _description;
   Language _language;
+  Reference _reference;
   ImageUrl _imageUrl;
   Timestamp _updatedAt;
 
@@ -158,6 +167,7 @@ class Item {
   PublicationYear get year => _year;
   ItemDescription get description => _description;
   Language get language => _language;
+  Reference get reference => _reference;
   ImageUrl get imageUrl => _imageUrl;
   Timestamp get updatedAt => _updatedAt;
 
@@ -172,6 +182,7 @@ class Item {
     PublicationYear? year,
     ItemDescription? description,
     Language? language,
+    Reference? reference,
     ImageUrl? imageUrl,
   }) {
     final nextCategory = category ?? _category;
@@ -189,11 +200,23 @@ class Item {
     _year = year ?? _year;
     _description = description ?? _description;
     _language = language ?? _language;
+    _reference = reference ?? _reference;
     _imageUrl = imageUrl ?? _imageUrl;
     _updatedAt = Timestamp.now();
   }
 
   bool isOwnedBy(UserId userId) => ownerId == userId;
+
+  bool matches(SearchTerm term) {
+    return term.matchesAny([
+      _title.value,
+      _creator.displayName,
+      _publisher.value,
+      _topic.value,
+      _reference.value,
+      for (final tag in _tags.value) tag.value,
+    ]);
+  }
 
   @override
   bool operator ==(Object other) => other is Item && other.id == id;

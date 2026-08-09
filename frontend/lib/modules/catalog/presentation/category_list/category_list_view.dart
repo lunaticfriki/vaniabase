@@ -3,8 +3,9 @@ import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util
 import 'package:pixelarticons/pixel.dart';
 
 class CategoryListView extends StatelessWidget {
-  const CategoryListView({required this.onCategoryTap, super.key});
+  const CategoryListView({required this.previewImageUrls, required this.onCategoryTap, super.key});
 
+  final Map<String, List<String>> previewImageUrls;
   final void Function(String category) onCategoryTap;
 
   @override
@@ -22,19 +23,93 @@ class CategoryListView extends StatelessWidget {
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 final entry = categoryLabels.entries.elementAt(index);
-                return Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: ListTile(
-                    leading: const Icon(Pixel.grid),
-                    title: Text(entry.value),
-                    trailing: const Icon(Pixel.chevronright),
-                    onTap: () => onCategoryTap(entry.key),
-                  ),
+                return _CategoryTile(
+                  label: entry.value,
+                  previewImageUrls: previewImageUrls[entry.key] ?? const [],
+                  onTap: () => onCategoryTap(entry.key),
                 );
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CategoryTile extends StatelessWidget {
+  const _CategoryTile({required this.label, required this.previewImageUrls, required this.onTap});
+
+  final String label;
+  final List<String> previewImageUrls;
+  final VoidCallback onTap;
+
+  static const _thumbnailSize = 48.0;
+  static const _thumbnailSpacing = 8.0;
+  static const _reservedForLabel = 120.0;
+  static const _reservedForArrow = 36.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final availableForThumbnails = constraints.maxWidth - _reservedForLabel - _reservedForArrow;
+              final thumbnailsThatFit = ((availableForThumbnails + _thumbnailSpacing) /
+                      (_thumbnailSize + _thumbnailSpacing))
+                  .floor()
+                  .clamp(0, previewImageUrls.length);
+              final shownImageUrls = previewImageUrls.take(thumbnailsThatFit);
+
+              return Row(
+                children: [
+                  Expanded(child: Text(label, style: Theme.of(context).textTheme.titleMedium)),
+                  for (final imageUrl in shownImageUrls) ...[
+                    const SizedBox(width: _thumbnailSpacing),
+                    _CategoryPreviewThumbnail(imageUrl: imageUrl),
+                  ],
+                  const SizedBox(width: 12),
+                  const Icon(Pixel.chevronright),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryPreviewThumbnail extends StatelessWidget {
+  const _CategoryPreviewThumbnail({required this.imageUrl});
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(6),
+      child: SizedBox(
+        width: _CategoryTile._thumbnailSize,
+        height: _CategoryTile._thumbnailSize,
+        child: imageUrl.isEmpty
+            ? Container(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: const Icon(Pixel.imagebroken, size: 20),
+              )
+            : Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: const Icon(Pixel.imagebroken, size: 20),
+                ),
+              ),
       ),
     );
   }

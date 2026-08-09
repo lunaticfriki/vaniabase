@@ -5,6 +5,8 @@ import 'package:frontend/modules/catalog/presentation/edit_item/edit_item_contai
 import 'package:frontend/modules/catalog/presentation/home/home_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_container.dart';
+import 'package:frontend/modules/catalog/presentation/search/search_container.dart';
+import 'package:frontend/modules/catalog/presentation/tags/tags_container.dart';
 import 'package:frontend/modules/identity/presentation/login/login_container.dart';
 import 'package:frontend/modules/identity/presentation/signup/signup_container.dart';
 import 'package:frontend/shared/layout/app_shell_view.dart';
@@ -78,6 +80,16 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
               state,
               EditItemContainer(itemId: state.pathParameters['id']!),
             ),
+          ),
+          GoRoute(
+            path: '/search',
+            pageBuilder: (context, state) =>
+                _fastPage(state, const SearchContainer()),
+          ),
+          GoRoute(
+            path: '/tags',
+            pageBuilder: (context, state) =>
+                _fastPage(state, const TagsContainer()),
           ),
           GoRoute(
             path: '/categories',

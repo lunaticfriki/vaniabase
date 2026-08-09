@@ -14,6 +14,7 @@ abstract class ItemWriteService {
     String? language,
     Uint8List? imageBytes,
     bool completed = false,
+    String? reference,
   });
 
   Future<void> update({
@@ -31,6 +32,7 @@ abstract class ItemWriteService {
     Uint8List? imageBytes,
     bool removeImage = false,
     bool? completed,
+    String? reference,
   });
 
   Future<void> delete({required String id});

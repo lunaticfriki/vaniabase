@@ -20,6 +20,8 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     required this.onNavigateHome,
     required this.onNavigateItems,
     required this.onNavigateCategories,
+    required this.onNavigateTags,
+    required this.onNavigateSearch,
     required this.onNavigateAddItem,
     required this.onLogout,
     super.key,
@@ -28,6 +30,8 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onNavigateHome;
   final VoidCallback onNavigateItems;
   final VoidCallback onNavigateCategories;
+  final VoidCallback onNavigateTags;
+  final VoidCallback onNavigateSearch;
   final VoidCallback onNavigateAddItem;
   final VoidCallback onLogout;
 
@@ -45,6 +49,8 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     final navItems = [
       _NavItem(label: 'All items', icon: Pixel.grid, onTap: onNavigateItems),
       _NavItem(label: 'Categories', icon: Pixel.bookmarks, onTap: onNavigateCategories),
+      _NavItem(label: 'Tags', icon: Pixel.label, onTap: onNavigateTags),
+      _NavItem(label: 'Search', icon: Pixel.search, onTap: onNavigateSearch),
       _NavItem(label: 'Add item', icon: Pixel.fileplus, onTap: onNavigateAddItem),
     ];
 
@@ -54,11 +60,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
         ...isWide
             ? [
                 for (final item in navItems)
-                  TextButton.icon(
-                    onPressed: item.onTap,
-                    icon: Icon(item.icon),
-                    label: Text(item.label),
-                  ),
+                  IconButton(onPressed: item.onTap, icon: Icon(item.icon), tooltip: item.label),
               ]
             : [
                 PopupMenuButton<VoidCallback>(

@@ -4,6 +4,7 @@ import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_detail_state.dart';
 import 'package:frontend/modules/catalog/application/item_detail_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
+import 'package:frontend/modules/catalog/application/item_write_service.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_skeleton.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_view.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +25,11 @@ class _ItemDetailContainerState extends State<ItemDetailContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = ItemDetailStateService(getIt<ItemReadService>(), widget.itemId);
+    _stateService = ItemDetailStateService(
+      getIt<ItemReadService>(),
+      getIt<ItemWriteService>(),
+      widget.itemId,
+    );
   }
 
   @override
@@ -48,6 +53,7 @@ class _ItemDetailContainerState extends State<ItemDetailContainer> {
             item: item,
             onBack: () => _goBack(context),
             onEdit: () => context.go('/items/${item.id}/edit'),
+            onToggleCompleted: () => context.read<ItemDetailStateService>().toggleCompleted(),
           ),
         },
       ),

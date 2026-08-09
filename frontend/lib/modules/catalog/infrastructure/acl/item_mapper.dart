@@ -18,6 +18,7 @@ class ItemMapper {
       language: data['language'] as String? ?? '',
       imageUrl: data['image_url'] as String? ?? '',
       completed: data['completed'] as bool? ?? false,
+      reference: data['reference'] as String? ?? '',
       createdAt: (data['created_at'] as Timestamp).toDate(),
       updatedAt: (data['updated_at'] as Timestamp).toDate(),
     );
