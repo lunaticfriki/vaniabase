@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/publishers_state.dart';
 import 'package:frontend/modules/catalog/presentation/alphabet_index_view.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 
 class PublishersView extends StatelessWidget {
   const PublishersView({
@@ -68,15 +69,22 @@ class _PublishersBody extends StatelessWidget {
         :final selectedItems,
       ) =>
         SingleChildScrollView(
-          child: AlphabetIndexView(
-            entries: publishers,
-            selectedLetter: selectedLetter,
-            selectedEntry: selectedPublisher,
-            selectedItems: selectedItems,
-            onLetterTap: onLetterTap,
-            onEntryTap: onPublisherTap,
-            onItemTap: onItemTap,
-            entryNoun: 'publisher',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AlphabetIndexView(
+                entries: publishers,
+                selectedLetter: selectedLetter,
+                selectedEntry: selectedPublisher,
+                selectedItems: selectedItems,
+                onLetterTap: onLetterTap,
+                onEntryTap: onPublisherTap,
+                onItemTap: onItemTap,
+                entryNoun: 'publisher',
+              ),
+              const SizedBox(height: 24),
+              const AppFooterView(),
+            ],
           ),
         ),
     };

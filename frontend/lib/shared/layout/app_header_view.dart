@@ -70,7 +70,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     final isWide = MediaQuery.sizeOf(context).width >= navWideBreakpoint;
 
     final navItems = [
-      _NavItem(label: 'All items', icon: Pixel.grid, onTap: onNavigateItems),
+      _NavItem(label: 'Complete collection', icon: Pixel.grid, onTap: onNavigateItems),
       _NavItem(
         label: 'Categories',
         icon: Pixel.bookmarks,
@@ -145,7 +145,9 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
                           children: [
                             Icon(item.icon, size: 20),
                             const SizedBox(width: 12),
-                            Text(item.label),
+                            Flexible(
+                              child: Text(item.label, overflow: TextOverflow.ellipsis),
+                            ),
                           ],
                         ),
                       ),

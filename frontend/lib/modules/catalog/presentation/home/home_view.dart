@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
 
 class HomeView extends StatelessWidget {
@@ -22,10 +23,9 @@ class HomeView extends StatelessWidget {
             ),
           ),
         ),
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+        SliverPadding(
+          padding: const EdgeInsets.all(16),
+          sliver: SliverToBoxAdapter(
             child: Center(
               child: items.isEmpty
                   ? const Text('No items yet.')
@@ -37,6 +37,7 @@ class HomeView extends StatelessWidget {
             ),
           ),
         ),
+        const SliverToBoxAdapter(child: AppFooterView()),
       ],
     );
   }

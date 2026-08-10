@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class CategoryListView extends StatelessWidget {
@@ -18,17 +19,21 @@ class CategoryListView extends StatelessWidget {
           Text('Categories', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 12),
           Expanded(
-            child: ListView.separated(
-              itemCount: categoryLabels.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final entry = categoryLabels.entries.elementAt(index);
-                return _CategoryTile(
-                  label: entry.value,
-                  previewImageUrls: previewImageUrls[entry.key] ?? const [],
-                  onTap: () => onCategoryTap(entry.key),
-                );
-              },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (final entry in categoryLabels.entries) ...[
+                    _CategoryTile(
+                      label: entry.value,
+                      previewImageUrls: previewImageUrls[entry.key] ?? const [],
+                      onTap: () => onCategoryTap(entry.key),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  const SizedBox(height: 16),
+                  const AppFooterView(),
+                ],
+              ),
             ),
           ),
         ],

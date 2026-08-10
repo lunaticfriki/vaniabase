@@ -2,6 +2,7 @@ import 'package:core/shared/pagination/page_result.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
 import 'package:frontend/shared/pagination/pagination_control_view.dart';
 
@@ -36,17 +37,27 @@ class ItemListView extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: result.items.isEmpty
-                ? const Center(child: Text('No items yet.'))
-                : SingleChildScrollView(
-                    child: ResponsiveItemGrid<ItemReadModel>(
-                      items: result.items,
-                      itemBuilder: (context, item) => ItemCardView(
-                        item: item,
-                        onTap: () => onItemTap(item),
-                      ),
-                    ),
-                  ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  result.items.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 32),
+                          child: Center(child: Text('No items yet.')),
+                        )
+                      : ResponsiveItemGrid<ItemReadModel>(
+                          items: result.items,
+                          itemBuilder: (context, item) => ItemCardView(
+                            item: item,
+                            onTap: () => onItemTap(item),
+                          ),
+                        ),
+                  const SizedBox(height: 24),
+                  const AppFooterView(),
+                ],
+              ),
+            ),
           ),
           if (result.totalPages > 1) ...[
             const SizedBox(height: 12),

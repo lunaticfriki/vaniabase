@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/search_state.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
 import 'package:pixelarticons/pixel.dart';
 
@@ -58,15 +59,25 @@ class _SearchResults extends StatelessWidget {
       SearchIdle() => const Center(child: Text('Type to search your catalog.')),
       SearchInProgress() => const Center(child: CircularProgressIndicator()),
       SearchError(:final message) => Center(child: Text(message)),
-      SearchLoaded(:final query, :final items) => items.isEmpty
-          ? Center(child: Text('No results for "$query".'))
-          : SingleChildScrollView(
-              child: ResponsiveItemGrid<ItemReadModel>(
-                items: items,
-                itemBuilder: (context, item) =>
-                    ItemCardView(item: item, onTap: () => onItemTap(item)),
-              ),
-            ),
+      SearchLoaded(:final query, :final items) => SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            items.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
+                    child: Center(child: Text('No results for "$query".')),
+                  )
+                : ResponsiveItemGrid<ItemReadModel>(
+                    items: items,
+                    itemBuilder: (context, item) =>
+                        ItemCardView(item: item, onTap: () => onItemTap(item)),
+                  ),
+            const SizedBox(height: 24),
+            const AppFooterView(),
+          ],
+        ),
+      ),
     };
   }
 }

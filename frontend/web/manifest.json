@@ -1,6 +1,6 @@
 {
-    "name": "frontend",
-    "short_name": "frontend",
+    "name": "vaniabase",
+    "short_name": "vaniabase",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#fafafa",

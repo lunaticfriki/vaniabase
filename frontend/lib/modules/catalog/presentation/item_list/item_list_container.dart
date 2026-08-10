@@ -42,7 +42,7 @@ class _ItemListContainerState extends State<ItemListContainer> {
           ItemListLoading() => const ItemListSkeleton(),
           ItemListError(:final message) => Center(child: Text(message)),
           ItemListLoaded(:final result) => ItemListView(
-            title: widget.category == null ? 'All items' : categoryLabel(widget.category!),
+            title: widget.category == null ? 'Complete collection' : categoryLabel(widget.category!),
             result: result,
             onPrevious: () => context.read<ItemListStateService>().previousPage(),
             onNext: () => context.read<ItemListStateService>().nextPage(),

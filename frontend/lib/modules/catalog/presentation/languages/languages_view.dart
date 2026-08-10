@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/languages_state.dart';
 import 'package:frontend/modules/catalog/presentation/alphabet_index_view.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 
 class LanguagesView extends StatelessWidget {
   const LanguagesView({
@@ -68,15 +69,22 @@ class _LanguagesBody extends StatelessWidget {
         :final selectedItems,
       ) =>
         SingleChildScrollView(
-          child: AlphabetIndexView(
-            entries: languages,
-            selectedLetter: selectedLetter,
-            selectedEntry: selectedLanguage,
-            selectedItems: selectedItems,
-            onLetterTap: onLetterTap,
-            onEntryTap: onLanguageTap,
-            onItemTap: onItemTap,
-            entryNoun: 'language',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AlphabetIndexView(
+                entries: languages,
+                selectedLetter: selectedLetter,
+                selectedEntry: selectedLanguage,
+                selectedItems: selectedItems,
+                onLetterTap: onLetterTap,
+                onEntryTap: onLanguageTap,
+                onItemTap: onItemTap,
+                entryNoun: 'language',
+              ),
+              const SizedBox(height: 24),
+              const AppFooterView(),
+            ],
           ),
         ),
     };

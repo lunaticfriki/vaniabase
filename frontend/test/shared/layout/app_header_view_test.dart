@@ -59,7 +59,7 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('All items'), findsNothing);
+    expect(find.text('Complete collection'), findsNothing);
     expect(find.widgetWithIcon(IconButton, Pixel.grid), findsOneWidget);
     expect(find.widgetWithIcon(IconButton, Pixel.bookmarks), findsOneWidget);
     expect(find.widgetWithIcon(IconButton, Pixel.label), findsOneWidget);
@@ -78,13 +78,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Pixel.menu), findsOneWidget);
-    expect(find.text('All items'), findsNothing);
+    expect(find.text('Complete collection'), findsNothing);
     expect(find.text('Add item'), findsNothing);
 
     await tester.tap(find.byIcon(Pixel.menu));
     await tester.pumpAndSettle();
 
-    expect(find.text('All items'), findsOneWidget);
+    expect(find.text('Complete collection'), findsOneWidget);
     expect(find.text('Add item'), findsOneWidget);
   });
 

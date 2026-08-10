@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/authors_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/presentation/alphabet_index_view.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 
 class AuthorsView extends StatelessWidget {
   const AuthorsView({
@@ -66,15 +67,22 @@ class _AuthorsBody extends StatelessWidget {
         :final selectedItems,
       ) =>
         SingleChildScrollView(
-          child: AlphabetIndexView(
-            entries: authors,
-            selectedLetter: selectedLetter,
-            selectedEntry: selectedAuthor,
-            selectedItems: selectedItems,
-            onLetterTap: onLetterTap,
-            onEntryTap: onAuthorTap,
-            onItemTap: onItemTap,
-            entryNoun: 'author',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AlphabetIndexView(
+                entries: authors,
+                selectedLetter: selectedLetter,
+                selectedEntry: selectedAuthor,
+                selectedItems: selectedItems,
+                onLetterTap: onLetterTap,
+                onEntryTap: onAuthorTap,
+                onItemTap: onItemTap,
+                entryNoun: 'author',
+              ),
+              const SizedBox(height: 24),
+              const AppFooterView(),
+            ],
           ),
         ),
     };

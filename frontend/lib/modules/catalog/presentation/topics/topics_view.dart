@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/topics_state.dart';
 import 'package:frontend/modules/catalog/presentation/alphabet_index_view.dart';
+import 'package:frontend/shared/layout/app_footer_view.dart';
 
 class TopicsView extends StatelessWidget {
   const TopicsView({
@@ -61,15 +62,22 @@ class _TopicsBody extends StatelessWidget {
       TopicsLoaded(:final topics) when topics.isEmpty => const Center(child: Text('No topics yet.')),
       TopicsLoaded(:final topics, :final selectedLetter, :final selectedTopic, :final selectedItems) =>
         SingleChildScrollView(
-          child: AlphabetIndexView(
-            entries: topics,
-            selectedLetter: selectedLetter,
-            selectedEntry: selectedTopic,
-            selectedItems: selectedItems,
-            onLetterTap: onLetterTap,
-            onEntryTap: onTopicTap,
-            onItemTap: onItemTap,
-            entryNoun: 'topic',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AlphabetIndexView(
+                entries: topics,
+                selectedLetter: selectedLetter,
+                selectedEntry: selectedTopic,
+                selectedItems: selectedItems,
+                onLetterTap: onLetterTap,
+                onEntryTap: onTopicTap,
+                onItemTap: onItemTap,
+                entryNoun: 'topic',
+              ),
+              const SizedBox(height: 24),
+              const AppFooterView(),
+            ],
           ),
         ),
     };

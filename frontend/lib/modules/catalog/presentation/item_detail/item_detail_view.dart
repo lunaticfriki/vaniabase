@@ -6,6 +6,7 @@ import 'package:pixelarticons/pixel.dart';
 const itemDetailWideBreakpoint = 700.0;
 
 const itemDetailImageKey = Key('itemDetailImage');
+const itemDetailHeaderKey = Key('itemDetailHeader');
 
 class ItemDetailView extends StatelessWidget {
   const ItemDetailView({
@@ -26,60 +27,174 @@ class ItemDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.sizeOf(context).width >= itemDetailWideBreakpoint;
-    final topRow = Row(
-      children: [
-        TextButton.icon(
-          onPressed: onBack,
-          icon: const Icon(Pixel.arrowleft),
-          label: const Text('Back'),
-        ),
-        const Spacer(),
-        TextButton.icon(
-          onPressed: onEdit,
-          icon: const Icon(Pixel.edit),
-          label: const Text('Edit'),
-        ),
-      ],
-    );
 
     if (isWide) {
       return Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            topRow,
-            const SizedBox(height: 12),
-            Expanded(
-              child: _WideLayout(
-                item: item,
-                onToggleCompleted: onToggleCompleted,
-                onTagTap: onTagTap,
-              ),
-            ),
-          ],
+        child: _WideLayout(
+          item: item,
+          onBack: onBack,
+          onEdit: onEdit,
+          onToggleCompleted: onToggleCompleted,
+          onTagTap: onTagTap,
         ),
       );
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          topRow,
-          const SizedBox(height: 12),
-          _NarrowLayout(item: item, onToggleCompleted: onToggleCompleted, onTagTap: onTagTap),
-        ],
+    return _NarrowItemDetail(
+      item: item,
+      onBack: onBack,
+      onEdit: onEdit,
+      onToggleCompleted: onToggleCompleted,
+      onTagTap: onTagTap,
+    );
+  }
+}
+
+class _NarrowItemDetail extends StatefulWidget {
+  const _NarrowItemDetail({
+    required this.item,
+    required this.onBack,
+    required this.onEdit,
+    required this.onToggleCompleted,
+    required this.onTagTap,
+  });
+
+  final ItemReadModel item;
+  final VoidCallback onBack;
+  final VoidCallback onEdit;
+  final VoidCallback onToggleCompleted;
+  final void Function(String tag) onTagTap;
+
+  @override
+  State<_NarrowItemDetail> createState() => _NarrowItemDetailState();
+}
+
+class _NarrowItemDetailState extends State<_NarrowItemDetail> {
+  static const _headerFadeDistance = 120.0;
+
+  final _scrollController = ScrollController();
+  double _headerOpacity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final opacity = (_scrollController.offset / _headerFadeDistance).clamp(0.0, 1.0);
+    if (opacity != _headerOpacity) setState(() => _headerOpacity = opacity);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    height: constraints.maxHeight,
+                    child: _ItemHeroImage(item: widget.item),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _NarrowLayout(
+                      item: widget.item,
+                      onToggleCompleted: widget.onToggleCompleted,
+                      onTagTap: widget.onTagTap,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                key: itemDetailHeaderKey,
+                padding: EdgeInsets.only(
+                  top: MediaQuery.paddingOf(context).top,
+                  left: 4,
+                  right: 4,
+                  bottom: 4,
+                ),
+                color: colorScheme.surface.withValues(alpha: _headerOpacity),
+                child: Row(
+                  children: [
+                    _OverlayIconButton(icon: Pixel.arrowleft, label: 'Back', onTap: widget.onBack),
+                    const Spacer(),
+                    _OverlayIconButton(icon: Pixel.edit, label: 'Edit', onTap: widget.onEdit),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _OverlayIconButton extends StatelessWidget {
+  const _OverlayIconButton({required this.icon, required this.label, required this.onTap});
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Material(
+        color: Colors.black.withValues(alpha: 0.35),
+        shape: const StadiumBorder(),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 18, color: Colors.white),
+                const SizedBox(width: 6),
+                Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
 class _WideLayout extends StatelessWidget {
-  const _WideLayout({required this.item, required this.onToggleCompleted, required this.onTagTap});
+  const _WideLayout({
+    required this.item,
+    required this.onBack,
+    required this.onEdit,
+    required this.onToggleCompleted,
+    required this.onTagTap,
+  });
 
   final ItemReadModel item;
+  final VoidCallback onBack;
+  final VoidCallback onEdit;
   final VoidCallback onToggleCompleted;
   final void Function(String tag) onTagTap;
 
@@ -88,14 +203,30 @@ class _WideLayout extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(child: _ItemImageFill(imageUrl: item.imageUrl)),
+        Expanded(child: _ItemHeroImage(item: item)),
         const SizedBox(width: 40),
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _TitleAndCreator(item: item, onToggleCompleted: onToggleCompleted),
+                Row(
+                  children: [
+                    TextButton.icon(
+                      onPressed: onBack,
+                      icon: const Icon(Pixel.arrowleft),
+                      label: const Text('Back'),
+                    ),
+                    const Spacer(),
+                    TextButton.icon(
+                      onPressed: onEdit,
+                      icon: const Icon(Pixel.edit),
+                      label: const Text('Edit'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _CompletedBadge(completed: item.completed, onTap: onToggleCompleted),
                 const SizedBox(height: 20),
                 _DetailFields(item: item, onTagTap: onTagTap),
               ],
@@ -119,14 +250,7 @@ class _NarrowLayout extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _TitleAndCreator(item: item, onToggleCompleted: onToggleCompleted),
-        const SizedBox(height: 16),
-        Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 280),
-            child: _ItemImage(imageUrl: item.imageUrl),
-          ),
-        ),
+        _CompletedBadge(completed: item.completed, onTap: onToggleCompleted),
         const SizedBox(height: 16),
         _DetailFields(item: item, onTagTap: onTagTap),
       ],
@@ -134,27 +258,55 @@ class _NarrowLayout extends StatelessWidget {
   }
 }
 
-class _TitleAndCreator extends StatelessWidget {
-  const _TitleAndCreator({required this.item, required this.onToggleCompleted});
+class _ItemHeroImage extends StatelessWidget {
+  const _ItemHeroImage({required this.item});
 
   final ItemReadModel item;
-  final VoidCallback onToggleCompleted;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      fit: StackFit.expand,
       children: [
-        Text(item.title, style: Theme.of(context).textTheme.headlineMedium),
-        const SizedBox(height: 4),
-        Text(
-          item.creator.join(', '),
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+        _ItemImageFill(imageUrl: item.imageUrl),
+        Positioned.fill(
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.55, 1],
+                  colors: [Colors.transparent, Colors.black.withValues(alpha: 0.75)],
+                ),
+              ),
+            ),
+          ),
         ),
-        const SizedBox(height: 8),
-        _CompletedBadge(completed: item.completed, onTap: onToggleCompleted),
+        Positioned(
+          left: 16,
+          right: 16,
+          bottom: 16,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.title,
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              if (item.creator.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  item.creator.join(', '),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white70),
+                ),
+              ],
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -208,36 +360,6 @@ class _ItemImageFill extends StatelessWidget {
                 child: const Icon(Pixel.imagebroken, size: 48),
               ),
             ),
-    );
-  }
-}
-
-class _ItemImage extends StatelessWidget {
-  const _ItemImage({required this.imageUrl});
-
-  final String imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      key: itemDetailImageKey,
-      borderRadius: BorderRadius.circular(8),
-      child: AspectRatio(
-        aspectRatio: 3 / 4,
-        child: imageUrl.isEmpty
-            ? Container(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                child: const Icon(Pixel.imagebroken),
-              )
-            : Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: const Icon(Pixel.imagebroken),
-                ),
-              ),
-      ),
     );
   }
 }
