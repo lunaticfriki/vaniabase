@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/presentation/item_detail/fullscreen_image_view.dart';
+import 'package:frontend/shared/layout/overlay_icon_button.dart';
 import 'package:pixelarticons/pixel.dart';
 
 const itemDetailWideBreakpoint = 700.0;
@@ -135,9 +137,9 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
                 color: colorScheme.surface.withValues(alpha: _headerOpacity),
                 child: Row(
                   children: [
-                    _OverlayIconButton(icon: Pixel.arrowleft, label: 'Back', onTap: widget.onBack),
+                    OverlayIconButton(icon: Pixel.arrowleft, label: 'Back', onTap: widget.onBack),
                     const Spacer(),
-                    _OverlayIconButton(icon: Pixel.edit, label: 'Edit', onTap: widget.onEdit),
+                    OverlayIconButton(icon: Pixel.edit, label: 'Edit', onTap: widget.onEdit),
                   ],
                 ),
               ),
@@ -145,40 +147,6 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
           ],
         );
       },
-    );
-  }
-}
-
-class _OverlayIconButton extends StatelessWidget {
-  const _OverlayIconButton({required this.icon, required this.label, required this.onTap});
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4),
-      child: Material(
-        color: Colors.black.withValues(alpha: 0.35),
-        shape: const StadiumBorder(),
-        child: InkWell(
-          customBorder: const StadiumBorder(),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 18, color: Colors.white),
-                const SizedBox(width: 6),
-                Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -265,49 +233,52 @@ class _ItemHeroImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        _ItemImageFill(imageUrl: item.imageUrl),
-        Positioned.fill(
-          child: IgnorePointer(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0.55, 1],
-                  colors: [Colors.transparent, Colors.black.withValues(alpha: 0.75)],
+    return GestureDetector(
+      onTap: item.imageUrl.isEmpty ? null : () => openFullscreenImage(context, item.imageUrl),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _ItemImageFill(imageUrl: item.imageUrl),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.55, 1],
+                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.75)],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          left: 16,
-          right: 16,
-          bottom: 16,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.title,
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              if (item.creator.isNotEmpty) ...[
-                const SizedBox(height: 4),
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 16,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  item.creator.join(', '),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white70),
+                  item.title,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
+                if (item.creator.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    item.creator.join(', '),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white70),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

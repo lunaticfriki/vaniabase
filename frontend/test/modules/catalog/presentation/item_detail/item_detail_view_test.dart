@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/modules/catalog/presentation/item_detail/fullscreen_image_view.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_view.dart';
 
 import '../../application/item_read_model_mother.dart';
@@ -128,6 +129,18 @@ void main() {
 
     final headerAfter = tester.widget<Container>(find.byKey(itemDetailHeaderKey));
     expect((headerAfter.color as Color).a, greaterThan(0.9));
+  });
+
+  testWidgets('tapping the cover image opens the fullscreen image viewer', (tester) async {
+    await tester.pumpWidget(buildApp());
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FullscreenImageView), findsNothing);
+
+    await tester.tap(find.byKey(itemDetailImageKey));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FullscreenImageView), findsOneWidget);
   });
 
   testWidgets('back button invokes onBack', (tester) async {
