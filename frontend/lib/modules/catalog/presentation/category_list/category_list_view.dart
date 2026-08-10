@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class CategoryListView extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:csv/csv.dart';
 import 'package:frontend/modules/catalog/application/bulk_import_row.dart';
-import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
 
 final _languageCodePattern = RegExp(r'^[a-zA-Z]{2}$');

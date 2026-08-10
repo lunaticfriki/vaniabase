@@ -4,7 +4,7 @@ import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/categories_state.dart';
 import 'package:frontend/modules/catalog/application/categories_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:frontend/modules/catalog/presentation/category_list/category_list_view.dart';
 import 'package:go_router/go_router.dart';
 

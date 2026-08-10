@@ -8,7 +8,11 @@ import 'package:pixelarticons/pixel.dart';
 const navWideBreakpoint = 640.0;
 
 class _NavItem {
-  const _NavItem({required this.label, required this.icon, required this.onTap});
+  const _NavItem({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
 
   final String label;
   final IconData icon;
@@ -67,19 +71,35 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
 
     final navItems = [
       _NavItem(label: 'All items', icon: Pixel.grid, onTap: onNavigateItems),
-      _NavItem(label: 'Categories', icon: Pixel.bookmarks, onTap: onNavigateCategories),
+      _NavItem(
+        label: 'Categories',
+        icon: Pixel.bookmarks,
+        onTap: onNavigateCategories,
+      ),
       _NavItem(label: 'Tags', icon: Pixel.label, onTap: onNavigateTags),
       _NavItem(label: 'Topics', icon: Pixel.note, onTap: onNavigateTopics),
       _NavItem(label: 'Authors', icon: Pixel.user, onTap: onNavigateAuthors),
-      _NavItem(label: 'Languages', icon: Pixel.flag, onTap: onNavigateLanguages),
-      _NavItem(label: 'Publishers', icon: Pixel.building, onTap: onNavigatePublishers),
+      _NavItem(
+        label: 'Languages',
+        icon: Pixel.flag,
+        onTap: onNavigateLanguages,
+      ),
+      _NavItem(
+        label: 'Publishers',
+        icon: Pixel.building,
+        onTap: onNavigatePublishers,
+      ),
       _NavItem(label: 'Search', icon: Pixel.search, onTap: onNavigateSearch),
-      _NavItem(label: 'Add item', icon: Pixel.fileplus, onTap: onNavigateAddItem),
+      _NavItem(
+        label: 'Add item',
+        icon: Pixel.fileplus,
+        onTap: onNavigateAddItem,
+      ),
       _NavItem(label: 'Import', icon: Pixel.upload, onTap: onNavigateImport),
     ];
 
     return AppBar(
-      title: InkWell(onTap: onNavigateHome, child: const Text('vaniabase')),
+      title: InkWell(onTap: onNavigateHome, child: const Text('VANIABASE')),
       actions: [
         if (greetingName != null && isWide)
           Padding(
@@ -96,7 +116,11 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
         ...isWide
             ? [
                 for (final item in navItems)
-                  IconButton(onPressed: item.onTap, icon: Icon(item.icon), tooltip: item.label),
+                  IconButton(
+                    onPressed: item.onTap,
+                    icon: Icon(item.icon),
+                    tooltip: item.label,
+                  ),
               ]
             : [
                 PopupMenuButton<VoidCallback>(

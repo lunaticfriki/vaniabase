@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pixelarticons/pixel.dart';
 

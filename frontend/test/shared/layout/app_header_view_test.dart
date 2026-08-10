@@ -117,7 +117,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('vaniabase'));
+    await tester.tap(find.text('VANIABASE'));
     expect(homeTapped, isTrue);
   });
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
-import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class ItemCardView extends StatelessWidget {

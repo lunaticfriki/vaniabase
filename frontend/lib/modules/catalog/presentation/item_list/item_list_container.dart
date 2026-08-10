@@ -4,7 +4,7 @@ import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_list_state.dart';
 import 'package:frontend/modules/catalog/application/item_list_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/presentation/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_skeleton.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_view.dart';
 import 'package:go_router/go_router.dart';
