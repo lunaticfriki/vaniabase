@@ -7,6 +7,46 @@ import 'package:pixelarticons/pixel.dart';
 
 const navWideBreakpoint = 640.0;
 
+Future<void> _showResponsiveMenu(
+  BuildContext context, {
+  required List<_NavItem> navItems,
+  required String? greetingName,
+}) async {
+  final width = MediaQuery.sizeOf(context).width;
+  final top = MediaQuery.paddingOf(context).top + kToolbarHeight;
+  final onTap = await showMenu<VoidCallback>(
+    context: context,
+    position: RelativeRect.fromLTRB(0, top, 0, 0),
+    constraints: BoxConstraints(minWidth: width, maxWidth: width),
+    items: [
+      if (greetingName != null) ...[
+        PopupMenuItem<VoidCallback>(
+          enabled: false,
+          child: Text(
+            'Hi, $greetingName!',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ),
+        const PopupMenuDivider(),
+      ],
+      for (final item in navItems)
+        PopupMenuItem<VoidCallback>(
+          value: item.onTap,
+          child: Row(
+            children: [
+              Icon(item.icon, size: 20),
+              const SizedBox(width: 12),
+              Flexible(
+                child: Text(item.label, overflow: TextOverflow.ellipsis),
+              ),
+            ],
+          ),
+        ),
+    ],
+  );
+  onTap?.call();
+}
+
 class _NavItem {
   const _NavItem({
     required this.label,
@@ -123,35 +163,16 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
                   ),
               ]
             : [
-                PopupMenuButton<VoidCallback>(
-                  icon: const Icon(Pixel.menu),
-                  tooltip: 'Menu',
-                  onSelected: (onTap) => onTap(),
-                  itemBuilder: (context) => [
-                    if (greetingName != null) ...[
-                      PopupMenuItem<VoidCallback>(
-                        enabled: false,
-                        child: Text(
-                          'Hi, $greetingName!',
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ),
-                      const PopupMenuDivider(),
-                    ],
-                    for (final item in navItems)
-                      PopupMenuItem<VoidCallback>(
-                        value: item.onTap,
-                        child: Row(
-                          children: [
-                            Icon(item.icon, size: 20),
-                            const SizedBox(width: 12),
-                            Flexible(
-                              child: Text(item.label, overflow: TextOverflow.ellipsis),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: const Icon(Pixel.menu),
+                    tooltip: 'Menu',
+                    onPressed: () => _showResponsiveMenu(
+                      context,
+                      navItems: navItems,
+                      greetingName: greetingName,
+                    ),
+                  ),
                 ),
               ],
         IconButton(
