@@ -84,11 +84,14 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     String? description,
     String? language,
     Uint8List? imageBytes,
+    String? imageUrl,
     bool completed = false,
     String? reference,
   }) async {
     final doc = _items.doc();
-    final imageUrl = imageBytes != null ? await _uploadImage(doc.id, imageBytes) : '';
+    final resolvedImageUrl = imageBytes != null
+        ? await _uploadImage(doc.id, imageBytes)
+        : (imageUrl ?? '');
     await doc.set({
       'owner_id': _uid,
       'title': title,
@@ -101,7 +104,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
       'year': year ?? 0,
       'description': description ?? '',
       'language': language ?? '',
-      'image_url': imageUrl,
+      'image_url': resolvedImageUrl,
       'completed': completed,
       'reference': reference ?? '',
       'created_at': FieldValue.serverTimestamp(),

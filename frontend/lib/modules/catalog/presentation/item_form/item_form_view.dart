@@ -115,6 +115,8 @@ class _ItemFormViewState extends State<ItemFormView> {
 
   late String? _category = widget.initial?.category;
   late String? _format = widget.initial?.format;
+  String? _categoryError;
+  String? _formatError;
   late bool _completed = widget.initial?.completed ?? false;
   Uint8List? _pickedImageBytes;
   bool _imageRemoved = false;
@@ -218,34 +220,42 @@ class _ItemFormViewState extends State<ItemFormView> {
                   },
                 ),
                 const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  initialValue: _category,
-                  decoration: const InputDecoration(labelText: 'Category'),
-                  items: [
-                    for (final entry in categoryLabels.entries)
-                      DropdownMenuItem(
-                        value: entry.key,
-                        child: Text(entry.value),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownMenu<String>(
+                        initialSelection: _category,
+                        label: const Text('Category'),
+                        errorText: _categoryError,
+                        expandedInsets: EdgeInsets.zero,
+                        dropdownMenuEntries: [
+                          for (final entry in categoryLabels.entries)
+                            DropdownMenuEntry(value: entry.key, label: entry.value),
+                        ],
+                        onSelected: (value) => setState(() {
+                          _category = value;
+                          _categoryError = null;
+                        }),
                       ),
-                  ],
-                  onChanged: (value) => setState(() => _category = value),
-                  validator: (value) =>
-                      value == null ? 'Category is required' : null,
-                ),
-                const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  initialValue: _format,
-                  decoration: const InputDecoration(labelText: 'Format'),
-                  items: [
-                    for (final entry in formatLabels.entries)
-                      DropdownMenuItem(
-                        value: entry.key,
-                        child: Text(entry.value),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: DropdownMenu<String>(
+                        initialSelection: _format,
+                        label: const Text('Format'),
+                        errorText: _formatError,
+                        expandedInsets: EdgeInsets.zero,
+                        dropdownMenuEntries: [
+                          for (final entry in formatLabels.entries)
+                            DropdownMenuEntry(value: entry.key, label: entry.value),
+                        ],
+                        onSelected: (value) => setState(() {
+                          _format = value;
+                          _formatError = null;
+                        }),
                       ),
+                    ),
                   ],
-                  onChanged: (value) => setState(() => _format = value),
-                  validator: (value) =>
-                      value == null ? 'Format is required' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -418,7 +428,12 @@ class _ItemFormViewState extends State<ItemFormView> {
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+    final isFormValid = _formKey.currentState!.validate();
+    setState(() {
+      _categoryError = _category == null ? 'Category is required' : null;
+      _formatError = _format == null ? 'Format is required' : null;
+    });
+    if (!isFormValid || _category == null || _format == null) return;
     final tags = _parseTags(_tagsController.text);
     final topic = _topicController.text.trim();
     final year = int.tryParse(_yearController.text.trim());

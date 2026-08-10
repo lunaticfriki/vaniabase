@@ -27,6 +27,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     required this.onNavigatePublishers,
     required this.onNavigateSearch,
     required this.onNavigateAddItem,
+    required this.onNavigateImport,
     required this.onLogout,
     super.key,
   });
@@ -41,6 +42,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onNavigatePublishers;
   final VoidCallback onNavigateSearch;
   final VoidCallback onNavigateAddItem;
+  final VoidCallback onNavigateImport;
   final VoidCallback onLogout;
 
   @override
@@ -73,6 +75,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
       _NavItem(label: 'Publishers', icon: Pixel.building, onTap: onNavigatePublishers),
       _NavItem(label: 'Search', icon: Pixel.search, onTap: onNavigateSearch),
       _NavItem(label: 'Add item', icon: Pixel.fileplus, onTap: onNavigateAddItem),
+      _NavItem(label: 'Import', icon: Pixel.upload, onTap: onNavigateImport),
     ];
 
     return AppBar(
@@ -101,6 +104,16 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
                   tooltip: 'Menu',
                   onSelected: (onTap) => onTap(),
                   itemBuilder: (context) => [
+                    if (greetingName != null) ...[
+                      PopupMenuItem<VoidCallback>(
+                        enabled: false,
+                        child: Text(
+                          'Hi, $greetingName!',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      ),
+                      const PopupMenuDivider(),
+                    ],
                     for (final item in navItems)
                       PopupMenuItem<VoidCallback>(
                         value: item.onTap,

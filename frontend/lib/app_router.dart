@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/presentation/add_item/add_item_container.dart';
 import 'package:frontend/modules/catalog/presentation/authors/authors_container.dart';
+import 'package:frontend/modules/catalog/presentation/bulk_import/bulk_import_container.dart';
 import 'package:frontend/modules/catalog/presentation/category_list/category_list_container.dart';
 import 'package:frontend/modules/catalog/presentation/edit_item/edit_item_container.dart';
 import 'package:frontend/modules/catalog/presentation/home/home_container.dart';
@@ -70,6 +71,11 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
             path: '/items/new',
             pageBuilder: (context, state) =>
                 _fastPage(state, const AddItemContainer()),
+          ),
+          GoRoute(
+            path: '/items/import',
+            pageBuilder: (context, state) =>
+                _fastPage(state, const BulkImportContainer()),
           ),
           GoRoute(
             path: '/items/:id',

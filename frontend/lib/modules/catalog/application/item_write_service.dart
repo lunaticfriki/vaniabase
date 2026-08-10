@@ -13,6 +13,7 @@ abstract class ItemWriteService {
     String? description,
     String? language,
     Uint8List? imageBytes,
+    String? imageUrl,
     bool completed = false,
     String? reference,
   });

@@ -42,6 +42,7 @@ void main() {
             onNavigatePublishers: () {},
             onNavigateSearch: () {},
             onNavigateAddItem: () {},
+            onNavigateImport: () {},
             onLogout: () {},
           ),
         ),
@@ -108,6 +109,7 @@ void main() {
               onNavigatePublishers: () {},
               onNavigateSearch: () {},
               onNavigateAddItem: () {},
+              onNavigateImport: () {},
               onLogout: () {},
             ),
           ),
@@ -119,43 +121,72 @@ void main() {
     expect(homeTapped, isTrue);
   });
 
-  testWidgets('shows a salutation with the signed-in user\'s name before the menu', (tester) async {
+  SessionStateService authenticatedSession({String? displayName, String? email}) {
     final firebaseAuth = MockFirebaseAuth();
     final user = MockUser();
     when(() => user.uid).thenReturn('user-1');
-    when(() => user.email).thenReturn('jane@example.com');
-    when(() => user.displayName).thenReturn('Jane');
+    when(() => user.email).thenReturn(email ?? 'jane@example.com');
+    when(() => user.displayName).thenReturn(displayName ?? 'Jane');
     when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(user));
-    final authenticatedSession = SessionStateService(firebaseAuth);
-    addTearDown(authenticatedSession.close);
+    return SessionStateService(firebaseAuth);
+  }
 
-    await tester.pumpWidget(
-      MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: authenticatedSession),
-          BlocProvider.value(value: theme),
-        ],
-        child: MaterialApp(
-          home: Scaffold(
-            appBar: AppHeaderView(
-              onNavigateHome: () {},
-              onNavigateItems: () {},
-              onNavigateCategories: () {},
-              onNavigateTags: () {},
-              onNavigateTopics: () {},
-              onNavigateAuthors: () {},
-              onNavigateLanguages: () {},
-              onNavigatePublishers: () {},
-              onNavigateSearch: () {},
-              onNavigateAddItem: () {},
-              onLogout: () {},
-            ),
+  Widget buildAuthenticatedApp(SessionStateService authenticatedSession) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: authenticatedSession),
+        BlocProvider.value(value: theme),
+      ],
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: AppHeaderView(
+            onNavigateHome: () {},
+            onNavigateItems: () {},
+            onNavigateCategories: () {},
+            onNavigateTags: () {},
+            onNavigateTopics: () {},
+            onNavigateAuthors: () {},
+            onNavigateLanguages: () {},
+            onNavigatePublishers: () {},
+            onNavigateSearch: () {},
+            onNavigateAddItem: () {},
+            onNavigateImport: () {},
+            onLogout: () {},
           ),
         ),
       ),
     );
+  }
+
+  testWidgets('shows a salutation with the signed-in user\'s name before the menu', (tester) async {
+    final session = authenticatedSession();
+    addTearDown(session.close);
+
+    await tester.pumpWidget(buildAuthenticatedApp(session));
     await tester.pumpAndSettle();
 
     expect(find.text('Hi, Jane!'), findsOneWidget);
+  });
+
+  testWidgets('narrow screen: salutation appears in full inside the hamburger menu', (tester) async {
+    tester.view.physicalSize = const Size(375, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final session = authenticatedSession(displayName: 'Alexandra');
+    addTearDown(session.close);
+
+    await tester.pumpWidget(buildAuthenticatedApp(session));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Hi, Alexandra!'), findsNothing);
+
+    await tester.tap(find.byIcon(Pixel.menu));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Hi, Alexandra!'), findsOneWidget);
   });
 }

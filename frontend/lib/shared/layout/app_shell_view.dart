@@ -24,6 +24,7 @@ class AppShellView extends StatelessWidget {
         onNavigatePublishers: () => context.go('/publishers'),
         onNavigateSearch: () => context.go('/search'),
         onNavigateAddItem: () => context.go('/items/new'),
+        onNavigateImport: () => context.go('/items/import'),
         onLogout: () async {
           await context.read<SessionStateService>().clear();
           if (context.mounted) context.go('/login');
