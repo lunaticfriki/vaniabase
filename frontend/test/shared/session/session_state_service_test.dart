@@ -23,13 +23,15 @@ void main() {
         final user = MockUser();
         when(() => user.uid).thenReturn('user-1');
         when(() => user.email).thenReturn('jane@example.com');
+        when(() => user.displayName).thenReturn('Jane');
         when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(user));
       },
       build: () => SessionStateService(firebaseAuth),
       expect: () => [
         isA<SessionAuthenticated>()
             .having((s) => s.uid, 'uid', 'user-1')
-            .having((s) => s.email, 'email', 'jane@example.com'),
+            .having((s) => s.email, 'email', 'jane@example.com')
+            .having((s) => s.displayName, 'displayName', 'Jane'),
       ],
     );
 

@@ -21,6 +21,10 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     required this.onNavigateItems,
     required this.onNavigateCategories,
     required this.onNavigateTags,
+    required this.onNavigateTopics,
+    required this.onNavigateAuthors,
+    required this.onNavigateLanguages,
+    required this.onNavigatePublishers,
     required this.onNavigateSearch,
     required this.onNavigateAddItem,
     required this.onLogout,
@@ -31,6 +35,10 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onNavigateItems;
   final VoidCallback onNavigateCategories;
   final VoidCallback onNavigateTags;
+  final VoidCallback onNavigateTopics;
+  final VoidCallback onNavigateAuthors;
+  final VoidCallback onNavigateLanguages;
+  final VoidCallback onNavigatePublishers;
   final VoidCallback onNavigateSearch;
   final VoidCallback onNavigateAddItem;
   final VoidCallback onLogout;
@@ -43,6 +51,15 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     final isAuthenticated = context.select(
       (SessionStateService service) => service.state is SessionAuthenticated,
     );
+    final greetingName = context.select((SessionStateService service) {
+      final state = service.state;
+      if (state is! SessionAuthenticated) return null;
+      final displayName = state.displayName?.trim();
+      if (displayName != null && displayName.isNotEmpty) return displayName;
+      final email = state.email;
+      if (email != null && email.contains('@')) return email.split('@').first;
+      return null;
+    });
     final themeMode = context.watch<ThemeStateService>().state;
     final isWide = MediaQuery.sizeOf(context).width >= navWideBreakpoint;
 
@@ -50,6 +67,10 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
       _NavItem(label: 'All items', icon: Pixel.grid, onTap: onNavigateItems),
       _NavItem(label: 'Categories', icon: Pixel.bookmarks, onTap: onNavigateCategories),
       _NavItem(label: 'Tags', icon: Pixel.label, onTap: onNavigateTags),
+      _NavItem(label: 'Topics', icon: Pixel.note, onTap: onNavigateTopics),
+      _NavItem(label: 'Authors', icon: Pixel.user, onTap: onNavigateAuthors),
+      _NavItem(label: 'Languages', icon: Pixel.flag, onTap: onNavigateLanguages),
+      _NavItem(label: 'Publishers', icon: Pixel.building, onTap: onNavigatePublishers),
       _NavItem(label: 'Search', icon: Pixel.search, onTap: onNavigateSearch),
       _NavItem(label: 'Add item', icon: Pixel.fileplus, onTap: onNavigateAddItem),
     ];
@@ -57,6 +78,18 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: InkWell(onTap: onNavigateHome, child: const Text('vaniabase')),
       actions: [
+        if (greetingName != null && isWide)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 160),
+              child: Text(
+                'Hi, $greetingName!',
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
         ...isWide
             ? [
                 for (final item in navItems)

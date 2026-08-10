@@ -24,7 +24,8 @@ class TagsStateService extends Cubit<TagsState> {
       }
       final tagCounts = counts.entries.map((entry) => TagCount(entry.key, entry.value)).toList()
         ..sort((a, b) => a.tag.compareTo(b.tag));
-      emit(TagsLoaded(tagCounts, items, selectedTag: _initialTag));
+      final selectedTag = _initialTag ?? (tagCounts.isEmpty ? null : tagCounts.first.tag);
+      emit(TagsLoaded(tagCounts, items, selectedTag: selectedTag));
     } catch (error) {
       emit(TagsError(error.toString()));
     }

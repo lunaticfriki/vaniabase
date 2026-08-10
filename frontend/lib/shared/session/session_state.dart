@@ -7,8 +7,9 @@ class SessionUnauthenticated extends SessionState {
 }
 
 class SessionAuthenticated extends SessionState {
-  const SessionAuthenticated({required this.uid, this.email});
+  const SessionAuthenticated({required this.uid, this.email, this.displayName});
 
   final String uid;
   final String? email;
+  final String? displayName;
 }

@@ -20,7 +20,7 @@ class SessionStateService extends Cubit<SessionState> {
     emit(
       user == null
           ? const SessionUnauthenticated()
-          : SessionAuthenticated(uid: user.uid, email: user.email),
+          : SessionAuthenticated(uid: user.uid, email: user.email, displayName: user.displayName),
     );
   }
 

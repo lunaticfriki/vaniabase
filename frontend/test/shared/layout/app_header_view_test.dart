@@ -10,6 +10,8 @@ import 'package:pixelarticons/pixel.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
+class MockUser extends Mock implements User {}
+
 void main() {
   late SessionStateService session;
   late ThemeStateService theme;
@@ -34,6 +36,10 @@ void main() {
             onNavigateItems: () {},
             onNavigateCategories: () {},
             onNavigateTags: () {},
+            onNavigateTopics: () {},
+            onNavigateAuthors: () {},
+            onNavigateLanguages: () {},
+            onNavigatePublishers: () {},
             onNavigateSearch: () {},
             onNavigateAddItem: () {},
             onLogout: () {},
@@ -96,6 +102,10 @@ void main() {
               onNavigateItems: () {},
               onNavigateCategories: () {},
               onNavigateTags: () {},
+              onNavigateTopics: () {},
+              onNavigateAuthors: () {},
+              onNavigateLanguages: () {},
+              onNavigatePublishers: () {},
               onNavigateSearch: () {},
               onNavigateAddItem: () {},
               onLogout: () {},
@@ -107,5 +117,45 @@ void main() {
 
     await tester.tap(find.text('vaniabase'));
     expect(homeTapped, isTrue);
+  });
+
+  testWidgets('shows a salutation with the signed-in user\'s name before the menu', (tester) async {
+    final firebaseAuth = MockFirebaseAuth();
+    final user = MockUser();
+    when(() => user.uid).thenReturn('user-1');
+    when(() => user.email).thenReturn('jane@example.com');
+    when(() => user.displayName).thenReturn('Jane');
+    when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(user));
+    final authenticatedSession = SessionStateService(firebaseAuth);
+    addTearDown(authenticatedSession.close);
+
+    await tester.pumpWidget(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: authenticatedSession),
+          BlocProvider.value(value: theme),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            appBar: AppHeaderView(
+              onNavigateHome: () {},
+              onNavigateItems: () {},
+              onNavigateCategories: () {},
+              onNavigateTags: () {},
+              onNavigateTopics: () {},
+              onNavigateAuthors: () {},
+              onNavigateLanguages: () {},
+              onNavigatePublishers: () {},
+              onNavigateSearch: () {},
+              onNavigateAddItem: () {},
+              onLogout: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Hi, Jane!'), findsOneWidget);
   });
 }

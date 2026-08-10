@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/presentation/add_item/add_item_container.dart';
+import 'package:frontend/modules/catalog/presentation/authors/authors_container.dart';
 import 'package:frontend/modules/catalog/presentation/category_list/category_list_container.dart';
 import 'package:frontend/modules/catalog/presentation/edit_item/edit_item_container.dart';
 import 'package:frontend/modules/catalog/presentation/home/home_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_container.dart';
+import 'package:frontend/modules/catalog/presentation/languages/languages_container.dart';
+import 'package:frontend/modules/catalog/presentation/publishers/publishers_container.dart';
 import 'package:frontend/modules/catalog/presentation/search/search_container.dart';
 import 'package:frontend/modules/catalog/presentation/tags/tags_container.dart';
+import 'package:frontend/modules/catalog/presentation/topics/topics_container.dart';
 import 'package:frontend/modules/identity/presentation/login/login_container.dart';
 import 'package:frontend/modules/identity/presentation/signup/signup_container.dart';
 import 'package:frontend/shared/layout/app_shell_view.dart';
@@ -91,6 +95,34 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
             pageBuilder: (context, state) => _fastPage(
               state,
               TagsContainer(initialTag: state.uri.queryParameters['tag']),
+            ),
+          ),
+          GoRoute(
+            path: '/topics',
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              TopicsContainer(initialTopic: state.uri.queryParameters['topic']),
+            ),
+          ),
+          GoRoute(
+            path: '/authors',
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              AuthorsContainer(initialAuthor: state.uri.queryParameters['author']),
+            ),
+          ),
+          GoRoute(
+            path: '/languages',
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              LanguagesContainer(initialLanguage: state.uri.queryParameters['language']),
+            ),
+          ),
+          GoRoute(
+            path: '/publishers',
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              PublishersContainer(initialPublisher: state.uri.queryParameters['publisher']),
             ),
           ),
           GoRoute(

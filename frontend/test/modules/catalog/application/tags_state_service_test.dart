@@ -34,14 +34,15 @@ void main() {
 
   group('TagsStateService', () {
     blocTest<TagsStateService, TagsState>(
-      'loads tag counts across every item',
+      'loads tag counts across every item and selects the first tag by default',
       build: () => TagsStateService(readService),
       expect: () => [isA<TagsLoaded>()],
       verify: (service) {
         final state = service.state as TagsLoaded;
         final byTag = {for (final t in state.tagCounts) t.tag: t.count};
         expect(byTag, {'sci-fi': 2, 'classic': 1, 'drama': 1});
-        expect(state.selectedTag, isNull);
+        expect(state.selectedTag, 'classic');
+        expect(state.selectedItems.map((i) => i.id), ['item-1']);
       },
     );
 
