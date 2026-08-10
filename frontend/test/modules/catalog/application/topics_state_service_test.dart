@@ -1,6 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core/shared/pagination/page_request.dart';
-import 'package:core/shared/pagination/page_result.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/topics_state.dart';
 import 'package:frontend/modules/catalog/application/topics_state_service.dart';
@@ -16,21 +14,14 @@ void main() {
 
   setUp(() {
     readService = MockItemReadService();
-    when(
-      () => readService.list(pageRequest: PageRequest.create(pageSize: PageRequest.maxPageSize)),
-    ).thenAnswer(
-      (_) async => PageResult(
-        items: [
-          ItemReadModelMother.random(id: 'item-1', topic: 'Science Fiction'),
-          ItemReadModelMother.random(id: 'item-2', topic: 'Science Fiction'),
-          ItemReadModelMother.random(id: 'item-3', topic: 'History'),
-          ItemReadModelMother.random(id: 'item-4', topic: ''),
-          ItemReadModelMother.random(id: 'item-5', topic: 'Steampunk'),
-        ],
-        page: 1,
-        pageSize: PageRequest.maxPageSize,
-        totalItems: 5,
-      ),
+    when(() => readService.watchAll()).thenAnswer(
+      (_) => Stream.value([
+        ItemReadModelMother.random(id: 'item-1', topic: 'Science Fiction'),
+        ItemReadModelMother.random(id: 'item-2', topic: 'Science Fiction'),
+        ItemReadModelMother.random(id: 'item-3', topic: 'History'),
+        ItemReadModelMother.random(id: 'item-4', topic: ''),
+        ItemReadModelMother.random(id: 'item-5', topic: 'Steampunk'),
+      ]),
     );
   });
 
@@ -124,6 +115,30 @@ void main() {
         final state = service.state as TopicsLoaded;
         expect(state.selectedLetter, 'H');
         expect(state.selectedTopic, 'History');
+      },
+    );
+
+    blocTest<TopicsStateService, TopicsState>(
+      'a live update keeps the current selection when the topic still exists',
+      setUp: () {
+        when(() => readService.watchAll()).thenAnswer(
+          (_) => Stream.fromIterable([
+            [ItemReadModelMother.random(id: 'item-1', topic: 'History')],
+            [
+              ItemReadModelMother.random(id: 'item-1', topic: 'History'),
+              ItemReadModelMother.random(id: 'item-2', topic: 'History'),
+            ],
+          ]),
+        );
+      },
+      build: () => TopicsStateService(readService, initialTopic: 'History'),
+      expect: () => [
+        isA<TopicsLoaded>().having((s) => s.selectedTopic, 'selectedTopic', 'History'),
+        isA<TopicsLoaded>().having((s) => s.selectedTopic, 'selectedTopic', 'History'),
+      ],
+      verify: (service) {
+        final state = service.state as TopicsLoaded;
+        expect(state.selectedItems, hasLength(2));
       },
     );
   });

@@ -1,6 +1,6 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core/shared/pagination/page_request.dart';
-import 'package:core/shared/pagination/page_result.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/search_state.dart';
@@ -22,16 +22,7 @@ void main() {
       ItemReadModelMother.random(id: 'item-1', title: 'Dune'),
       ItemReadModelMother.random(id: 'item-2', title: 'Foundation'),
     ];
-    when(
-      () => readService.list(pageRequest: PageRequest.create(pageSize: PageRequest.maxPageSize)),
-    ).thenAnswer(
-      (_) async => PageResult(
-        items: items,
-        page: 1,
-        pageSize: PageRequest.maxPageSize,
-        totalItems: items.length,
-      ),
-    );
+    when(() => readService.watchAll()).thenAnswer((_) => Stream.value(items));
   });
 
   group('SearchStateService', () {
@@ -46,9 +37,7 @@ void main() {
       wait: searchDebounce + const Duration(milliseconds: 50),
       expect: () => [isA<SearchInProgress>(), isA<SearchLoaded>()],
       verify: (_) {
-        verify(
-          () => readService.list(pageRequest: PageRequest.create(pageSize: PageRequest.maxPageSize)),
-        ).called(1);
+        verify(() => readService.watchAll()).called(1);
       },
     );
 
@@ -74,6 +63,34 @@ void main() {
       },
       skip: 2,
       expect: () => [isA<SearchIdle>()],
+    );
+
+    late StreamController<List<ItemReadModel>> controller;
+
+    blocTest<SearchStateService, SearchState>(
+      'a live update re-filters an already-displayed search without a new query',
+      setUp: () {
+        controller = StreamController<List<ItemReadModel>>();
+        addTearDown(controller.close);
+        when(() => readService.watchAll()).thenAnswer((_) => controller.stream);
+      },
+      build: () => SearchStateService(readService),
+      act: (service) async {
+        controller.add([ItemReadModelMother.random(id: 'item-1', title: 'Dune')]);
+        service.onQueryChanged('dune');
+        await Future<void>.delayed(searchDebounce + const Duration(milliseconds: 50));
+        controller.add([
+          ItemReadModelMother.random(id: 'item-1', title: 'Dune'),
+          ItemReadModelMother.random(id: 'item-2', title: 'Dune Messiah'),
+        ]);
+      },
+      wait: const Duration(milliseconds: 50),
+      expect: () => [
+        isA<SearchInProgress>(),
+        isA<SearchLoaded>().having((s) => s.items, 'items', hasLength(1)),
+        isA<SearchInProgress>(),
+        isA<SearchLoaded>().having((s) => s.items, 'items', hasLength(2)),
+      ],
     );
   });
 }

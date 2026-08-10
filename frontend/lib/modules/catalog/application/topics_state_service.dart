@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/alphabet_util.dart';
-import 'package:frontend/modules/catalog/application/fetch_all_items_util.dart';
+import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/topics_state.dart';
 
@@ -8,29 +10,38 @@ class TopicsStateService extends Cubit<TopicsState> {
   TopicsStateService(this._readService, {String? initialTopic})
     : _initialTopic = initialTopic,
       super(const TopicsLoading()) {
-    _load();
+    _subscription = _readService.watchAll().listen(
+      _onItems,
+      onError: (Object error) => emit(TopicsError(error.toString())),
+    );
   }
 
   final ItemReadService _readService;
   final String? _initialTopic;
+  late final StreamSubscription<List<ItemReadModel>> _subscription;
 
-  Future<void> _load() async {
-    try {
-      final items = await fetchAllItems(_readService);
-      final topics =
-          items.map((item) => item.topic).where((topic) => topic.isNotEmpty).toSet().toList()..sort();
+  void _onItems(List<ItemReadModel> items) {
+    final topics =
+        items.map((item) => item.topic).where((topic) => topic.isNotEmpty).toSet().toList()..sort();
+
+    final current = state;
+    String? selectedLetter;
+    String? selectedTopic;
+    if (current is TopicsLoaded && current.selectedLetter != null) {
+      final entriesForLetter = topics.where((topic) => letterForEntry(topic) == current.selectedLetter);
+      if (entriesForLetter.isNotEmpty) {
+        selectedLetter = current.selectedLetter;
+        selectedTopic = entriesForLetter.contains(current.selectedTopic)
+            ? current.selectedTopic
+            : entriesForLetter.first;
+      }
+    } else if (current is! TopicsLoaded) {
       final initialTopic = _initialTopic;
-      emit(
-        TopicsLoaded(
-          topics,
-          items,
-          selectedLetter: initialTopic == null ? null : letterForEntry(initialTopic),
-          selectedTopic: initialTopic,
-        ),
-      );
-    } catch (error) {
-      emit(TopicsError(error.toString()));
+      selectedLetter = initialTopic == null ? null : letterForEntry(initialTopic);
+      selectedTopic = initialTopic;
     }
+
+    emit(TopicsLoaded(topics, items, selectedLetter: selectedLetter, selectedTopic: selectedTopic));
   }
 
   void selectLetter(String letter) {
@@ -62,5 +73,11 @@ class TopicsStateService extends Cubit<TopicsState> {
         selectedTopic: current.selectedTopic == topic ? null : topic,
       ),
     );
+  }
+
+  @override
+  Future<void> close() {
+    _subscription.cancel();
+    return super.close();
   }
 }

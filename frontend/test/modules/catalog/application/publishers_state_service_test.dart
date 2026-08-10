@@ -1,6 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core/shared/pagination/page_request.dart';
-import 'package:core/shared/pagination/page_result.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/publishers_state.dart';
 import 'package:frontend/modules/catalog/application/publishers_state_service.dart';
@@ -16,21 +14,14 @@ void main() {
 
   setUp(() {
     readService = MockItemReadService();
-    when(
-      () => readService.list(pageRequest: PageRequest.create(pageSize: PageRequest.maxPageSize)),
-    ).thenAnswer(
-      (_) async => PageResult(
-        items: [
-          ItemReadModelMother.random(id: 'item-1', publisher: 'Chilton Books'),
-          ItemReadModelMother.random(id: 'item-2', publisher: 'Chilton Books'),
-          ItemReadModelMother.random(id: 'item-3', publisher: 'Penguin'),
-          ItemReadModelMother.random(id: 'item-4', publisher: ''),
-          ItemReadModelMother.random(id: 'item-5', publisher: 'City Lights'),
-        ],
-        page: 1,
-        pageSize: PageRequest.maxPageSize,
-        totalItems: 5,
-      ),
+    when(() => readService.watchAll()).thenAnswer(
+      (_) => Stream.value([
+        ItemReadModelMother.random(id: 'item-1', publisher: 'Chilton Books'),
+        ItemReadModelMother.random(id: 'item-2', publisher: 'Chilton Books'),
+        ItemReadModelMother.random(id: 'item-3', publisher: 'Penguin'),
+        ItemReadModelMother.random(id: 'item-4', publisher: ''),
+        ItemReadModelMother.random(id: 'item-5', publisher: 'City Lights'),
+      ]),
     );
   });
 

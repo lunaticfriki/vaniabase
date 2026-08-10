@@ -12,7 +12,7 @@ class BulkImportStateService extends Cubit<BulkImportState> {
   final ItemWriteService _writeService;
 
   Future<void> pickFile() async {
-    final result = await FilePicker.pickFiles(
+    final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: const ['xlsx', 'ods', 'csv'],
     );

@@ -1,6 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core/shared/pagination/page_request.dart';
-import 'package:core/shared/pagination/page_result.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/languages_state.dart';
 import 'package:frontend/modules/catalog/application/languages_state_service.dart';
@@ -16,21 +14,14 @@ void main() {
 
   setUp(() {
     readService = MockItemReadService();
-    when(
-      () => readService.list(pageRequest: PageRequest.create(pageSize: PageRequest.maxPageSize)),
-    ).thenAnswer(
-      (_) async => PageResult(
-        items: [
-          ItemReadModelMother.random(id: 'item-1', language: 'English'),
-          ItemReadModelMother.random(id: 'item-2', language: 'English'),
-          ItemReadModelMother.random(id: 'item-3', language: 'Spanish'),
-          ItemReadModelMother.random(id: 'item-4', language: ''),
-          ItemReadModelMother.random(id: 'item-5', language: 'Esperanto'),
-        ],
-        page: 1,
-        pageSize: PageRequest.maxPageSize,
-        totalItems: 5,
-      ),
+    when(() => readService.watchAll()).thenAnswer(
+      (_) => Stream.value([
+        ItemReadModelMother.random(id: 'item-1', language: 'English'),
+        ItemReadModelMother.random(id: 'item-2', language: 'English'),
+        ItemReadModelMother.random(id: 'item-3', language: 'Spanish'),
+        ItemReadModelMother.random(id: 'item-4', language: ''),
+        ItemReadModelMother.random(id: 'item-5', language: 'Esperanto'),
+      ]),
     );
   });
 

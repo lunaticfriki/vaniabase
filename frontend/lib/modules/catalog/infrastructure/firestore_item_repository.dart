@@ -1,8 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:core/shared/pagination/page_request.dart';
-import 'package:core/shared/pagination/page_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
@@ -42,27 +40,15 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
   }
 
   @override
-  Future<PageResult<ItemReadModel>> list({
-    required PageRequest pageRequest,
-    String? category,
-  }) async {
+  Stream<List<ItemReadModel>> watchAll({String? category}) {
     Query<Map<String, dynamic>> query = _items.where('owner_id', isEqualTo: _uid);
     if (category != null) {
       query = query.where('category', isEqualTo: category);
     }
-    final snapshot = await query.orderBy('created_at', descending: true).get();
-    final allItems = snapshot.docs.map((doc) => ItemMapper.toReadModel(doc.id, doc.data())).toList();
-
-    final start = pageRequest.offset;
-    final end = (start + pageRequest.limit).clamp(0, allItems.length);
-    final pageItems = start >= allItems.length ? const <ItemReadModel>[] : allItems.sublist(start, end);
-
-    return PageResult<ItemReadModel>(
-      items: pageItems,
-      page: pageRequest.page,
-      pageSize: pageRequest.pageSize,
-      totalItems: allItems.length,
-    );
+    return query
+        .orderBy('created_at', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => ItemMapper.toReadModel(doc.id, doc.data())).toList());
   }
 
   @override

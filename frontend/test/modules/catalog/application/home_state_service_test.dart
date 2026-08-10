@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core/shared/pagination/page_request.dart';
-import 'package:core/shared/pagination/page_result.dart';
 import 'package:frontend/modules/catalog/application/home_state.dart';
 import 'package:frontend/modules/catalog/application/home_state_service.dart';
+import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,14 +21,9 @@ void main() {
 
   group('HomeStateService', () {
     blocTest<HomeStateService, HomeState>(
-      'starts in HomeLoading and settles on HomeLoaded with the first page of 10 items',
+      'starts in HomeLoading and settles on HomeLoaded with only the first 10 items',
       setUp: () {
-        final items = ItemReadModelMother.list(10);
-        when(
-          () => readService.list(pageRequest: PageRequest.first(pageSize: 10)),
-        ).thenAnswer(
-          (_) async => PageResult(items: items, page: 1, pageSize: 10, totalItems: 25),
-        );
+        when(() => readService.watchAll()).thenAnswer((_) => Stream.value(ItemReadModelMother.list(25)));
       },
       build: () => HomeStateService(readService),
       expect: () => [isA<HomeLoaded>()],
@@ -37,13 +33,10 @@ void main() {
       },
     );
 
-    test('the initial state is HomeLoading before the request resolves', () {
-      when(
-        () => readService.list(pageRequest: PageRequest.first(pageSize: 10)),
-      ).thenAnswer((_) async {
-        await Future<void>.delayed(const Duration(milliseconds: 10));
-        return PageResult(items: const [], page: 1, pageSize: 10, totalItems: 0);
-      });
+    test('the initial state is HomeLoading before the watch emits', () {
+      final controller = StreamController<List<ItemReadModel>>();
+      addTearDown(controller.close);
+      when(() => readService.watchAll()).thenAnswer((_) => controller.stream);
 
       final service = HomeStateService(readService);
 
@@ -51,14 +44,31 @@ void main() {
     });
 
     blocTest<HomeStateService, HomeState>(
-      'emits HomeError when the read service throws',
+      'emits HomeError when the watch stream errors',
       setUp: () {
         when(
-          () => readService.list(pageRequest: PageRequest.first(pageSize: 10)),
-        ).thenAnswer((_) async => throw Exception('network error'));
+          () => readService.watchAll(),
+        ).thenAnswer((_) => Stream.error(Exception('network error')));
       },
       build: () => HomeStateService(readService),
       expect: () => [isA<HomeError>()],
+    );
+
+    blocTest<HomeStateService, HomeState>(
+      'reacts to a new item appearing without needing to be reloaded',
+      setUp: () {
+        when(() => readService.watchAll()).thenAnswer(
+          (_) => Stream.fromIterable([
+            ItemReadModelMother.list(1),
+            ItemReadModelMother.list(2),
+          ]),
+        );
+      },
+      build: () => HomeStateService(readService),
+      expect: () => [
+        isA<HomeLoaded>().having((s) => s.items, 'items', hasLength(1)),
+        isA<HomeLoaded>().having((s) => s.items, 'items', hasLength(2)),
+      ],
     );
   });
 }

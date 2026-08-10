@@ -1,6 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core/shared/pagination/page_request.dart';
-import 'package:core/shared/pagination/page_result.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/tags_state.dart';
 import 'package:frontend/modules/catalog/application/tags_state_service.dart';
@@ -16,19 +14,12 @@ void main() {
 
   setUp(() {
     readService = MockItemReadService();
-    when(
-      () => readService.list(pageRequest: PageRequest.create(pageSize: PageRequest.maxPageSize)),
-    ).thenAnswer(
-      (_) async => PageResult(
-        items: [
-          ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi', 'classic']),
-          ItemReadModelMother.random(id: 'item-2', tags: const ['sci-fi']),
-          ItemReadModelMother.random(id: 'item-3', tags: const ['drama']),
-        ],
-        page: 1,
-        pageSize: PageRequest.maxPageSize,
-        totalItems: 3,
-      ),
+    when(() => readService.watchAll()).thenAnswer(
+      (_) => Stream.value([
+        ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi', 'classic']),
+        ItemReadModelMother.random(id: 'item-2', tags: const ['sci-fi']),
+        ItemReadModelMother.random(id: 'item-3', tags: const ['drama']),
+      ]),
     );
   });
 
@@ -76,6 +67,51 @@ void main() {
         final state = service.state as TagsLoaded;
         expect(state.selectedTag, isNull);
       },
+    );
+
+    blocTest<TagsStateService, TagsState>(
+      'a live update keeps the current selection when the tag still exists',
+      setUp: () {
+        when(() => readService.watchAll()).thenAnswer(
+          (_) => Stream.fromIterable([
+            [
+              ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi']),
+              ItemReadModelMother.random(id: 'item-2', tags: const ['sci-fi']),
+            ],
+            [
+              ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi']),
+              ItemReadModelMother.random(id: 'item-2', tags: const ['sci-fi']),
+              ItemReadModelMother.random(id: 'item-3', tags: const ['sci-fi']),
+            ],
+          ]),
+        );
+      },
+      build: () => TagsStateService(readService),
+      expect: () => [
+        isA<TagsLoaded>().having((s) => s.selectedTag, 'selectedTag', 'sci-fi'),
+        isA<TagsLoaded>().having((s) => s.selectedTag, 'selectedTag', 'sci-fi'),
+      ],
+      verify: (service) {
+        final state = service.state as TagsLoaded;
+        expect(state.items, hasLength(3));
+      },
+    );
+
+    blocTest<TagsStateService, TagsState>(
+      'a live update clears the selection once that tag no longer exists',
+      setUp: () {
+        when(() => readService.watchAll()).thenAnswer(
+          (_) => Stream.fromIterable([
+            [ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi'])],
+            [ItemReadModelMother.random(id: 'item-1', tags: const ['drama'])],
+          ]),
+        );
+      },
+      build: () => TagsStateService(readService),
+      expect: () => [
+        isA<TagsLoaded>().having((s) => s.selectedTag, 'selectedTag', 'sci-fi'),
+        isA<TagsLoaded>().having((s) => s.selectedTag, 'selectedTag', isNull),
+      ],
     );
   });
 }
