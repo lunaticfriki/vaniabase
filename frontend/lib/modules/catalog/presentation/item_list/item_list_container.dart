@@ -9,9 +9,16 @@ import 'package:frontend/modules/catalog/presentation/item_list/item_list_view.d
 import 'package:go_router/go_router.dart';
 
 class ItemListContainer extends StatefulWidget {
-  const ItemListContainer({this.category, super.key});
+  const ItemListContainer({
+    this.category,
+    this.completed,
+    this.enableSort = false,
+    super.key,
+  });
 
   final String? category;
+  final bool? completed;
+  final bool enableSort;
 
   @override
   State<ItemListContainer> createState() => _ItemListContainerState();
@@ -26,6 +33,7 @@ class _ItemListContainerState extends State<ItemListContainer> {
     _stateService = ItemListStateService(
       getIt<ItemReadService>(),
       category: widget.category,
+      completed: widget.completed,
     );
   }
 
@@ -43,11 +51,16 @@ class _ItemListContainerState extends State<ItemListContainer> {
         builder: (context, state) => switch (state) {
           ItemListLoading() => const ItemListSkeleton(),
           ItemListError(:final message) => Center(child: Text(message)),
-          ItemListLoaded(:final result) => ItemListView(
-            title: widget.category == null
+          ItemListLoaded(:final result, :final sortOption) => ItemListView(
+            title: widget.completed == true
+                ? 'Completed'
+                : widget.category == null
                 ? 'Complete collection'
                 : categoryLabel(widget.category!),
             result: result,
+            sortOption: widget.enableSort ? sortOption : null,
+            onSortChanged: (option) =>
+                context.read<ItemListStateService>().setSortOption(option),
             onPrevious: () =>
                 context.read<ItemListStateService>().previousPage(),
             onNext: () => context.read<ItemListStateService>().nextPage(),

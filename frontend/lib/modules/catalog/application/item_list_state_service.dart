@@ -5,6 +5,7 @@ import 'package:core/shared/pagination/page_result.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
+import 'package:frontend/modules/catalog/application/item_sort_option.dart';
 
 sealed class ItemListState {
   const ItemListState();
@@ -15,9 +16,10 @@ class ItemListLoading extends ItemListState {
 }
 
 class ItemListLoaded extends ItemListState {
-  const ItemListLoaded(this.result);
+  const ItemListLoaded(this.result, this.sortOption);
 
   final PageResult<ItemReadModel> result;
+  final ItemSortOption sortOption;
 }
 
 class ItemListError extends ItemListState {
@@ -27,10 +29,10 @@ class ItemListError extends ItemListState {
 }
 
 class ItemListStateService extends Cubit<ItemListState> {
-  ItemListStateService(this._readService, {String? category})
+  ItemListStateService(this._readService, {String? category, bool? completed})
     : super(const ItemListLoading()) {
     _subscription = _readService
-        .watchAll(category: category)
+        .watchAll(category: category, completed: completed)
         .listen(
           _onItems,
           onError: (Object error) => emit(ItemListError(error.toString())),
@@ -40,6 +42,7 @@ class ItemListStateService extends Cubit<ItemListState> {
   final ItemReadService _readService;
   late final StreamSubscription<List<ItemReadModel>> _subscription;
   List<ItemReadModel> _allItems = const [];
+  ItemSortOption _sortOption = ItemSortOption.createdAtDesc;
   int _page = 1;
 
   void _onItems(List<ItemReadModel> items) {
@@ -47,23 +50,54 @@ class ItemListStateService extends Cubit<ItemListState> {
     _emitPage();
   }
 
+  List<ItemReadModel> _sortedItems() {
+    final items = [..._allItems];
+    switch (_sortOption) {
+      case ItemSortOption.createdAtDesc:
+        items.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      case ItemSortOption.createdAtAsc:
+        items.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      case ItemSortOption.title:
+        items.sort(
+          (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+        );
+      case ItemSortOption.author:
+        items.sort(
+          (a, b) => a.creator
+              .join(', ')
+              .toLowerCase()
+              .compareTo(b.creator.join(', ').toLowerCase()),
+        );
+    }
+    return items;
+  }
+
   void _emitPage() {
+    final sortedItems = _sortedItems();
     final pageRequest = PageRequest.create(page: _page);
     final start = pageRequest.offset;
-    final end = (start + pageRequest.limit).clamp(0, _allItems.length);
-    final pageItems = start >= _allItems.length
+    final end = (start + pageRequest.limit).clamp(0, sortedItems.length);
+    final pageItems = start >= sortedItems.length
         ? const <ItemReadModel>[]
-        : _allItems.sublist(start, end);
+        : sortedItems.sublist(start, end);
     emit(
       ItemListLoaded(
         PageResult(
           items: pageItems,
           page: _page,
           pageSize: pageRequest.pageSize,
-          totalItems: _allItems.length,
+          totalItems: sortedItems.length,
         ),
+        _sortOption,
       ),
     );
+  }
+
+  void setSortOption(ItemSortOption sortOption) {
+    if (sortOption == _sortOption) return;
+    _sortOption = sortOption;
+    _page = 1;
+    _emitPage();
   }
 
   void nextPage() {

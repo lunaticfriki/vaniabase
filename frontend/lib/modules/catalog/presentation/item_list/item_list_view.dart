@@ -1,10 +1,12 @@
 import 'package:core/shared/pagination/page_result.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
+import 'package:frontend/modules/catalog/application/item_sort_option.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
 import 'package:frontend/shared/pagination/pagination_control_view.dart';
+import 'package:pixelarticons/pixel.dart';
 
 class ItemListView extends StatelessWidget {
   const ItemListView({
@@ -13,11 +15,15 @@ class ItemListView extends StatelessWidget {
     required this.onPrevious,
     required this.onNext,
     required this.onItemTap,
+    this.sortOption,
+    this.onSortChanged,
     super.key,
   });
 
   final String title;
   final PageResult<ItemReadModel> result;
+  final ItemSortOption? sortOption;
+  final ValueChanged<ItemSortOption>? onSortChanged;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
   final void Function(ItemReadModel item) onItemTap;
@@ -29,7 +35,37 @@ class ItemListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: Theme.of(context).textTheme.headlineSmall),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              if (sortOption != null && onSortChanged != null)
+                PopupMenuButton<ItemSortOption>(
+                  tooltip: 'Sort',
+                  initialValue: sortOption,
+                  onSelected: onSortChanged,
+                  icon: const Icon(Pixel.sort),
+                  itemBuilder: (context) => [
+                    for (final option in ItemSortOption.values)
+                      PopupMenuItem<ItemSortOption>(
+                        value: option,
+                        child: Row(
+                          children: [
+                            Expanded(child: Text(itemSortOptionLabels[option]!)),
+                            if (option == sortOption)
+                              const Icon(Pixel.check, size: 18),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+            ],
+          ),
           const SizedBox(height: 4),
           Text(
             '${result.totalItems} item${result.totalItems == 1 ? '' : 's'}',

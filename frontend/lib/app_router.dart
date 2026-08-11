@@ -66,7 +66,12 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
           GoRoute(
             path: '/items',
             pageBuilder: (context, state) =>
-                _fastPage(state, const ItemListContainer()),
+                _fastPage(state, const ItemListContainer(enableSort: true)),
+          ),
+          GoRoute(
+            path: '/completed',
+            pageBuilder: (context, state) =>
+                _fastPage(state, const ItemListContainer(completed: true)),
           ),
           GoRoute(
             path: '/items/new',

@@ -87,6 +87,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
   const AppHeaderView({
     required this.onNavigateHome,
     required this.onNavigateItems,
+    required this.onNavigateCompleted,
     required this.onNavigateCategories,
     required this.onNavigateTags,
     required this.onNavigateTopics,
@@ -102,6 +103,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
 
   final VoidCallback onNavigateHome;
   final VoidCallback onNavigateItems;
+  final VoidCallback onNavigateCompleted;
   final VoidCallback onNavigateCategories;
   final VoidCallback onNavigateTags;
   final VoidCallback onNavigateTopics;
@@ -138,6 +140,11 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
         label: 'Complete collection',
         icon: Pixel.grid,
         onTap: onNavigateItems,
+      ),
+      _NavItem(
+        label: 'Completed',
+        icon: Pixel.check,
+        onTap: onNavigateCompleted,
       ),
       _NavItem(
         label: 'Categories',

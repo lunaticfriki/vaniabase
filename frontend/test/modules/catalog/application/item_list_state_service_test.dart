@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/catalog/application/item_list_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
+import 'package:frontend/modules/catalog/application/item_sort_option.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,7 +15,7 @@ void main() {
   setUp(() {
     readService = MockItemReadService();
     when(
-      () => readService.watchAll(category: null),
+      () => readService.watchAll(category: null, completed: null),
     ).thenAnswer((_) => Stream.value(ItemReadModelMother.list(25)));
   });
 
@@ -65,7 +66,7 @@ void main() {
       'nextPage is a no-op when already on the only page',
       setUp: () {
         when(
-          () => readService.watchAll(category: null),
+          () => readService.watchAll(category: null, completed: null),
         ).thenAnswer((_) => Stream.value(ItemReadModelMother.list(10)));
       },
       build: () => ItemListStateService(readService),
@@ -80,7 +81,9 @@ void main() {
     blocTest<ItemListStateService, ItemListState>(
       'a live update recomputes the current page in place',
       setUp: () {
-        when(() => readService.watchAll(category: null)).thenAnswer(
+        when(
+          () => readService.watchAll(category: null, completed: null),
+        ).thenAnswer(
           (_) => Stream.fromIterable([
             ItemReadModelMother.list(10),
             ItemReadModelMother.list(11),
@@ -100,6 +103,61 @@ void main() {
           11,
         ),
       ],
+    );
+
+    blocTest<ItemListStateService, ItemListState>(
+      'setSortOption reorders items by title and resets to page 1',
+      setUp: () {
+        when(
+          () => readService.watchAll(category: null, completed: null),
+        ).thenAnswer(
+          (_) => Stream.value([
+            ItemReadModelMother.random(title: 'Zebra'),
+            ItemReadModelMother.random(title: 'Apple'),
+            ItemReadModelMother.random(title: 'Mango'),
+          ]),
+        );
+      },
+      build: () => ItemListStateService(readService),
+      skip: 1,
+      act: (service) async {
+        await Future<void>.delayed(Duration.zero);
+        service.nextPage();
+        service.setSortOption(ItemSortOption.title);
+      },
+      verify: (service) {
+        final state = service.state as ItemListLoaded;
+        expect(state.sortOption, ItemSortOption.title);
+        expect(state.result.page, 1);
+        expect(
+          state.result.items.map((item) => item.title),
+          ['Apple', 'Mango', 'Zebra'],
+        );
+      },
+    );
+
+    blocTest<ItemListStateService, ItemListState>(
+      'setSortOption sorts by author',
+      setUp: () {
+        when(
+          () => readService.watchAll(category: null, completed: null),
+        ).thenAnswer(
+          (_) => Stream.value([
+            ItemReadModelMother.random(creator: const ['Zebra Author']),
+            ItemReadModelMother.random(creator: const ['Apple Author']),
+          ]),
+        );
+      },
+      build: () => ItemListStateService(readService),
+      skip: 1,
+      act: (service) => service.setSortOption(ItemSortOption.author),
+      verify: (service) {
+        final state = service.state as ItemListLoaded;
+        expect(
+          state.result.items.map((item) => item.creator.first),
+          ['Apple Author', 'Zebra Author'],
+        );
+      },
     );
   });
 }

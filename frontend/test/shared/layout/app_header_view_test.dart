@@ -34,6 +34,7 @@ void main() {
           appBar: AppHeaderView(
             onNavigateHome: () {},
             onNavigateItems: () {},
+            onNavigateCompleted: () {},
             onNavigateCategories: () {},
             onNavigateTags: () {},
             onNavigateTopics: () {},
@@ -101,6 +102,7 @@ void main() {
             appBar: AppHeaderView(
               onNavigateHome: () => homeTapped = true,
               onNavigateItems: () {},
+              onNavigateCompleted: () {},
               onNavigateCategories: () {},
               onNavigateTags: () {},
               onNavigateTopics: () {},
@@ -142,6 +144,7 @@ void main() {
           appBar: AppHeaderView(
             onNavigateHome: () {},
             onNavigateItems: () {},
+            onNavigateCompleted: () {},
             onNavigateCategories: () {},
             onNavigateTags: () {},
             onNavigateTopics: () {},
