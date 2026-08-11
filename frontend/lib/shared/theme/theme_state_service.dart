@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ThemeStateService extends Cubit<ThemeMode> {
   ThemeStateService() : super(ThemeMode.dark);
 
-  void toggle() {
-    emit(state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
+  void setMode(ThemeMode mode) {
+    emit(mode);
   }
 }

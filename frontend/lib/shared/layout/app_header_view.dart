@@ -47,6 +47,31 @@ Future<void> _showResponsiveMenu(
   onTap?.call();
 }
 
+IconData _themeModeIcon(ThemeMode mode) => switch (mode) {
+  ThemeMode.light => Pixel.sun,
+  ThemeMode.dark => Pixel.moon,
+  ThemeMode.system => Pixel.monitor,
+};
+
+PopupMenuItem<ThemeMode> _themeModeMenuItem(
+  ThemeMode mode,
+  String label,
+  IconData icon,
+  ThemeMode selected,
+) {
+  return PopupMenuItem<ThemeMode>(
+    value: mode,
+    child: Row(
+      children: [
+        Icon(icon, size: 20),
+        const SizedBox(width: 12),
+        Expanded(child: Text(label)),
+        if (mode == selected) const Icon(Pixel.check, size: 18),
+      ],
+    ),
+  );
+}
+
 class _NavItem {
   const _NavItem({
     required this.label,
@@ -110,7 +135,11 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     final isWide = MediaQuery.sizeOf(context).width >= navWideBreakpoint;
 
     final navItems = [
-      _NavItem(label: 'Complete collection', icon: Pixel.grid, onTap: onNavigateItems),
+      _NavItem(
+        label: 'Complete collection',
+        icon: Pixel.grid,
+        onTap: onNavigateItems,
+      ),
       _NavItem(
         label: 'Categories',
         icon: Pixel.bookmarks,
@@ -175,12 +204,20 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ],
-        IconButton(
-          onPressed: () => context.read<ThemeStateService>().toggle(),
-          icon: Icon(themeMode == ThemeMode.dark ? Pixel.sun : Pixel.moon),
-          tooltip: themeMode == ThemeMode.dark
-              ? 'Switch to light theme'
-              : 'Switch to dark theme',
+        PopupMenuButton<ThemeMode>(
+          tooltip: 'Theme',
+          icon: Icon(_themeModeIcon(themeMode)),
+          onSelected: (mode) => context.read<ThemeStateService>().setMode(mode),
+          itemBuilder: (context) => [
+            _themeModeMenuItem(ThemeMode.light, 'Light', Pixel.sun, themeMode),
+            _themeModeMenuItem(ThemeMode.dark, 'Dark', Pixel.moon, themeMode),
+            _themeModeMenuItem(
+              ThemeMode.system,
+              'System',
+              Pixel.monitor,
+              themeMode,
+            ),
+          ],
         ),
         if (isAuthenticated)
           IconButton(

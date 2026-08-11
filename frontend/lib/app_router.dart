@@ -55,7 +55,8 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
             _fastPage(state, const SignupContainer()),
       ),
       ShellRoute(
-        builder: (context, state, child) => AppShellView(child: child),
+        builder: (context, state, child) =>
+            AppShellView(state: state, child: child),
         routes: [
           GoRoute(
             path: '/',
@@ -114,21 +115,27 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
             path: '/authors',
             pageBuilder: (context, state) => _fastPage(
               state,
-              AuthorsContainer(initialAuthor: state.uri.queryParameters['author']),
+              AuthorsContainer(
+                initialAuthor: state.uri.queryParameters['author'],
+              ),
             ),
           ),
           GoRoute(
             path: '/languages',
             pageBuilder: (context, state) => _fastPage(
               state,
-              LanguagesContainer(initialLanguage: state.uri.queryParameters['language']),
+              LanguagesContainer(
+                initialLanguage: state.uri.queryParameters['language'],
+              ),
             ),
           ),
           GoRoute(
             path: '/publishers',
             pageBuilder: (context, state) => _fastPage(
               state,
-              PublishersContainer(initialPublisher: state.uri.queryParameters['publisher']),
+              PublishersContainer(
+                initialPublisher: state.uri.queryParameters['publisher'],
+              ),
             ),
           ),
           GoRoute(
