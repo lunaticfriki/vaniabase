@@ -1,11 +1,30 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/modules/catalog/application/home_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 
 const homeItemCount = 10;
+
+sealed class HomeState {
+  const HomeState();
+}
+
+class HomeLoading extends HomeState {
+  const HomeLoading();
+}
+
+class HomeLoaded extends HomeState {
+  const HomeLoaded(this.items);
+
+  final List<ItemReadModel> items;
+}
+
+class HomeError extends HomeState {
+  const HomeError(this.message);
+
+  final String message;
+}
 
 class HomeStateService extends Cubit<HomeState> {
   HomeStateService(this._readService) : super(const HomeLoading()) {

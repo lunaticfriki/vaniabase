@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/search_state.dart';
 import 'package:frontend/modules/catalog/application/search_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,7 +57,9 @@ void main() {
       build: () => SearchStateService(readService),
       act: (service) async {
         service.onQueryChanged('dune');
-        await Future<void>.delayed(searchDebounce + const Duration(milliseconds: 50));
+        await Future<void>.delayed(
+          searchDebounce + const Duration(milliseconds: 50),
+        );
         service.onQueryChanged('');
       },
       skip: 2,
@@ -76,9 +77,13 @@ void main() {
       },
       build: () => SearchStateService(readService),
       act: (service) async {
-        controller.add([ItemReadModelMother.random(id: 'item-1', title: 'Dune')]);
+        controller.add([
+          ItemReadModelMother.random(id: 'item-1', title: 'Dune'),
+        ]);
         service.onQueryChanged('dune');
-        await Future<void>.delayed(searchDebounce + const Duration(milliseconds: 50));
+        await Future<void>.delayed(
+          searchDebounce + const Duration(milliseconds: 50),
+        );
         controller.add([
           ItemReadModelMother.random(id: 'item-1', title: 'Dune'),
           ItemReadModelMother.random(id: 'item-2', title: 'Dune Messiah'),

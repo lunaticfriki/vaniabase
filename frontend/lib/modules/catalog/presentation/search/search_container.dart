@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/search_state.dart';
 import 'package:frontend/modules/catalog/application/search_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/search/search_view.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +38,8 @@ class _SearchContainerState extends State<SearchContainer> {
         builder: (context, state) => SearchView(
           state: state,
           controller: _controller,
-          onQueryChanged: (query) => context.read<SearchStateService>().onQueryChanged(query),
+          onQueryChanged: (query) =>
+              context.read<SearchStateService>().onQueryChanged(query),
           onItemTap: (item) => context.push('/items/${item.id}'),
         ),
       ),

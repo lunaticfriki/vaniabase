@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
-import 'package:frontend/modules/catalog/application/search_state.dart';
+import 'package:frontend/modules/catalog/application/search_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
@@ -35,12 +35,15 @@ class SearchView extends StatelessWidget {
             onChanged: onQueryChanged,
             decoration: const InputDecoration(
               labelText: 'Search your catalog',
-              helperText: 'Matches title, creator, publisher, topic, reference and tags',
+              helperText:
+                  'Matches title, creator, publisher, topic, reference and tags',
               prefixIcon: Icon(Pixel.search),
             ),
           ),
           const SizedBox(height: 16),
-          Expanded(child: _SearchResults(state: state, onItemTap: onItemTap)),
+          Expanded(
+            child: _SearchResults(state: state, onItemTap: onItemTap),
+          ),
         ],
       ),
     );
@@ -70,6 +73,7 @@ class _SearchResults extends StatelessWidget {
                   )
                 : ResponsiveItemGrid<ItemReadModel>(
                     items: items,
+                    keyBuilder: (item) => ValueKey(item.id),
                     itemBuilder: (context, item) =>
                         ItemCardView(item: item, onTap: () => onItemTap(item)),
                   ),

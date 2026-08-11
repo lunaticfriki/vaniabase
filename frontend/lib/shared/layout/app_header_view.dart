@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/shared/session/session_state.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:pixelarticons/pixel.dart';

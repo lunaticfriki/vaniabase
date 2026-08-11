@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/modules/catalog/application/add_item_state.dart';
 import 'package:frontend/modules/catalog/application/add_item_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
 import 'package:mocktail/mocktail.dart';
@@ -52,7 +51,9 @@ void main() {
             category: 'book',
             format: 'dvd',
           ),
-        ).thenThrow(Exception('"dvd" is not a valid format for category "book"'));
+        ).thenThrow(
+          Exception('"dvd" is not a valid format for category "book"'),
+        );
       },
       build: () => AddItemStateService(writeService),
       act: (service) => service.submit(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
-import 'package:frontend/modules/catalog/application/item_detail_state.dart';
 import 'package:frontend/modules/catalog/application/item_detail_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
@@ -53,8 +52,10 @@ class _ItemDetailContainerState extends State<ItemDetailContainer> {
             item: item,
             onBack: () => _goBack(context),
             onEdit: () => context.go('/items/${item.id}/edit'),
-            onToggleCompleted: () => context.read<ItemDetailStateService>().toggleCompleted(),
-            onTagTap: (tag) => context.push('/tags?tag=${Uri.encodeQueryComponent(tag)}'),
+            onToggleCompleted: () =>
+                context.read<ItemDetailStateService>().toggleCompleted(),
+            onTagTap: (tag) =>
+                context.push('/tags?tag=${Uri.encodeQueryComponent(tag)}'),
           ),
         },
       ),

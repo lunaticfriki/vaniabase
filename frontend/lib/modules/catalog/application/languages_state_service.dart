@@ -4,7 +4,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/alphabet_util.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/languages_state.dart';
+
+sealed class LanguagesState {
+  const LanguagesState();
+}
+
+class LanguagesLoading extends LanguagesState {
+  const LanguagesLoading();
+}
+
+class LanguagesLoaded extends LanguagesState {
+  const LanguagesLoaded(
+    this.languages,
+    this.items, {
+    this.selectedLetter,
+    this.selectedLanguage,
+  });
+
+  final List<String> languages;
+  final List<ItemReadModel> items;
+  final String? selectedLetter;
+  final String? selectedLanguage;
+
+  List<ItemReadModel> get selectedItems {
+    final language = selectedLanguage;
+    if (language == null) return const [];
+    return items.where((item) => item.language == language).toList();
+  }
+}
+
+class LanguagesError extends LanguagesState {
+  const LanguagesError(this.message);
+
+  final String message;
+}
 
 class LanguagesStateService extends Cubit<LanguagesState> {
   LanguagesStateService(this._readService, {String? initialLanguage})
@@ -22,7 +55,11 @@ class LanguagesStateService extends Cubit<LanguagesState> {
 
   void _onItems(List<ItemReadModel> items) {
     final languages =
-        items.map((item) => item.language).where((language) => language.isNotEmpty).toSet().toList()
+        items
+            .map((item) => item.language)
+            .where((language) => language.isNotEmpty)
+            .toSet()
+            .toList()
           ..sort();
 
     final current = state;
@@ -40,12 +77,19 @@ class LanguagesStateService extends Cubit<LanguagesState> {
       }
     } else if (current is! LanguagesLoaded) {
       final initialLanguage = _initialLanguage;
-      selectedLetter = initialLanguage == null ? null : letterForEntry(initialLanguage);
+      selectedLetter = initialLanguage == null
+          ? null
+          : letterForEntry(initialLanguage);
       selectedLanguage = initialLanguage;
     }
 
     emit(
-      LanguagesLoaded(languages, items, selectedLetter: selectedLetter, selectedLanguage: selectedLanguage),
+      LanguagesLoaded(
+        languages,
+        items,
+        selectedLetter: selectedLetter,
+        selectedLanguage: selectedLanguage,
+      ),
     );
   }
 
@@ -56,13 +100,17 @@ class LanguagesStateService extends Cubit<LanguagesState> {
       emit(LanguagesLoaded(current.languages, current.items));
       return;
     }
-    final languagesForLetter = current.languages.where((language) => letterForEntry(language) == letter);
+    final languagesForLetter = current.languages.where(
+      (language) => letterForEntry(language) == letter,
+    );
     emit(
       LanguagesLoaded(
         current.languages,
         current.items,
         selectedLetter: letter,
-        selectedLanguage: languagesForLetter.isEmpty ? null : languagesForLetter.first,
+        selectedLanguage: languagesForLetter.isEmpty
+            ? null
+            : languagesForLetter.first,
       ),
     );
   }
@@ -75,7 +123,9 @@ class LanguagesStateService extends Cubit<LanguagesState> {
         current.languages,
         current.items,
         selectedLetter: current.selectedLetter,
-        selectedLanguage: current.selectedLanguage == language ? null : language,
+        selectedLanguage: current.selectedLanguage == language
+            ? null
+            : language,
       ),
     );
   }

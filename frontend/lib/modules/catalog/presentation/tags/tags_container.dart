@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/tags_state.dart';
 import 'package:frontend/modules/catalog/application/tags_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/tags/tags_view.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +21,10 @@ class _TagsContainerState extends State<TagsContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = TagsStateService(getIt<ItemReadService>(), initialTag: widget.initialTag);
+    _stateService = TagsStateService(
+      getIt<ItemReadService>(),
+      initialTag: widget.initialTag,
+    );
   }
 
   @override

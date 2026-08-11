@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/publishers_state.dart';
 import 'package:frontend/modules/catalog/application/publishers_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -109,7 +108,8 @@ void main() {
 
     blocTest<PublishersStateService, PublishersState>(
       'an initial publisher pre-selects its letter and itself',
-      build: () => PublishersStateService(readService, initialPublisher: 'Penguin'),
+      build: () =>
+          PublishersStateService(readService, initialPublisher: 'Penguin'),
       expect: () => [isA<PublishersLoaded>()],
       verify: (service) {
         final state = service.state as PublishersLoaded;

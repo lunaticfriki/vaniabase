@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/modules/catalog/application/authors_state.dart';
 import 'package:frontend/modules/catalog/application/authors_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:mocktail/mocktail.dart';
@@ -16,10 +15,22 @@ void main() {
     readService = MockItemReadService();
     when(() => readService.watchAll()).thenAnswer(
       (_) => Stream.value([
-        ItemReadModelMother.random(id: 'item-1', creator: const ['Frank Herbert', 'Brian Herbert']),
-        ItemReadModelMother.random(id: 'item-2', creator: const ['Frank Herbert']),
-        ItemReadModelMother.random(id: 'item-3', creator: const ['Ursula K. Le Guin']),
-        ItemReadModelMother.random(id: 'item-4', creator: const ['Fyodor Dostoevsky']),
+        ItemReadModelMother.random(
+          id: 'item-1',
+          creator: const ['Frank Herbert', 'Brian Herbert'],
+        ),
+        ItemReadModelMother.random(
+          id: 'item-2',
+          creator: const ['Frank Herbert'],
+        ),
+        ItemReadModelMother.random(
+          id: 'item-3',
+          creator: const ['Ursula K. Le Guin'],
+        ),
+        ItemReadModelMother.random(
+          id: 'item-4',
+          creator: const ['Fyodor Dostoevsky'],
+        ),
       ]),
     );
   });
@@ -31,7 +42,12 @@ void main() {
       expect: () => [isA<AuthorsLoaded>()],
       verify: (service) {
         final state = service.state as AuthorsLoaded;
-        expect(state.authors, ['Brian Herbert', 'Frank Herbert', 'Fyodor Dostoevsky', 'Ursula K. Le Guin']);
+        expect(state.authors, [
+          'Brian Herbert',
+          'Frank Herbert',
+          'Fyodor Dostoevsky',
+          'Ursula K. Le Guin',
+        ]);
         expect(state.selectedLetter, isNull);
         expect(state.selectedAuthor, isNull);
       },
@@ -108,7 +124,8 @@ void main() {
 
     blocTest<AuthorsStateService, AuthorsState>(
       'an initial author pre-selects its letter and itself',
-      build: () => AuthorsStateService(readService, initialAuthor: 'Ursula K. Le Guin'),
+      build: () =>
+          AuthorsStateService(readService, initialAuthor: 'Ursula K. Le Guin'),
       expect: () => [isA<AuthorsLoaded>()],
       verify: (service) {
         final state = service.state as AuthorsLoaded;

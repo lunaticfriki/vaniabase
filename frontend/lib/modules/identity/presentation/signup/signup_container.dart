@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/identity/application/identity_write_service.dart';
-import 'package:frontend/modules/identity/application/signup_state.dart';
 import 'package:frontend/modules/identity/application/signup_state_service.dart';
 import 'package:frontend/modules/identity/presentation/signup/signup_view.dart';
 import 'package:go_router/go_router.dart';

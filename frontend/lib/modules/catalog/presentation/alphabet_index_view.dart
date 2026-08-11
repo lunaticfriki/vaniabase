@@ -71,7 +71,9 @@ class AlphabetIndexView extends StatelessWidget {
               ? Text('No items for this $entryNoun.')
               : ResponsiveItemGrid<ItemReadModel>(
                   items: selectedItems,
-                  itemBuilder: (context, item) => ItemCardView(item: item, onTap: () => onItemTap(item)),
+                  keyBuilder: (item) => ValueKey(item.id),
+                  itemBuilder: (context, item) =>
+                      ItemCardView(item: item, onTap: () => onItemTap(item)),
                 ),
         ],
       ],
@@ -154,7 +156,11 @@ class _LetterButton extends StatelessWidget {
 }
 
 class _EntryRow extends StatelessWidget {
-  const _EntryRow({required this.entries, required this.selectedEntry, required this.onEntryTap});
+  const _EntryRow({
+    required this.entries,
+    required this.selectedEntry,
+    required this.onEntryTap,
+  });
 
   final List<String> entries;
   final String? selectedEntry;
@@ -174,13 +180,17 @@ class _EntryRow extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: entry == selectedEntry ? colorScheme.primary : colorScheme.surfaceContainerHighest,
+                color: entry == selectedEntry
+                    ? colorScheme.primary
+                    : colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
                 entry,
                 style: TextStyle(
-                  color: entry == selectedEntry ? colorScheme.onPrimary : colorScheme.onSurface,
+                  color: entry == selectedEntry
+                      ? colorScheme.onPrimary
+                      : colorScheme.onSurface,
                 ),
               ),
             ),

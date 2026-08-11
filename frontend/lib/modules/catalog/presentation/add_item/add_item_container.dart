@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
-import 'package:frontend/modules/catalog/application/add_item_state.dart';
 import 'package:frontend/modules/catalog/application/add_item_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
 import 'package:frontend/modules/catalog/presentation/item_form/item_form_view.dart';

@@ -48,6 +48,7 @@ class ItemListView extends StatelessWidget {
                         )
                       : ResponsiveItemGrid<ItemReadModel>(
                           items: result.items,
+                          keyBuilder: (item) => ValueKey(item.id),
                           itemBuilder: (context, item) => ItemCardView(
                             item: item,
                             onTap: () => onItemTap(item),

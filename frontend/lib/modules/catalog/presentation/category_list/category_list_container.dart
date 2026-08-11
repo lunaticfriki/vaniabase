@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
-import 'package:frontend/modules/catalog/application/categories_state.dart';
 import 'package:frontend/modules/catalog/application/categories_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
@@ -21,7 +20,10 @@ class _CategoryListContainerState extends State<CategoryListContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = CategoriesStateService(getIt<ItemReadService>(), categoryLabels.keys.toList());
+    _stateService = CategoriesStateService(
+      getIt<ItemReadService>(),
+      categoryLabels.keys.toList(),
+    );
   }
 
   @override
@@ -36,7 +38,9 @@ class _CategoryListContainerState extends State<CategoryListContainer> {
       value: _stateService,
       child: BlocBuilder<CategoriesStateService, CategoriesState>(
         builder: (context, state) => switch (state) {
-          CategoriesLoading() => const Center(child: CircularProgressIndicator()),
+          CategoriesLoading() => const Center(
+            child: CircularProgressIndicator(),
+          ),
           CategoriesError(:final message) => Center(child: Text(message)),
           CategoriesLoaded(:final previewImageUrls) => CategoryListView(
             previewImageUrls: previewImageUrls,

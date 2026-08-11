@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:image_picker/image_picker.dart';
@@ -230,7 +231,10 @@ class _ItemFormViewState extends State<ItemFormView> {
                         expandedInsets: EdgeInsets.zero,
                         dropdownMenuEntries: [
                           for (final entry in categoryLabels.entries)
-                            DropdownMenuEntry(value: entry.key, label: entry.value),
+                            DropdownMenuEntry(
+                              value: entry.key,
+                              label: entry.value,
+                            ),
                         ],
                         onSelected: (value) => setState(() {
                           _category = value;
@@ -247,7 +251,10 @@ class _ItemFormViewState extends State<ItemFormView> {
                         expandedInsets: EdgeInsets.zero,
                         dropdownMenuEntries: [
                           for (final entry in formatLabels.entries)
-                            DropdownMenuEntry(value: entry.key, label: entry.value),
+                            DropdownMenuEntry(
+                              value: entry.key,
+                              label: entry.value,
+                            ),
                         ],
                         onSelected: (value) => setState(() {
                           _format = value;
@@ -486,10 +493,15 @@ class _ImagePickerField extends StatelessWidget {
             child: pickedImageBytes != null
                 ? Image.memory(pickedImageBytes!, fit: BoxFit.cover)
                 : existingImageUrl.isNotEmpty
-                ? Image.network(
-                    existingImageUrl,
+                ? CachedNetworkImage(
+                    imageUrl: existingImageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+                    placeholder: (context, url) => Container(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
+                    ),
+                    errorWidget: (context, url, error) => Container(
                       color: Theme.of(
                         context,
                       ).colorScheme.surfaceContainerHighest,

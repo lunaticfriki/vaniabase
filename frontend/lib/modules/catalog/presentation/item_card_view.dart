@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
@@ -27,10 +28,15 @@ class ItemCardView extends StatelessWidget {
                       ).colorScheme.surfaceContainerHighest,
                       child: const Icon(Pixel.imagebroken),
                     )
-                  : Image.network(
-                      item.imageUrl,
+                  : CachedNetworkImage(
+                      imageUrl: item.imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
+                      placeholder: (context, url) => Container(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
+                      ),
+                      errorWidget: (context, url, error) => Container(
                         color: Theme.of(
                           context,
                         ).colorScheme.surfaceContainerHighest,

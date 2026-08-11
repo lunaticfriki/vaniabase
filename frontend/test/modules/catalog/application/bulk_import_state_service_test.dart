@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/modules/catalog/application/bulk_import_state.dart';
 import 'package:frontend/modules/catalog/application/bulk_import_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
 import 'package:mocktail/mocktail.dart';
@@ -28,7 +27,8 @@ void main() {
     blocTest<BulkImportStateService, BulkImportState>(
       'handlePickedFile parses the file and shows a preview',
       build: () => BulkImportStateService(writeService),
-      act: (service) => service.handlePickedFile(_csvBytes(_validCsv), 'items.csv'),
+      act: (service) =>
+          service.handlePickedFile(_csvBytes(_validCsv), 'items.csv'),
       expect: () => [isA<BulkImportParsing>(), isA<BulkImportPreview>()],
       verify: (service) {
         final state = service.state as BulkImportPreview;
@@ -41,7 +41,8 @@ void main() {
     blocTest<BulkImportStateService, BulkImportState>(
       'handlePickedFile surfaces a parse error for an unsupported file',
       build: () => BulkImportStateService(writeService),
-      act: (service) => service.handlePickedFile(_csvBytes('title\nDune\n'), 'items.txt'),
+      act: (service) =>
+          service.handlePickedFile(_csvBytes('title\nDune\n'), 'items.txt'),
       expect: () => [isA<BulkImportParsing>(), isA<BulkImportError>()],
     );
 
@@ -133,7 +134,11 @@ void main() {
         await Future<void>.delayed(Duration.zero);
         service.reset();
       },
-      expect: () => [isA<BulkImportParsing>(), isA<BulkImportPreview>(), isA<BulkImportIdle>()],
+      expect: () => [
+        isA<BulkImportParsing>(),
+        isA<BulkImportPreview>(),
+        isA<BulkImportIdle>(),
+      ],
     );
   });
 }

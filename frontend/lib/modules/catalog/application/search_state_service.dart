@@ -4,9 +4,33 @@ import 'package:core/modules/catalog/domain/search/search_term.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/search_state.dart';
 
 const searchDebounce = Duration(milliseconds: 300);
+
+sealed class SearchState {
+  const SearchState();
+}
+
+class SearchIdle extends SearchState {
+  const SearchIdle();
+}
+
+class SearchInProgress extends SearchState {
+  const SearchInProgress();
+}
+
+class SearchLoaded extends SearchState {
+  const SearchLoaded(this.query, this.items);
+
+  final String query;
+  final List<ItemReadModel> items;
+}
+
+class SearchError extends SearchState {
+  const SearchError(this.message);
+
+  final String message;
+}
 
 class SearchStateService extends Cubit<SearchState> {
   SearchStateService(this._readService) : super(const SearchIdle()) {
@@ -39,7 +63,9 @@ class SearchStateService extends Cubit<SearchState> {
     emit(const SearchInProgress());
     try {
       final term = SearchTerm.create(query);
-      final matches = _items.where((item) => term.matchesAny(_searchableFields(item))).toList();
+      final matches = _items
+          .where((item) => term.matchesAny(_searchableFields(item)))
+          .toList();
       emit(SearchLoaded(query, matches));
     } catch (error) {
       emit(SearchError(error.toString()));

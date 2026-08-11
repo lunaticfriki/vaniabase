@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
-import 'package:frontend/modules/catalog/application/topics_state.dart';
+import 'package:frontend/modules/catalog/application/topics_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/alphabet_index_view.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
 
@@ -59,8 +59,15 @@ class _TopicsBody extends StatelessWidget {
     return switch (state) {
       TopicsLoading() => const Center(child: CircularProgressIndicator()),
       TopicsError(:final message) => Center(child: Text(message)),
-      TopicsLoaded(:final topics) when topics.isEmpty => const Center(child: Text('No topics yet.')),
-      TopicsLoaded(:final topics, :final selectedLetter, :final selectedTopic, :final selectedItems) =>
+      TopicsLoaded(:final topics) when topics.isEmpty => const Center(
+        child: Text('No topics yet.'),
+      ),
+      TopicsLoaded(
+        :final topics,
+        :final selectedLetter,
+        :final selectedTopic,
+        :final selectedItems,
+      ) =>
         SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

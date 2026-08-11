@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/tags_state.dart';
 import 'package:frontend/modules/catalog/application/tags_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,7 +15,10 @@ void main() {
     readService = MockItemReadService();
     when(() => readService.watchAll()).thenAnswer(
       (_) => Stream.value([
-        ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi', 'classic']),
+        ItemReadModelMother.random(
+          id: 'item-1',
+          tags: const ['sci-fi', 'classic'],
+        ),
         ItemReadModelMother.random(id: 'item-2', tags: const ['sci-fi']),
         ItemReadModelMother.random(id: 'item-3', tags: const ['drama']),
       ]),
@@ -102,8 +104,12 @@ void main() {
       setUp: () {
         when(() => readService.watchAll()).thenAnswer(
           (_) => Stream.fromIterable([
-            [ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi'])],
-            [ItemReadModelMother.random(id: 'item-1', tags: const ['drama'])],
+            [
+              ItemReadModelMother.random(id: 'item-1', tags: const ['sci-fi']),
+            ],
+            [
+              ItemReadModelMother.random(id: 'item-1', tags: const ['drama']),
+            ],
           ]),
         );
       },

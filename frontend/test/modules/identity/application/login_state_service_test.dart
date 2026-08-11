@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/identity/application/identity_write_service.dart';
-import 'package:frontend/modules/identity/application/login_state.dart';
 import 'package:frontend/modules/identity/application/login_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,11 +18,15 @@ void main() {
       'returns to idle on success',
       setUp: () {
         when(
-          () => identity.login(email: 'jane@example.com', password: 'password123'),
+          () => identity.login(
+            email: 'jane@example.com',
+            password: 'password123',
+          ),
         ).thenAnswer((_) async {});
       },
       build: () => LoginStateService(identity),
-      act: (service) => service.submit(email: 'jane@example.com', password: 'password123'),
+      act: (service) =>
+          service.submit(email: 'jane@example.com', password: 'password123'),
       expect: () => [isA<LoginInProgress>(), isA<LoginIdle>()],
     );
 
@@ -35,7 +38,8 @@ void main() {
         ).thenThrow(Exception('invalid credentials'));
       },
       build: () => LoginStateService(identity),
-      act: (service) => service.submit(email: 'jane@example.com', password: 'wrong'),
+      act: (service) =>
+          service.submit(email: 'jane@example.com', password: 'wrong'),
       expect: () => [isA<LoginInProgress>(), isA<LoginFailure>()],
     );
   });

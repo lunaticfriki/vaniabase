@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:frontend/shared/session/session_state.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,7 +23,9 @@ void main() {
         when(() => user.uid).thenReturn('user-1');
         when(() => user.email).thenReturn('jane@example.com');
         when(() => user.displayName).thenReturn('Jane');
-        when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(user));
+        when(
+          () => firebaseAuth.authStateChanges(),
+        ).thenAnswer((_) => Stream.value(user));
       },
       build: () => SessionStateService(firebaseAuth),
       expect: () => [
@@ -37,7 +38,9 @@ void main() {
 
     blocTest<SessionStateService, SessionState>(
       'emits SessionUnauthenticated when Firebase reports no user',
-      setUp: () => when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(null)),
+      setUp: () => when(
+        () => firebaseAuth.authStateChanges(),
+      ).thenAnswer((_) => Stream.value(null)),
       build: () => SessionStateService(firebaseAuth),
       expect: () => [isA<SessionUnauthenticated>()],
     );
@@ -45,7 +48,9 @@ void main() {
     blocTest<SessionStateService, SessionState>(
       'clear signs out through FirebaseAuth',
       setUp: () {
-        when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => const Stream.empty());
+        when(
+          () => firebaseAuth.authStateChanges(),
+        ).thenAnswer((_) => const Stream.empty());
         when(() => firebaseAuth.signOut()).thenAnswer((_) async {});
       },
       build: () => SessionStateService(firebaseAuth),

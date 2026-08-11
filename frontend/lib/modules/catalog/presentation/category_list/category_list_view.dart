@@ -1,10 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class CategoryListView extends StatelessWidget {
-  const CategoryListView({required this.previewImageUrls, required this.onCategoryTap, super.key});
+  const CategoryListView({
+    required this.previewImageUrls,
+    required this.onCategoryTap,
+    super.key,
+  });
 
   final Map<String, List<String>> previewImageUrls;
   final void Function(String category) onCategoryTap;
@@ -43,7 +48,11 @@ class CategoryListView extends StatelessWidget {
 }
 
 class _CategoryTile extends StatelessWidget {
-  const _CategoryTile({required this.label, required this.previewImageUrls, required this.onTap});
+  const _CategoryTile({
+    required this.label,
+    required this.previewImageUrls,
+    required this.onTap,
+  });
 
   final String label;
   final List<String> previewImageUrls;
@@ -64,16 +73,23 @@ class _CategoryTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final availableForThumbnails = constraints.maxWidth - _reservedForLabel - _reservedForArrow;
-              final thumbnailsThatFit = ((availableForThumbnails + _thumbnailSpacing) /
-                      (_thumbnailSize + _thumbnailSpacing))
-                  .floor()
-                  .clamp(0, previewImageUrls.length);
+              final availableForThumbnails =
+                  constraints.maxWidth - _reservedForLabel - _reservedForArrow;
+              final thumbnailsThatFit =
+                  ((availableForThumbnails + _thumbnailSpacing) /
+                          (_thumbnailSize + _thumbnailSpacing))
+                      .floor()
+                      .clamp(0, previewImageUrls.length);
               final shownImageUrls = previewImageUrls.take(thumbnailsThatFit);
 
               return Row(
                 children: [
-                  Expanded(child: Text(label, style: Theme.of(context).textTheme.titleMedium)),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
                   for (final imageUrl in shownImageUrls) ...[
                     const SizedBox(width: _thumbnailSpacing),
                     _CategoryPreviewThumbnail(imageUrl: imageUrl),
@@ -107,10 +123,13 @@ class _CategoryPreviewThumbnail extends StatelessWidget {
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 child: const Icon(Pixel.imagebroken, size: 20),
               )
-            : Image.network(
-                imageUrl,
+            : CachedNetworkImage(
+                imageUrl: imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
+                placeholder: (context, url) => Container(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                ),
+                errorWidget: (context, url, error) => Container(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: const Icon(Pixel.imagebroken, size: 20),
                 ),

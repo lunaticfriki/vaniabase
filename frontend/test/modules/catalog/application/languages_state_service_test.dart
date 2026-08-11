@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/languages_state.dart';
 import 'package:frontend/modules/catalog/application/languages_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -109,7 +108,8 @@ void main() {
 
     blocTest<LanguagesStateService, LanguagesState>(
       'an initial language pre-selects its letter and itself',
-      build: () => LanguagesStateService(readService, initialLanguage: 'Spanish'),
+      build: () =>
+          LanguagesStateService(readService, initialLanguage: 'Spanish'),
       expect: () => [isA<LanguagesLoaded>()],
       verify: (service) {
         final state = service.state as LanguagesLoaded;

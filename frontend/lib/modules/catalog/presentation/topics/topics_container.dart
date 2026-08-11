@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/topics_state.dart';
 import 'package:frontend/modules/catalog/application/topics_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/topics/topics_view.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +21,10 @@ class _TopicsContainerState extends State<TopicsContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = TopicsStateService(getIt<ItemReadService>(), initialTopic: widget.initialTopic);
+    _stateService = TopicsStateService(
+      getIt<ItemReadService>(),
+      initialTopic: widget.initialTopic,
+    );
   }
 
   @override
@@ -38,8 +40,10 @@ class _TopicsContainerState extends State<TopicsContainer> {
       child: BlocBuilder<TopicsStateService, TopicsState>(
         builder: (context, state) => TopicsView(
           state: state,
-          onLetterTap: (letter) => context.read<TopicsStateService>().selectLetter(letter),
-          onTopicTap: (topic) => context.read<TopicsStateService>().selectTopic(topic),
+          onLetterTap: (letter) =>
+              context.read<TopicsStateService>().selectLetter(letter),
+          onTopicTap: (topic) =>
+              context.read<TopicsStateService>().selectTopic(topic),
           onItemTap: (item) => context.push('/items/${item.id}'),
         ),
       ),

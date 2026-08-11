@@ -4,7 +4,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/alphabet_util.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/topics_state.dart';
+
+sealed class TopicsState {
+  const TopicsState();
+}
+
+class TopicsLoading extends TopicsState {
+  const TopicsLoading();
+}
+
+class TopicsLoaded extends TopicsState {
+  const TopicsLoaded(
+    this.topics,
+    this.items, {
+    this.selectedLetter,
+    this.selectedTopic,
+  });
+
+  final List<String> topics;
+  final List<ItemReadModel> items;
+  final String? selectedLetter;
+  final String? selectedTopic;
+
+  List<ItemReadModel> get selectedItems {
+    final topic = selectedTopic;
+    if (topic == null) return const [];
+    return items.where((item) => item.topic == topic).toList();
+  }
+}
+
+class TopicsError extends TopicsState {
+  const TopicsError(this.message);
+
+  final String message;
+}
 
 class TopicsStateService extends Cubit<TopicsState> {
   TopicsStateService(this._readService, {String? initialTopic})
@@ -22,13 +55,20 @@ class TopicsStateService extends Cubit<TopicsState> {
 
   void _onItems(List<ItemReadModel> items) {
     final topics =
-        items.map((item) => item.topic).where((topic) => topic.isNotEmpty).toSet().toList()..sort();
+        items
+            .map((item) => item.topic)
+            .where((topic) => topic.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort();
 
     final current = state;
     String? selectedLetter;
     String? selectedTopic;
     if (current is TopicsLoaded && current.selectedLetter != null) {
-      final entriesForLetter = topics.where((topic) => letterForEntry(topic) == current.selectedLetter);
+      final entriesForLetter = topics.where(
+        (topic) => letterForEntry(topic) == current.selectedLetter,
+      );
       if (entriesForLetter.isNotEmpty) {
         selectedLetter = current.selectedLetter;
         selectedTopic = entriesForLetter.contains(current.selectedTopic)
@@ -37,11 +77,20 @@ class TopicsStateService extends Cubit<TopicsState> {
       }
     } else if (current is! TopicsLoaded) {
       final initialTopic = _initialTopic;
-      selectedLetter = initialTopic == null ? null : letterForEntry(initialTopic);
+      selectedLetter = initialTopic == null
+          ? null
+          : letterForEntry(initialTopic);
       selectedTopic = initialTopic;
     }
 
-    emit(TopicsLoaded(topics, items, selectedLetter: selectedLetter, selectedTopic: selectedTopic));
+    emit(
+      TopicsLoaded(
+        topics,
+        items,
+        selectedLetter: selectedLetter,
+        selectedTopic: selectedTopic,
+      ),
+    );
   }
 
   void selectLetter(String letter) {
@@ -51,7 +100,9 @@ class TopicsStateService extends Cubit<TopicsState> {
       emit(TopicsLoaded(current.topics, current.items));
       return;
     }
-    final topicsForLetter = current.topics.where((topic) => letterForEntry(topic) == letter);
+    final topicsForLetter = current.topics.where(
+      (topic) => letterForEntry(topic) == letter,
+    );
     emit(
       TopicsLoaded(
         current.topics,

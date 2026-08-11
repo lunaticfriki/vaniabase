@@ -1,6 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/identity/application/identity_write_service.dart';
-import 'package:frontend/modules/identity/application/login_state.dart';
+
+sealed class LoginState {
+  const LoginState();
+}
+
+class LoginIdle extends LoginState {
+  const LoginIdle();
+}
+
+class LoginInProgress extends LoginState {
+  const LoginInProgress();
+}
+
+class LoginFailure extends LoginState {
+  const LoginFailure(this.message);
+
+  final String message;
+}
 
 class LoginStateService extends Cubit<LoginState> {
   LoginStateService(this._identity) : super(const LoginIdle());

@@ -3,15 +3,38 @@ import 'dart:async';
 import 'package:core/shared/pagination/page_request.dart';
 import 'package:core/shared/pagination/page_result.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/modules/catalog/application/item_list_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 
+sealed class ItemListState {
+  const ItemListState();
+}
+
+class ItemListLoading extends ItemListState {
+  const ItemListLoading();
+}
+
+class ItemListLoaded extends ItemListState {
+  const ItemListLoaded(this.result);
+
+  final PageResult<ItemReadModel> result;
+}
+
+class ItemListError extends ItemListState {
+  const ItemListError(this.message);
+
+  final String message;
+}
+
 class ItemListStateService extends Cubit<ItemListState> {
-  ItemListStateService(this._readService, {String? category}) : super(const ItemListLoading()) {
+  ItemListStateService(this._readService, {String? category})
+    : super(const ItemListLoading()) {
     _subscription = _readService
         .watchAll(category: category)
-        .listen(_onItems, onError: (Object error) => emit(ItemListError(error.toString())));
+        .listen(
+          _onItems,
+          onError: (Object error) => emit(ItemListError(error.toString())),
+        );
   }
 
   final ItemReadService _readService;
@@ -28,7 +51,9 @@ class ItemListStateService extends Cubit<ItemListState> {
     final pageRequest = PageRequest.create(page: _page);
     final start = pageRequest.offset;
     final end = (start + pageRequest.limit).clamp(0, _allItems.length);
-    final pageItems = start >= _allItems.length ? const <ItemReadModel>[] : _allItems.sublist(start, end);
+    final pageItems = start >= _allItems.length
+        ? const <ItemReadModel>[]
+        : _allItems.sublist(start, end);
     emit(
       ItemListLoaded(
         PageResult(

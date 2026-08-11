@@ -3,7 +3,41 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/tags_state.dart';
+
+class TagCount {
+  const TagCount(this.tag, this.count);
+
+  final String tag;
+  final int count;
+}
+
+sealed class TagsState {
+  const TagsState();
+}
+
+class TagsLoading extends TagsState {
+  const TagsLoading();
+}
+
+class TagsLoaded extends TagsState {
+  const TagsLoaded(this.tagCounts, this.items, {this.selectedTag});
+
+  final List<TagCount> tagCounts;
+  final List<ItemReadModel> items;
+  final String? selectedTag;
+
+  List<ItemReadModel> get selectedItems {
+    final tag = selectedTag;
+    if (tag == null) return const [];
+    return items.where((item) => item.tags.contains(tag)).toList();
+  }
+}
+
+class TagsError extends TagsState {
+  const TagsError(this.message);
+
+  final String message;
+}
 
 class TagsStateService extends Cubit<TagsState> {
   TagsStateService(this._readService, {String? initialTag})
@@ -26,12 +60,15 @@ class TagsStateService extends Cubit<TagsState> {
         counts[tag] = (counts[tag] ?? 0) + 1;
       }
     }
-    final tagCounts = counts.entries.map((entry) => TagCount(entry.key, entry.value)).toList()
-      ..sort((a, b) => a.tag.compareTo(b.tag));
+    final tagCounts =
+        counts.entries.map((entry) => TagCount(entry.key, entry.value)).toList()
+          ..sort((a, b) => a.tag.compareTo(b.tag));
 
     final current = state;
     final selectedTag = current is TagsLoaded
-        ? (tagCounts.any((t) => t.tag == current.selectedTag) ? current.selectedTag : null)
+        ? (tagCounts.any((t) => t.tag == current.selectedTag)
+              ? current.selectedTag
+              : null)
         : (_initialTag ?? (tagCounts.isEmpty ? null : tagCounts.first.tag));
 
     emit(TagsLoaded(tagCounts, items, selectedTag: selectedTag));

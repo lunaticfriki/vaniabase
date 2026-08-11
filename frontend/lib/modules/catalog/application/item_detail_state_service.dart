@@ -1,7 +1,27 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/modules/catalog/application/item_detail_state.dart';
+import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
+
+sealed class ItemDetailState {
+  const ItemDetailState();
+}
+
+class ItemDetailLoading extends ItemDetailState {
+  const ItemDetailLoading();
+}
+
+class ItemDetailLoaded extends ItemDetailState {
+  const ItemDetailLoaded(this.item);
+
+  final ItemReadModel item;
+}
+
+class ItemDetailError extends ItemDetailState {
+  const ItemDetailError(this.message);
+
+  final String message;
+}
 
 class ItemDetailStateService extends Cubit<ItemDetailState> {
   ItemDetailStateService(this._readService, this._writeService, this._itemId)

@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/modules/catalog/application/item_list_state.dart';
 import 'package:frontend/modules/catalog/application/item_list_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:mocktail/mocktail.dart';
@@ -90,8 +89,16 @@ void main() {
       },
       build: () => ItemListStateService(readService),
       expect: () => [
-        isA<ItemListLoaded>().having((s) => s.result.totalItems, 'totalItems', 10),
-        isA<ItemListLoaded>().having((s) => s.result.totalItems, 'totalItems', 11),
+        isA<ItemListLoaded>().having(
+          (s) => s.result.totalItems,
+          'totalItems',
+          10,
+        ),
+        isA<ItemListLoaded>().having(
+          (s) => s.result.totalItems,
+          'totalItems',
+          11,
+        ),
       ],
     );
   });

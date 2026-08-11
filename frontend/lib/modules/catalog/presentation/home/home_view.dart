@@ -31,8 +31,11 @@ class HomeView extends StatelessWidget {
                   ? const Text('No items yet.')
                   : ResponsiveItemGrid<ItemReadModel>(
                       items: items,
-                      itemBuilder: (context, item) =>
-                          ItemCardView(item: item, onTap: () => onItemTap(item)),
+                      keyBuilder: (item) => ValueKey(item.id),
+                      itemBuilder: (context, item) => ItemCardView(
+                        item: item,
+                        onTap: () => onItemTap(item),
+                      ),
                     ),
             ),
           ),

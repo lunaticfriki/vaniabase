@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/layout/overlay_icon_button.dart';
 import 'package:pixelarticons/pixel.dart';
@@ -10,7 +11,8 @@ Future<void> openFullscreenImage(BuildContext context, String imageUrl) {
     PageRouteBuilder<void>(
       opaque: true,
       barrierColor: Colors.black,
-      pageBuilder: (context, animation, secondaryAnimation) => FullscreenImageView(imageUrl: imageUrl),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          FullscreenImageView(imageUrl: imageUrl),
       transitionsBuilder: (context, animation, secondaryAnimation, child) =>
           FadeTransition(opacity: animation, child: child),
     ),
@@ -45,13 +47,20 @@ class _FullscreenImageViewState extends State<FullscreenImageView> {
                   minScale: 1,
                   maxScale: 4,
                   child: widget.imageUrl.isEmpty
-                      ? const Icon(Pixel.imagebroken, color: Colors.white54, size: 64)
-                      : Image.network(
-                          widget.imageUrl,
+                      ? const Icon(
+                          Pixel.imagebroken,
+                          color: Colors.white54,
+                          size: 64,
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: widget.imageUrl,
                           key: fullscreenImageKey,
                           fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Pixel.imagebroken, color: Colors.white54, size: 64),
+                          errorWidget: (context, url, error) => const Icon(
+                            Pixel.imagebroken,
+                            color: Colors.white54,
+                            size: 64,
+                          ),
                         ),
                 ),
               ),

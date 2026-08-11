@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
@@ -85,7 +86,10 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
   }
 
   void _onScroll() {
-    final opacity = (_scrollController.offset / _headerFadeDistance).clamp(0.0, 1.0);
+    final opacity = (_scrollController.offset / _headerFadeDistance).clamp(
+      0.0,
+      1.0,
+    );
     if (opacity != _headerOpacity) setState(() => _headerOpacity = opacity);
   }
 
@@ -137,9 +141,17 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
                 color: colorScheme.surface.withValues(alpha: _headerOpacity),
                 child: Row(
                   children: [
-                    OverlayIconButton(icon: Pixel.arrowleft, label: 'Back', onTap: widget.onBack),
+                    OverlayIconButton(
+                      icon: Pixel.arrowleft,
+                      label: 'Back',
+                      onTap: widget.onBack,
+                    ),
                     const Spacer(),
-                    OverlayIconButton(icon: Pixel.edit, label: 'Edit', onTap: widget.onEdit),
+                    OverlayIconButton(
+                      icon: Pixel.edit,
+                      label: 'Edit',
+                      onTap: widget.onEdit,
+                    ),
                   ],
                 ),
               ),
@@ -194,7 +206,10 @@ class _WideLayout extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                _CompletedBadge(completed: item.completed, onTap: onToggleCompleted),
+                _CompletedBadge(
+                  completed: item.completed,
+                  onTap: onToggleCompleted,
+                ),
                 const SizedBox(height: 20),
                 _DetailFields(item: item, onTagTap: onTagTap),
               ],
@@ -207,7 +222,11 @@ class _WideLayout extends StatelessWidget {
 }
 
 class _NarrowLayout extends StatelessWidget {
-  const _NarrowLayout({required this.item, required this.onToggleCompleted, required this.onTagTap});
+  const _NarrowLayout({
+    required this.item,
+    required this.onToggleCompleted,
+    required this.onTagTap,
+  });
 
   final ItemReadModel item;
   final VoidCallback onToggleCompleted;
@@ -234,7 +253,9 @@ class _ItemHeroImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: item.imageUrl.isEmpty ? null : () => openFullscreenImage(context, item.imageUrl),
+      onTap: item.imageUrl.isEmpty
+          ? null
+          : () => openFullscreenImage(context, item.imageUrl),
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -247,7 +268,10 @@ class _ItemHeroImage extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     stops: const [0.55, 1],
-                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.75)],
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.75),
+                    ],
                   ),
                 ),
               ),
@@ -263,15 +287,18 @@ class _ItemHeroImage extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 if (item.creator.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
                     item.creator.join(', '),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white70),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(color: Colors.white70),
                   ),
                 ],
               ],
@@ -300,8 +327,12 @@ class _CompletedBadge extends StatelessWidget {
       ),
       label: Text(completed ? 'Completed' : 'Not completed'),
       onPressed: onTap,
-      backgroundColor: completed ? colorScheme.primary : colorScheme.surfaceContainerHighest,
-      labelStyle: TextStyle(color: completed ? colorScheme.onPrimary : colorScheme.onSurfaceVariant),
+      backgroundColor: completed
+          ? colorScheme.primary
+          : colorScheme.surfaceContainerHighest,
+      labelStyle: TextStyle(
+        color: completed ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }
@@ -322,10 +353,14 @@ class _ItemImageFill extends StatelessWidget {
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: const Icon(Pixel.imagebroken, size: 48),
             )
-          : Image.network(
-              imageUrl,
+          : CachedNetworkImage(
+              imageUrl: imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
+              placeholder: (context, url) => Container(
+                alignment: Alignment.center,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
+              errorWidget: (context, url, error) => Container(
                 alignment: Alignment.center,
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 child: const Icon(Pixel.imagebroken, size: 48),
@@ -347,19 +382,22 @@ class _DetailFields extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DetailRow(label: 'Publisher', value: item.publisher),
-        if (item.reference.isNotEmpty) _DetailRow(label: 'Reference', value: item.reference),
+        if (item.reference.isNotEmpty)
+          _DetailRow(label: 'Reference', value: item.reference),
         _DetailRow(label: 'Category', value: categoryLabel(item.category)),
         _DetailRow(label: 'Format', value: formatLabel(item.format)),
         if (item.year > 0) _DetailRow(label: 'Year', value: '${item.year}'),
-        if (item.language.isNotEmpty) _DetailRow(label: 'Language', value: item.language),
-        if (item.topic.isNotEmpty) _DetailRow(label: 'Topic', value: item.topic),
+        if (item.language.isNotEmpty)
+          _DetailRow(label: 'Language', value: item.language),
+        if (item.topic.isNotEmpty)
+          _DetailRow(label: 'Topic', value: item.topic),
         if (item.tags.isNotEmpty) ...[
           const SizedBox(height: 8),
           Text(
             'Tags',
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           const SizedBox(height: 4),
           Wrap(
@@ -375,9 +413,9 @@ class _DetailFields extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Description',
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           const SizedBox(height: 4),
           Text(item.description, style: Theme.of(context).textTheme.bodyMedium),
@@ -402,9 +440,9 @@ class _DetailRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.primary),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
           Text(value, style: Theme.of(context).textTheme.bodyMedium),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/bulk_import_row.dart';
-import 'package:frontend/modules/catalog/application/bulk_import_state.dart';
+import 'package:frontend/modules/catalog/application/bulk_import_state_service.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class BulkImportView extends StatelessWidget {
@@ -30,7 +30,10 @@ class BulkImportView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Import from spreadsheet', style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Import from spreadsheet',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 16),
               switch (state) {
                 BulkImportIdle() => _IdleBody(onPickFile: onPickFile),
@@ -40,13 +43,18 @@ class BulkImportView extends StatelessWidget {
                   onStartImport: onStartImport,
                   onReset: onReset,
                 ),
-                BulkImportImporting() => _ImportingBody(state: state as BulkImportImporting),
+                BulkImportImporting() => _ImportingBody(
+                  state: state as BulkImportImporting,
+                ),
                 BulkImportDone() => _DoneBody(
                   state: state as BulkImportDone,
                   onDone: onDone,
                   onReset: onReset,
                 ),
-                BulkImportError(:final message) => _ErrorBody(message: message, onReset: onReset),
+                BulkImportError(:final message) => _ErrorBody(
+                  message: message,
+                  onReset: onReset,
+                ),
               },
             ],
           ),
@@ -79,9 +87,9 @@ class _IdleBody extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           _expectedColumns,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 8),
         Text(
@@ -111,7 +119,11 @@ class _ParsingBody extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 24),
       child: Row(
         children: [
-          SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+          SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
           SizedBox(width: 12),
           Text('Reading file...'),
         ],
@@ -121,7 +133,11 @@ class _ParsingBody extends StatelessWidget {
 }
 
 class _PreviewBody extends StatelessWidget {
-  const _PreviewBody({required this.state, required this.onStartImport, required this.onReset});
+  const _PreviewBody({
+    required this.state,
+    required this.onStartImport,
+    required this.onReset,
+  });
 
   final BulkImportPreview state;
   final VoidCallback onStartImport;
@@ -162,7 +178,10 @@ class _PreviewBody extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            TextButton(onPressed: onReset, child: const Text('Choose a different file')),
+            TextButton(
+              onPressed: onReset,
+              child: const Text('Choose a different file'),
+            ),
           ],
         ),
         if (state.validCount == 0) ...[
@@ -215,14 +234,20 @@ class _ImportingBody extends StatelessWidget {
       children: [
         Text('Importing ${state.completed} of ${state.total}...'),
         const SizedBox(height: 12),
-        LinearProgressIndicator(value: state.total == 0 ? null : state.completed / state.total),
+        LinearProgressIndicator(
+          value: state.total == 0 ? null : state.completed / state.total,
+        ),
       ],
     );
   }
 }
 
 class _DoneBody extends StatelessWidget {
-  const _DoneBody({required this.state, required this.onDone, required this.onReset});
+  const _DoneBody({
+    required this.state,
+    required this.onDone,
+    required this.onReset,
+  });
 
   final BulkImportDone state;
   final VoidCallback onDone;
@@ -261,7 +286,10 @@ class _DoneBody extends StatelessWidget {
           children: [
             FilledButton(onPressed: onDone, child: const Text('Done')),
             const SizedBox(width: 12),
-            TextButton(onPressed: onReset, child: const Text('Import another file')),
+            TextButton(
+              onPressed: onReset,
+              child: const Text('Import another file'),
+            ),
           ],
         ),
       ],
@@ -281,7 +309,10 @@ class _ErrorBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(message, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+        Text(
+          message,
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
+        ),
         const SizedBox(height: 16),
         FilledButton(onPressed: onReset, child: const Text('Try again')),
       ],

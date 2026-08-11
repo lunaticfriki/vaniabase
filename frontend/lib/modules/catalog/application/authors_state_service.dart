@@ -2,9 +2,42 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/alphabet_util.dart';
-import 'package:frontend/modules/catalog/application/authors_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
+
+sealed class AuthorsState {
+  const AuthorsState();
+}
+
+class AuthorsLoading extends AuthorsState {
+  const AuthorsLoading();
+}
+
+class AuthorsLoaded extends AuthorsState {
+  const AuthorsLoaded(
+    this.authors,
+    this.items, {
+    this.selectedLetter,
+    this.selectedAuthor,
+  });
+
+  final List<String> authors;
+  final List<ItemReadModel> items;
+  final String? selectedLetter;
+  final String? selectedAuthor;
+
+  List<ItemReadModel> get selectedItems {
+    final author = selectedAuthor;
+    if (author == null) return const [];
+    return items.where((item) => item.creator.contains(author)).toList();
+  }
+}
+
+class AuthorsError extends AuthorsState {
+  const AuthorsError(this.message);
+
+  final String message;
+}
 
 class AuthorsStateService extends Cubit<AuthorsState> {
   AuthorsStateService(this._readService, {String? initialAuthor})
@@ -22,14 +55,20 @@ class AuthorsStateService extends Cubit<AuthorsState> {
 
   void _onItems(List<ItemReadModel> items) {
     final authors =
-        items.expand((item) => item.creator).where((author) => author.isNotEmpty).toSet().toList()
+        items
+            .expand((item) => item.creator)
+            .where((author) => author.isNotEmpty)
+            .toSet()
+            .toList()
           ..sort();
 
     final current = state;
     String? selectedLetter;
     String? selectedAuthor;
     if (current is AuthorsLoaded && current.selectedLetter != null) {
-      final entriesForLetter = authors.where((author) => letterForEntry(author) == current.selectedLetter);
+      final entriesForLetter = authors.where(
+        (author) => letterForEntry(author) == current.selectedLetter,
+      );
       if (entriesForLetter.isNotEmpty) {
         selectedLetter = current.selectedLetter;
         selectedAuthor = entriesForLetter.contains(current.selectedAuthor)
@@ -38,11 +77,20 @@ class AuthorsStateService extends Cubit<AuthorsState> {
       }
     } else if (current is! AuthorsLoaded) {
       final initialAuthor = _initialAuthor;
-      selectedLetter = initialAuthor == null ? null : letterForEntry(initialAuthor);
+      selectedLetter = initialAuthor == null
+          ? null
+          : letterForEntry(initialAuthor);
       selectedAuthor = initialAuthor;
     }
 
-    emit(AuthorsLoaded(authors, items, selectedLetter: selectedLetter, selectedAuthor: selectedAuthor));
+    emit(
+      AuthorsLoaded(
+        authors,
+        items,
+        selectedLetter: selectedLetter,
+        selectedAuthor: selectedAuthor,
+      ),
+    );
   }
 
   void selectLetter(String letter) {
@@ -52,13 +100,17 @@ class AuthorsStateService extends Cubit<AuthorsState> {
       emit(AuthorsLoaded(current.authors, current.items));
       return;
     }
-    final authorsForLetter = current.authors.where((author) => letterForEntry(author) == letter);
+    final authorsForLetter = current.authors.where(
+      (author) => letterForEntry(author) == letter,
+    );
     emit(
       AuthorsLoaded(
         current.authors,
         current.items,
         selectedLetter: letter,
-        selectedAuthor: authorsForLetter.isEmpty ? null : authorsForLetter.first,
+        selectedAuthor: authorsForLetter.isEmpty
+            ? null
+            : authorsForLetter.first,
       ),
     );
   }

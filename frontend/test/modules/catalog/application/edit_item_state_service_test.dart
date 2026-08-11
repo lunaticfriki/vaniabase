@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/modules/catalog/application/edit_item_state.dart';
 import 'package:frontend/modules/catalog/application/edit_item_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
@@ -95,7 +94,11 @@ void main() {
           format: item.format,
         );
       },
-      expect: () => [isA<EditItemReady>(), isA<EditItemReady>(), isA<EditItemSuccess>()],
+      expect: () => [
+        isA<EditItemReady>(),
+        isA<EditItemReady>(),
+        isA<EditItemSuccess>(),
+      ],
     );
 
     blocTest<EditItemStateService, EditItemState>(
@@ -135,7 +138,11 @@ void main() {
       expect: () => [
         isA<EditItemReady>(),
         isA<EditItemReady>(),
-        isA<EditItemReady>().having((s) => s.submitError, 'submitError', isNotNull),
+        isA<EditItemReady>().having(
+          (s) => s.submitError,
+          'submitError',
+          isNotNull,
+        ),
       ],
     );
 
@@ -149,13 +156,19 @@ void main() {
         await _settleLoad();
         await service.delete();
       },
-      expect: () => [isA<EditItemReady>(), isA<EditItemDeleting>(), isA<EditItemDeleted>()],
+      expect: () => [
+        isA<EditItemReady>(),
+        isA<EditItemDeleting>(),
+        isA<EditItemDeleted>(),
+      ],
     );
 
     blocTest<EditItemStateService, EditItemState>(
       'emits EditItemDeleting then EditItemReady with submitError on delete failure',
       setUp: () {
-        when(() => writeService.delete(id: 'item-1')).thenThrow(Exception('delete failed'));
+        when(
+          () => writeService.delete(id: 'item-1'),
+        ).thenThrow(Exception('delete failed'));
       },
       build: () => EditItemStateService(readService, writeService, 'item-1'),
       act: (service) async {
@@ -165,7 +178,11 @@ void main() {
       expect: () => [
         isA<EditItemReady>(),
         isA<EditItemDeleting>(),
-        isA<EditItemReady>().having((s) => s.submitError, 'submitError', isNotNull),
+        isA<EditItemReady>().having(
+          (s) => s.submitError,
+          'submitError',
+          isNotNull,
+        ),
       ],
     );
   });

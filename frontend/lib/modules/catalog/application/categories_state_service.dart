@@ -1,22 +1,45 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/modules/catalog/application/categories_state.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 
 const categoryPreviewCount = 8;
 
+sealed class CategoriesState {
+  const CategoriesState();
+}
+
+class CategoriesLoading extends CategoriesState {
+  const CategoriesLoading();
+}
+
+class CategoriesLoaded extends CategoriesState {
+  const CategoriesLoaded(this.previewImageUrls);
+
+  final Map<String, List<String>> previewImageUrls;
+}
+
+class CategoriesError extends CategoriesState {
+  const CategoriesError(this.message);
+
+  final String message;
+}
+
 class CategoriesStateService extends Cubit<CategoriesState> {
-  CategoriesStateService(this._readService, this._categories) : super(const CategoriesLoading()) {
-    _previewImageUrls = {for (final category in _categories) category: const <String>[]};
+  CategoriesStateService(this._readService, this._categories)
+    : super(const CategoriesLoading()) {
+    _previewImageUrls = {
+      for (final category in _categories) category: const <String>[],
+    };
     _subscriptions = [
       for (final category in _categories)
         _readService
             .watchAll(category: category)
             .listen(
               (items) => _onCategoryItems(category, items),
-              onError: (Object error) => emit(CategoriesError(error.toString())),
+              onError: (Object error) =>
+                  emit(CategoriesError(error.toString())),
             ),
     ];
   }
@@ -28,7 +51,10 @@ class CategoriesStateService extends Cubit<CategoriesState> {
 
   void _onCategoryItems(String category, List<ItemReadModel> items) {
     _previewImageUrls = Map.of(_previewImageUrls)
-      ..[category] = items.take(categoryPreviewCount).map((item) => item.imageUrl).toList();
+      ..[category] = items
+          .take(categoryPreviewCount)
+          .map((item) => item.imageUrl)
+          .toList();
     emit(CategoriesLoaded(_previewImageUrls));
   }
 

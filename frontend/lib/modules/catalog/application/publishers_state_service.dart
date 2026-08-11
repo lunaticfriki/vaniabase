@@ -4,7 +4,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/modules/catalog/application/alphabet_util.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/publishers_state.dart';
+
+sealed class PublishersState {
+  const PublishersState();
+}
+
+class PublishersLoading extends PublishersState {
+  const PublishersLoading();
+}
+
+class PublishersLoaded extends PublishersState {
+  const PublishersLoaded(
+    this.publishers,
+    this.items, {
+    this.selectedLetter,
+    this.selectedPublisher,
+  });
+
+  final List<String> publishers;
+  final List<ItemReadModel> items;
+  final String? selectedLetter;
+  final String? selectedPublisher;
+
+  List<ItemReadModel> get selectedItems {
+    final publisher = selectedPublisher;
+    if (publisher == null) return const [];
+    return items.where((item) => item.publisher == publisher).toList();
+  }
+}
+
+class PublishersError extends PublishersState {
+  const PublishersError(this.message);
+
+  final String message;
+}
 
 class PublishersStateService extends Cubit<PublishersState> {
   PublishersStateService(this._readService, {String? initialPublisher})
@@ -22,7 +55,11 @@ class PublishersStateService extends Cubit<PublishersState> {
 
   void _onItems(List<ItemReadModel> items) {
     final publishers =
-        items.map((item) => item.publisher).where((publisher) => publisher.isNotEmpty).toSet().toList()
+        items
+            .map((item) => item.publisher)
+            .where((publisher) => publisher.isNotEmpty)
+            .toSet()
+            .toList()
           ..sort();
 
     final current = state;
@@ -40,7 +77,9 @@ class PublishersStateService extends Cubit<PublishersState> {
       }
     } else if (current is! PublishersLoaded) {
       final initialPublisher = _initialPublisher;
-      selectedLetter = initialPublisher == null ? null : letterForEntry(initialPublisher);
+      selectedLetter = initialPublisher == null
+          ? null
+          : letterForEntry(initialPublisher);
       selectedPublisher = initialPublisher;
     }
 
@@ -69,7 +108,9 @@ class PublishersStateService extends Cubit<PublishersState> {
         current.publishers,
         current.items,
         selectedLetter: letter,
-        selectedPublisher: publishersForLetter.isEmpty ? null : publishersForLetter.first,
+        selectedPublisher: publishersForLetter.isEmpty
+            ? null
+            : publishersForLetter.first,
       ),
     );
   }
@@ -82,7 +123,9 @@ class PublishersStateService extends Cubit<PublishersState> {
         current.publishers,
         current.items,
         selectedLetter: current.selectedLetter,
-        selectedPublisher: current.selectedPublisher == publisher ? null : publisher,
+        selectedPublisher: current.selectedPublisher == publisher
+            ? null
+            : publisher,
       ),
     );
   }

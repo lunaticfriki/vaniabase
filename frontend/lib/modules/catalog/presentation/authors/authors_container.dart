@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
-import 'package:frontend/modules/catalog/application/authors_state.dart';
 import 'package:frontend/modules/catalog/application/authors_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/presentation/authors/authors_view.dart';
@@ -22,7 +21,10 @@ class _AuthorsContainerState extends State<AuthorsContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = AuthorsStateService(getIt<ItemReadService>(), initialAuthor: widget.initialAuthor);
+    _stateService = AuthorsStateService(
+      getIt<ItemReadService>(),
+      initialAuthor: widget.initialAuthor,
+    );
   }
 
   @override
@@ -38,8 +40,10 @@ class _AuthorsContainerState extends State<AuthorsContainer> {
       child: BlocBuilder<AuthorsStateService, AuthorsState>(
         builder: (context, state) => AuthorsView(
           state: state,
-          onLetterTap: (letter) => context.read<AuthorsStateService>().selectLetter(letter),
-          onAuthorTap: (author) => context.read<AuthorsStateService>().selectAuthor(author),
+          onLetterTap: (letter) =>
+              context.read<AuthorsStateService>().selectLetter(letter),
+          onAuthorTap: (author) =>
+              context.read<AuthorsStateService>().selectAuthor(author),
           onItemTap: (item) => context.push('/items/${item.id}'),
         ),
       ),

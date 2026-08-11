@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/publishers_state.dart';
 import 'package:frontend/modules/catalog/application/publishers_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/publishers/publishers_view.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +40,8 @@ class _PublishersContainerState extends State<PublishersContainer> {
       child: BlocBuilder<PublishersStateService, PublishersState>(
         builder: (context, state) => PublishersView(
           state: state,
-          onLetterTap: (letter) => context.read<PublishersStateService>().selectLetter(letter),
+          onLetterTap: (letter) =>
+              context.read<PublishersStateService>().selectLetter(letter),
           onPublisherTap: (publisher) =>
               context.read<PublishersStateService>().selectPublisher(publisher),
           onItemTap: (item) => context.push('/items/${item.id}'),

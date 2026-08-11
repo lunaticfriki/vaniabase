@@ -1,6 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
-import 'package:frontend/modules/catalog/application/topics_state.dart';
 import 'package:frontend/modules/catalog/application/topics_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -133,8 +132,16 @@ void main() {
       },
       build: () => TopicsStateService(readService, initialTopic: 'History'),
       expect: () => [
-        isA<TopicsLoaded>().having((s) => s.selectedTopic, 'selectedTopic', 'History'),
-        isA<TopicsLoaded>().having((s) => s.selectedTopic, 'selectedTopic', 'History'),
+        isA<TopicsLoaded>().having(
+          (s) => s.selectedTopic,
+          'selectedTopic',
+          'History',
+        ),
+        isA<TopicsLoaded>().having(
+          (s) => s.selectedTopic,
+          'selectedTopic',
+          'History',
+        ),
       ],
       verify: (service) {
         final state = service.state as TopicsLoaded;

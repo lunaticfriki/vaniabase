@@ -4,6 +4,7 @@ class ResponsiveItemGrid<T> extends StatelessWidget {
   const ResponsiveItemGrid({
     required this.items,
     required this.itemBuilder,
+    this.keyBuilder,
     this.targetColumns = 5,
     this.horizontalPadding = 32,
     super.key,
@@ -11,6 +12,7 @@ class ResponsiveItemGrid<T> extends StatelessWidget {
 
   final List<T> items;
   final Widget Function(BuildContext context, T item) itemBuilder;
+  final Key Function(T item)? keyBuilder;
   final int targetColumns;
 
   final double horizontalPadding;
@@ -24,14 +26,13 @@ class ResponsiveItemGrid<T> extends StatelessWidget {
     if (items.isEmpty) return const SizedBox.shrink();
 
     final availableWidth = MediaQuery.sizeOf(context).width - horizontalPadding;
-    final columnsThatFit = ((availableWidth + _spacing) / (_minItemWidth + _spacing))
-        .floor()
-        .clamp(1, targetColumns);
+    final columnsThatFit =
+        ((availableWidth + _spacing) / (_minItemWidth + _spacing))
+            .floor()
+            .clamp(1, targetColumns);
     final columns = columnsThatFit.clamp(1, items.length);
-    final itemWidth = ((availableWidth - _spacing * (columns - 1)) / columns).clamp(
-      _minItemWidth,
-      _maxItemWidth,
-    );
+    final itemWidth = ((availableWidth - _spacing * (columns - 1)) / columns)
+        .clamp(_minItemWidth, _maxItemWidth);
     final gridWidth = itemWidth * columns + _spacing * (columns - 1);
 
     return Center(
@@ -42,7 +43,12 @@ class ResponsiveItemGrid<T> extends StatelessWidget {
           spacing: _spacing,
           runSpacing: _spacing,
           children: [
-            for (final item in items) SizedBox(width: itemWidth, child: itemBuilder(context, item)),
+            for (final item in items)
+              SizedBox(
+                key: keyBuilder?.call(item),
+                width: itemWidth,
+                child: itemBuilder(context, item),
+              ),
           ],
         ),
       ),

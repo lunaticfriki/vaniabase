@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/modules/catalog/application/categories_state.dart';
 import 'package:frontend/modules/catalog/application/categories_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
@@ -25,15 +24,12 @@ void main() {
       setUp: () {
         when(() => readService.watchAll(category: 'book')).thenAnswer(
           (_) => Stream.value(
-            List.generate(
-              10,
-              (i) => ItemReadModelMother.random(id: 'book-$i'),
-            ),
+            List.generate(10, (i) => ItemReadModelMother.random(id: 'book-$i')),
           ),
         );
-        when(
-          () => readService.watchAll(category: 'movie'),
-        ).thenAnswer((_) => Stream.value([ItemReadModelMother.random(id: 'movie-1')]));
+        when(() => readService.watchAll(category: 'movie')).thenAnswer(
+          (_) => Stream.value([ItemReadModelMother.random(id: 'movie-1')]),
+        );
       },
       build: () => CategoriesStateService(readService, ['book', 'movie']),
       expect: () => [isA<CategoriesLoaded>(), isA<CategoriesLoaded>()],
@@ -49,15 +45,19 @@ void main() {
       setUp: () {
         final controller = StreamController<List<ItemReadModel>>();
         addTearDown(controller.close);
-        when(() => readService.watchAll(category: 'book')).thenAnswer((_) => controller.stream);
+        when(
+          () => readService.watchAll(category: 'book'),
+        ).thenAnswer((_) => controller.stream);
         when(() => readService.watchAll(category: 'movie')).thenAnswer(
           (_) => Stream.value([ItemReadModelMother.random(id: 'movie-1')]),
         );
         controller.add([ItemReadModelMother.random(id: 'book-1')]);
-        scheduleMicrotask(() => controller.add([
-          ItemReadModelMother.random(id: 'book-1'),
-          ItemReadModelMother.random(id: 'book-2'),
-        ]));
+        scheduleMicrotask(
+          () => controller.add([
+            ItemReadModelMother.random(id: 'book-1'),
+            ItemReadModelMother.random(id: 'book-2'),
+          ]),
+        );
       },
       build: () => CategoriesStateService(readService, ['book', 'movie']),
       expect: () => [

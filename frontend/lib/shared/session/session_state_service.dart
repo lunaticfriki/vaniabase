@@ -2,10 +2,26 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/shared/session/session_state.dart';
+
+sealed class SessionState {
+  const SessionState();
+}
+
+class SessionUnauthenticated extends SessionState {
+  const SessionUnauthenticated();
+}
+
+class SessionAuthenticated extends SessionState {
+  const SessionAuthenticated({required this.uid, this.email, this.displayName});
+
+  final String uid;
+  final String? email;
+  final String? displayName;
+}
 
 class SessionStateService extends Cubit<SessionState> {
-  SessionStateService(this._firebaseAuth) : super(const SessionUnauthenticated()) {
+  SessionStateService(this._firebaseAuth)
+    : super(const SessionUnauthenticated()) {
     _subscription = _firebaseAuth.authStateChanges().listen(_onUserChanged);
   }
 
@@ -20,7 +36,11 @@ class SessionStateService extends Cubit<SessionState> {
     emit(
       user == null
           ? const SessionUnauthenticated()
-          : SessionAuthenticated(uid: user.uid, email: user.email, displayName: user.displayName),
+          : SessionAuthenticated(
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+            ),
     );
   }
 

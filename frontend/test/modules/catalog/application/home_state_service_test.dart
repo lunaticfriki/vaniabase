@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:frontend/modules/catalog/application/home_state.dart';
 import 'package:frontend/modules/catalog/application/home_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
@@ -23,7 +22,9 @@ void main() {
     blocTest<HomeStateService, HomeState>(
       'starts in HomeLoading and settles on HomeLoaded with only the first 10 items',
       setUp: () {
-        when(() => readService.watchAll()).thenAnswer((_) => Stream.value(ItemReadModelMother.list(25)));
+        when(
+          () => readService.watchAll(),
+        ).thenAnswer((_) => Stream.value(ItemReadModelMother.list(25)));
       },
       build: () => HomeStateService(readService),
       expect: () => [isA<HomeLoaded>()],

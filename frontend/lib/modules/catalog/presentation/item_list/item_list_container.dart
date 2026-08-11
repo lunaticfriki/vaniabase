@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
-import 'package:frontend/modules/catalog/application/item_list_state.dart';
 import 'package:frontend/modules/catalog/application/item_list_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
@@ -24,7 +23,10 @@ class _ItemListContainerState extends State<ItemListContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = ItemListStateService(getIt<ItemReadService>(), category: widget.category);
+    _stateService = ItemListStateService(
+      getIt<ItemReadService>(),
+      category: widget.category,
+    );
   }
 
   @override
@@ -42,9 +44,12 @@ class _ItemListContainerState extends State<ItemListContainer> {
           ItemListLoading() => const ItemListSkeleton(),
           ItemListError(:final message) => Center(child: Text(message)),
           ItemListLoaded(:final result) => ItemListView(
-            title: widget.category == null ? 'Complete collection' : categoryLabel(widget.category!),
+            title: widget.category == null
+                ? 'Complete collection'
+                : categoryLabel(widget.category!),
             result: result,
-            onPrevious: () => context.read<ItemListStateService>().previousPage(),
+            onPrevious: () =>
+                context.read<ItemListStateService>().previousPage(),
             onNext: () => context.read<ItemListStateService>().nextPage(),
             onItemTap: (item) => context.push('/items/${item.id}'),
           ),

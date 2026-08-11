@@ -25,6 +25,7 @@ dependencies:
   flutter_dotenv: ^6.0.1
   firebase_storage: ^13.4.6
   image_picker: ^1.2.3
+  cached_network_image: ^3.4.1
   file_picker: 10.3.10
   spreadsheet_decoder: ^2.3.0
   csv: ^8.0.0

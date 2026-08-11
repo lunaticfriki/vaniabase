@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
-import 'package:frontend/modules/catalog/application/tags_state.dart';
+import 'package:frontend/modules/catalog/application/tags_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/responsive_item_grid.dart';
@@ -9,7 +9,12 @@ const _minTagFontSize = 14.0;
 const _maxTagFontSize = 34.0;
 
 class TagsView extends StatelessWidget {
-  const TagsView({required this.state, required this.onTagTap, required this.onItemTap, super.key});
+  const TagsView({
+    required this.state,
+    required this.onTagTap,
+    required this.onItemTap,
+    super.key,
+  });
 
   final TagsState state;
   final void Function(String tag) onTagTap;
@@ -24,7 +29,13 @@ class TagsView extends StatelessWidget {
         children: [
           Text('Tags', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 12),
-          Expanded(child: _TagsBody(state: state, onTagTap: onTagTap, onItemTap: onItemTap)),
+          Expanded(
+            child: _TagsBody(
+              state: state,
+              onTagTap: onTagTap,
+              onItemTap: onItemTap,
+            ),
+          ),
         ],
       ),
     );
@@ -32,7 +43,11 @@ class TagsView extends StatelessWidget {
 }
 
 class _TagsBody extends StatelessWidget {
-  const _TagsBody({required this.state, required this.onTagTap, required this.onItemTap});
+  const _TagsBody({
+    required this.state,
+    required this.onTagTap,
+    required this.onItemTap,
+  });
 
   final TagsState state;
   final void Function(String tag) onTagTap;
@@ -43,38 +58,52 @@ class _TagsBody extends StatelessWidget {
     return switch (state) {
       TagsLoading() => const Center(child: CircularProgressIndicator()),
       TagsError(:final message) => Center(child: Text(message)),
-      TagsLoaded(:final tagCounts) when tagCounts.isEmpty => const Center(child: Text('No tags yet.')),
-      TagsLoaded(:final tagCounts, :final selectedTag, :final selectedItems) => SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _TagCloud(tagCounts: tagCounts, selectedTag: selectedTag, onTagTap: onTagTap),
-            if (selectedTag != null) ...[
-              const SizedBox(height: 24),
-              Text(
-                '"$selectedTag" — ${selectedItems.length} item${selectedItems.length == 1 ? '' : 's'}',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: 12),
-              selectedItems.isEmpty
-                  ? const Text('No items with this tag.')
-                  : ResponsiveItemGrid<ItemReadModel>(
-                      items: selectedItems,
-                      itemBuilder: (context, item) =>
-                          ItemCardView(item: item, onTap: () => onItemTap(item)),
-                    ),
-            ],
-            const SizedBox(height: 24),
-            const AppFooterView(),
-          ],
-        ),
+      TagsLoaded(:final tagCounts) when tagCounts.isEmpty => const Center(
+        child: Text('No tags yet.'),
       ),
+      TagsLoaded(:final tagCounts, :final selectedTag, :final selectedItems) =>
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _TagCloud(
+                tagCounts: tagCounts,
+                selectedTag: selectedTag,
+                onTagTap: onTagTap,
+              ),
+              if (selectedTag != null) ...[
+                const SizedBox(height: 24),
+                Text(
+                  '"$selectedTag" — ${selectedItems.length} item${selectedItems.length == 1 ? '' : 's'}',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 12),
+                selectedItems.isEmpty
+                    ? const Text('No items with this tag.')
+                    : ResponsiveItemGrid<ItemReadModel>(
+                        items: selectedItems,
+                        keyBuilder: (item) => ValueKey(item.id),
+                        itemBuilder: (context, item) => ItemCardView(
+                          item: item,
+                          onTap: () => onItemTap(item),
+                        ),
+                      ),
+              ],
+              const SizedBox(height: 24),
+              const AppFooterView(),
+            ],
+          ),
+        ),
     };
   }
 }
 
 class _TagCloud extends StatelessWidget {
-  const _TagCloud({required this.tagCounts, required this.selectedTag, required this.onTagTap});
+  const _TagCloud({
+    required this.tagCounts,
+    required this.selectedTag,
+    required this.onTagTap,
+  });
 
   final List<TagCount> tagCounts;
   final String? selectedTag;
@@ -102,8 +131,12 @@ class _TagCloud extends StatelessWidget {
                 tagCount.tag,
                 style: TextStyle(
                   fontSize: _fontSizeFor(tagCount.count, minCount, maxCount),
-                  fontWeight: tagCount.tag == selectedTag ? FontWeight.bold : FontWeight.normal,
-                  color: tagCount.tag == selectedTag ? colorScheme.primary : colorScheme.onSurface,
+                  fontWeight: tagCount.tag == selectedTag
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: tagCount.tag == selectedTag
+                      ? colorScheme.primary
+                      : colorScheme.onSurface,
                 ),
               ),
             ),

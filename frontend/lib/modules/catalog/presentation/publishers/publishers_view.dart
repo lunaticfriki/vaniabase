@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
-import 'package:frontend/modules/catalog/application/publishers_state.dart';
+import 'package:frontend/modules/catalog/application/publishers_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/alphabet_index_view.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
 
@@ -59,9 +59,8 @@ class _PublishersBody extends StatelessWidget {
     return switch (state) {
       PublishersLoading() => const Center(child: CircularProgressIndicator()),
       PublishersError(:final message) => Center(child: Text(message)),
-      PublishersLoaded(:final publishers) when publishers.isEmpty => const Center(
-        child: Text('No publishers yet.'),
-      ),
+      PublishersLoaded(:final publishers) when publishers.isEmpty =>
+        const Center(child: Text('No publishers yet.')),
       PublishersLoaded(
         :final publishers,
         :final selectedLetter,
