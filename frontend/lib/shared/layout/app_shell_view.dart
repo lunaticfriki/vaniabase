@@ -4,6 +4,14 @@ import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_vi
 import 'package:frontend/shared/layout/app_header_view.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pixelarticons/pixel.dart';
+
+const _addItemFabHiddenRoutes = {
+  '/items/:id',
+  '/items/:id/edit',
+  '/items/new',
+  '/items/import',
+};
 
 class AppShellView extends StatelessWidget {
   const AppShellView({required this.state, required this.child, super.key});
@@ -40,6 +48,13 @@ class AppShellView extends StatelessWidget {
               },
             ),
       body: child,
+      floatingActionButton: _addItemFabHiddenRoutes.contains(state.fullPath)
+          ? null
+          : FloatingActionButton(
+              onPressed: () => context.go('/items/new'),
+              tooltip: 'Add item',
+              child: const Icon(Pixel.fileplus),
+            ),
     );
   }
 }
