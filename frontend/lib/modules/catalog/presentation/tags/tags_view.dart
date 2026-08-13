@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/tags_state_service.dart';
-import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
+import 'package:frontend/modules/catalog/presentation/paginated_item_grid_view.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
-import 'package:frontend/shared/layout/responsive_item_grid.dart';
 
 const _minTagFontSize = 14.0;
 const _maxTagFontSize = 34.0;
@@ -42,7 +41,7 @@ class TagsView extends StatelessWidget {
   }
 }
 
-class _TagsBody extends StatelessWidget {
+class _TagsBody extends StatefulWidget {
   const _TagsBody({
     required this.state,
     required this.onTagTap,
@@ -54,8 +53,37 @@ class _TagsBody extends StatelessWidget {
   final void Function(ItemReadModel item) onItemTap;
 
   @override
+  State<_TagsBody> createState() => _TagsBodyState();
+}
+
+class _TagsBodyState extends State<_TagsBody> {
+  final _resultsKey = GlobalKey();
+
+  String? _selectedTagOf(TagsState state) =>
+      state is TagsLoaded ? state.selectedTag : null;
+
+  @override
+  void didUpdateWidget(covariant _TagsBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final selectedTag = _selectedTagOf(widget.state);
+    if (selectedTag != null && selectedTag != _selectedTagOf(oldWidget.state)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final resultsContext = _resultsKey.currentContext;
+        if (resultsContext != null) {
+          Scrollable.ensureVisible(
+            resultsContext,
+            alignment: 0.1,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return switch (state) {
+    return switch (widget.state) {
       TagsLoading() => const Center(child: CircularProgressIndicator()),
       TagsError(:final message) => Center(child: Text(message)),
       TagsLoaded(:final tagCounts) when tagCounts.isEmpty => const Center(
@@ -69,24 +97,22 @@ class _TagsBody extends StatelessWidget {
               _TagCloud(
                 tagCounts: tagCounts,
                 selectedTag: selectedTag,
-                onTagTap: onTagTap,
+                onTagTap: widget.onTagTap,
               ),
               if (selectedTag != null) ...[
                 const SizedBox(height: 24),
                 Text(
+                  key: _resultsKey,
                   '"$selectedTag" — ${selectedItems.length} item${selectedItems.length == 1 ? '' : 's'}',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 12),
                 selectedItems.isEmpty
                     ? const Text('No items with this tag.')
-                    : ResponsiveItemGrid<ItemReadModel>(
+                    : PaginatedItemGridView(
+                        key: ValueKey(selectedTag),
                         items: selectedItems,
-                        keyBuilder: (item) => ValueKey(item.id),
-                        itemBuilder: (context, item) => ItemCardView(
-                          item: item,
-                          onTap: () => onItemTap(item),
-                        ),
+                        onItemTap: widget.onItemTap,
                       ),
               ],
               const SizedBox(height: 24),

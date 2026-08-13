@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/alphabet_util.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
-import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
-import 'package:frontend/shared/layout/responsive_item_grid.dart';
+import 'package:frontend/modules/catalog/presentation/paginated_item_grid_view.dart';
 
-class AlphabetIndexView extends StatelessWidget {
+class AlphabetIndexView extends StatefulWidget {
   const AlphabetIndexView({
     required this.entries,
     required this.selectedLetter,
@@ -29,9 +28,35 @@ class AlphabetIndexView extends StatelessWidget {
   final String entryNoun;
 
   @override
+  State<AlphabetIndexView> createState() => _AlphabetIndexViewState();
+}
+
+class _AlphabetIndexViewState extends State<AlphabetIndexView> {
+  final _resultsKey = GlobalKey();
+
+  @override
+  void didUpdateWidget(covariant AlphabetIndexView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedEntry != null &&
+        widget.selectedEntry != oldWidget.selectedEntry) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final resultsContext = _resultsKey.currentContext;
+        if (resultsContext != null) {
+          Scrollable.ensureVisible(
+            resultsContext,
+            alignment: 0.1,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final grouped = <String, List<String>>{};
-    for (final entry in entries) {
+    for (final entry in widget.entries) {
       grouped.putIfAbsent(letterForEntry(entry), () => []).add(entry);
     }
     for (final group in grouped.values) {
@@ -45,35 +70,35 @@ class AlphabetIndexView extends StatelessWidget {
         _AlphabetStrip(
           letters: letters,
           availableLetters: grouped.keys.toSet(),
-          selectedLetter: selectedLetter,
-          onLetterTap: onLetterTap,
+          selectedLetter: widget.selectedLetter,
+          onLetterTap: widget.onLetterTap,
         ),
         const SizedBox(height: 16),
-        if (selectedLetter == null)
+        if (widget.selectedLetter == null)
           Text(
-            'Tap a letter above to see ${entryNoun}s starting with it.',
+            'Tap a letter above to see ${widget.entryNoun}s starting with it.',
             style: Theme.of(context).textTheme.bodyMedium,
           )
         else
           _EntryRow(
-            entries: grouped[selectedLetter] ?? const [],
-            selectedEntry: selectedEntry,
-            onEntryTap: onEntryTap,
+            entries: grouped[widget.selectedLetter] ?? const [],
+            selectedEntry: widget.selectedEntry,
+            onEntryTap: widget.onEntryTap,
           ),
-        if (selectedEntry != null) ...[
+        if (widget.selectedEntry != null) ...[
           const SizedBox(height: 24),
           Text(
-            '"$selectedEntry" — ${selectedItems.length} item${selectedItems.length == 1 ? '' : 's'}',
+            key: _resultsKey,
+            '"${widget.selectedEntry}" — ${widget.selectedItems.length} item${widget.selectedItems.length == 1 ? '' : 's'}',
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 12),
-          selectedItems.isEmpty
-              ? Text('No items for this $entryNoun.')
-              : ResponsiveItemGrid<ItemReadModel>(
-                  items: selectedItems,
-                  keyBuilder: (item) => ValueKey(item.id),
-                  itemBuilder: (context, item) =>
-                      ItemCardView(item: item, onTap: () => onItemTap(item)),
+          widget.selectedItems.isEmpty
+              ? Text('No items for this ${widget.entryNoun}.')
+              : PaginatedItemGridView(
+                  key: ValueKey(widget.selectedEntry),
+                  items: widget.selectedItems,
+                  onItemTap: widget.onItemTap,
                 ),
         ],
       ],

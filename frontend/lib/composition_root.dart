@@ -9,6 +9,7 @@ import 'package:frontend/modules/identity/infrastructure/firebase_identity_repos
 import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
 
@@ -17,10 +18,14 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
   getIt.registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
 
+  getIt.registerSingleton<SharedPreferences>(await SharedPreferences.getInstance());
+
   getIt.registerLazySingleton<SessionStateService>(
     () => SessionStateService(getIt<FirebaseAuth>()),
   );
-  getIt.registerLazySingleton<ThemeStateService>(() => ThemeStateService());
+  getIt.registerLazySingleton<ThemeStateService>(
+    () => ThemeStateService(getIt<SharedPreferences>()),
+  );
 
   getIt.registerLazySingleton<FirebaseIdentityRepository>(
     () => FirebaseIdentityRepository(getIt<FirebaseAuth>()),

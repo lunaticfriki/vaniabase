@@ -7,6 +7,7 @@ import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pixelarticons/pixel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
@@ -16,11 +17,12 @@ void main() {
   late SessionStateService session;
   late ThemeStateService theme;
 
-  setUp(() {
+  setUp(() async {
     final firebaseAuth = MockFirebaseAuth();
     when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => const Stream.empty());
     session = SessionStateService(firebaseAuth);
-    theme = ThemeStateService();
+    SharedPreferences.setMockInitialValues({});
+    theme = ThemeStateService(await SharedPreferences.getInstance());
   });
 
   Widget buildApp() {
