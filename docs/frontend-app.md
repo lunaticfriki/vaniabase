@@ -21,23 +21,33 @@ screen on-screen.
 | `/login` | Sign in with email + password | no |
 | `/signup` | Register (email, username, password) | no |
 | `/` | Home — a preview of recently added items | yes |
-| `/items` | The full catalog, paginated | yes |
+| `/items` | The full catalog, paginated, sortable | yes |
+| `/completed` | Items marked completed (reuses `/items`'s list view) | yes |
 | `/items/new` | Add an item | yes |
+| `/items/import` | Bulk import items from a spreadsheet | yes |
 | `/items/:id` | Item detail | yes |
 | `/items/:id/edit` | Edit an item | yes |
 | `/categories` | Categories, each with a preview of its items | yes |
 | `/categories/:category` | Items in one category, paginated (reuses `/items`'s list view) | yes |
 | `/tags` | Tag cloud; click a tag to filter items below | yes |
+| `/topics` | Topics, browsable by first letter | yes |
+| `/authors` | Authors/creators, browsable by first letter | yes |
+| `/languages` | Languages, browsable by first letter | yes |
+| `/publishers` | Publishers, browsable by first letter | yes |
 | `/search` | Debounced text search across the catalog | yes |
 
-`/`, `/items`, `/categories`, `/tags`, and `/search` share a persistent
-shell (`AppShellView`): a header with links to each of those pages plus
-**Add item**, a light/dark theme toggle, and a logout button when
-signed in; a footer with a GitHub link and the current year. On wide
-screens the nav renders as icon-only buttons with tooltips (kept
-compact so the row doesn't overflow as pages get added — text labels
-only show in the narrow-screen hamburger menu). `/login` and `/signup`
-render standalone, outside the shell.
+All of the above except `/login` and `/signup` share a persistent shell
+(`AppShellView`): a header with links to each page plus a light/dark
+theme toggle and a logout button when signed in; a floating **Add item**
+button bottom-right on every shell page except the add/import/detail/edit
+ones (where it would either be redundant or overlap the page's own
+controls — see `_addItemFabHiddenRoutes` in `app_shell_view.dart`); a
+footer with a GitHub link and the current year. On screens narrower than
+`navWideBreakpoint` (640px) the nav collapses from icon buttons into a
+single hamburger menu (`_showResponsiveMenu` in `app_header_view.dart`)
+that opens as a full-width dropdown listing every page by icon and label,
+so adding a page never requires shrinking the wide-screen icon row.
+`/login` and `/signup` render standalone, outside the shell.
 
 ### Signing in and up
 
@@ -52,32 +62,64 @@ than a generic "something went wrong." Neither state service touches
 to it) updates itself, and that's what flips the router's redirect logic
 and reveals the authenticated shell.
 
-### Home vs. "All items"
+### Live data: `watchAll` over one-shot fetches
 
-Home shows the 10 most-recently-added items as a taste of the catalog,
-with a "See all items" link — it is deliberately not paginated, so it
-reads as a preview, not a second copy of the list page. `/items` is the
-real browse experience: every item, `PaginationControlView` stepping
-one page at a time via
-`ItemListStateService.nextPage`/`previousPage`, each page sliced fresh
-from Firestore (no client-side caching of pages you've already seen —
-see the pagination note in `FirestoreItemRepository`, which fetches the
-full matching result set and slices it in memory since the Firestore
-client SDK has no server-side `offset()`).
-An "Add item" button on `/items` opens `/items/new`.
+`ItemReadService.watchAll({category, completed})` returns a
+`Stream<List<ItemReadModel>>`, not a `Future` — `FirestoreItemRepository`
+backs it with a Firestore `snapshots()` listener, so every page/state
+service that subscribes to it (`HomeStateService`, `ItemListStateService`,
+`CategoriesStateService`, `TagsStateService`, `SearchStateService`, and
+the authors/languages/publishers/topics state services) re-emits
+automatically when the underlying data changes, with no manual refresh
+or refetch-after-write step anywhere in the app. `category`/`completed`
+are pushed down as Firestore `where` clauses so the server does that
+filtering; anything beyond that (sorting, paging, letter/tag grouping)
+happens client-side over whatever the stream last delivered, since the
+client SDK has no server-side `offset()`, sort-by-derived-field, or
+grouping support.
 
-Both pages lay out items with the same `ResponsiveItemGrid`
-(`shared/layout/responsive_item_grid.dart`): centered, targeting 5
-columns so a 10-item page reads as two clean rows on a wide screen,
-narrowing to fewer, wider columns (and more rows) on small screens.
-Home additionally centers that grid vertically in the available space
-when there are only a few items, rather than pinning it to the top of
-an otherwise empty page. Tapping a card on either page opens
-`/items/:id`.
+### Home vs. "All items" vs. "Completed"
 
-### Browsing: categories, tags, and search
+Home shows the 10 most-recently-added items (`homeItemCount` in
+`HomeStateService`) as a taste of the catalog, with a "See all items"
+link — it is deliberately not paginated, so it reads as a preview, not a
+second copy of the list page. `/items` is the real browse experience:
+every item, sortable (see below), `PaginationControlView` stepping one
+page at a time via `ItemListStateService.nextPage`/`previousPage` over
+the sorted list held in memory. `/completed` reuses the exact same
+`ItemListContainer`/`ItemListView` with `completed: true` passed through
+to `watchAll`, just without the sort control
+(`ItemListContainer(completed: true)`, `enableSort` left at its default
+`false` — see "Sorting" below for why sort and the completed filter don't
+combine).
 
-Three more ways into the same catalog, all reachable from the header nav:
+Both pages, plus `/categories/:category`, lay out items with the same
+`ResponsiveItemGrid` (`shared/layout/responsive_item_grid.dart`):
+centered, targeting 5 columns so a 10-item page reads as two clean rows
+on a wide screen, narrowing to fewer, wider columns (and more rows) on
+small screens. Home additionally centers that grid vertically in the
+available space when there are only a few items, rather than pinning it
+to the top of an otherwise empty page. Tapping a card on any of these
+pages opens `/items/:id`. A floating **Add item** button (see "Pages and
+navigation" above) is the primary way to reach `/items/new` from any of
+them.
+
+### Sorting
+
+`/items` is the only list with a sort control (`ItemListContainer
+(enableSort: true)` → a `Pixel.sort` popup menu in `ItemListView`, wired
+to `ItemListStateService.setSortOption`). `ItemSortOption`
+(`application/item_sort_option.dart`) is one of `createdAtDesc` (default),
+`createdAtAsc`, `title`, or `author`; changing it re-sorts the in-memory
+item list and resets to page 1 (`ItemListStateService._emitPage`).
+`/completed` and `/categories/:category` reuse the same container without
+`enableSort`, so they stay in `watchAll`'s default newest-first order —
+sorting was scoped to the one page people actually reorder rather than
+threaded through every `ItemListContainer` use.
+
+### Browsing: categories, tags, topics, authors, languages, publishers, and search
+
+Seven more ways into the same catalog, all reachable from the header nav:
 
 - **`/categories`** (`CategoryListContainer`/`CategoriesStateService`) —
   one tile per category, each showing up to a handful of that
@@ -90,30 +132,67 @@ Three more ways into the same catalog, all reachable from the header nav:
   `/items` with a category filter.
 - **`/tags`** (`TagsContainer`/`TagsStateService`) — every tag used
   across the catalog, laid out as a tag cloud where font size scales
-  with how often that tag appears (computed client-side: `fetchAllItems`
-  pulls every item once, then a `Map<String, int>` frequency count drives
-  a linear min↔max font-size mapping). Tapping a tag filters the same
-  page's item grid, shown below the cloud, without navigating away;
-  tapping the same tag again clears the filter. The item detail page's
-  tag chips link here too, via `/tags?tag=<tag>`, which pre-selects that
-  tag on load (`TagsContainer.initialTag` → `TagsStateService`'s
-  constructor).
+  with how often that tag appears (a `Map<String, int>` frequency count
+  over whatever `watchAll` last delivered drives a linear min↔max
+  font-size mapping). Tapping a tag filters a `PaginatedItemGridView`
+  shown below the cloud, without navigating away; tapping the same tag
+  again clears the filter, and selecting a new one auto-scrolls the
+  results heading into view (`Scrollable.ensureVisible` off a `GlobalKey`
+  in `_TagsBodyState.didUpdateWidget`). The item detail page's tag chips
+  link here too, via `/tags?tag=<tag>`, which pre-selects that tag on
+  load (`TagsContainer.initialTag` → `TagsStateService`'s constructor).
+- **`/topics`, `/authors`, `/languages`, `/publishers`** (their matching
+  `*Container`/`*StateService` pairs) — four instances of the same
+  shape: collect the distinct values of one `ItemReadModel` field
+  (`topic`, `creator` — flattened, since it's a list — `language`, and
+  `publisher` respectively) from the live item stream, then browse them
+  through the shared `AlphabetIndexView`
+  (`presentation/alphabet_index_view.dart`) — an A–Z strip
+  (`letterForEntry` in `application/alphabet_util.dart` buckets anything
+  not starting with A–Z under `#`) that narrows to the matching entries
+  on tap, then to that entry's items in a `PaginatedItemGridView` below,
+  auto-scrolled into view the same way `/tags` does. Each page also
+  accepts a query param to preselect an entry on load
+  (`?topic=`, `?author=`, `?language=`, `?publisher=`), the same pattern
+  `/tags?tag=` uses.
 - **`/search`** (`SearchContainer`/`SearchStateService`) — a single text
   field, debounced 300ms (`Timer`-based cancel-and-restart in
   `SearchStateService.onQueryChanged`) before it searches, so it doesn't
   re-query on every keystroke. Firestore has no server-side text search,
-  so this fetches every item via the same `fetchAllItems` helper `/tags`
-  uses, then filters in memory using `core`'s `SearchTerm.matchesAny`
-  against each item's title, creator, publisher, topic, reference, and
-  tags — see [core-domain.md](core-domain.md#search) for why that
-  matching logic lives in `core` rather than being reimplemented here.
+  so this filters the live item stream in memory using `core`'s
+  `SearchTerm.matchesAny` against each item's title, creator, publisher,
+  topic, reference, and tags — see
+  [core-domain.md](core-domain.md#search) for why that matching logic
+  lives in `core` rather than being reimplemented here.
 
-`fetchAllItems` (`application/fetch_all_items_util.dart`) is the one
-place that loops `ItemReadService.list()` across pages until it has
-every item for the signed-in user — both `/tags` and `/search` need the
-full set (to count tags / search everything) rather than one page at a
-time, unlike `/items`'s and `/categories/:category`'s paginated
-browsing.
+`PaginatedItemGridView` (`presentation/paginated_item_grid_view.dart`) is
+the client-side-paginated grid `/tags`, `/topics`, `/authors`,
+`/languages`, and `/publishers` all share for their filtered results —
+distinct from `ItemListView`'s pagination in that it paginates a list
+that's already fully in memory (a filtered subset) rather than driving
+`ItemListStateService`'s page-fetching, and resets to page 1 whenever its
+`Key` changes (each page passes `ValueKey(selectedEntry)`, so switching
+which tag/author/etc. is selected starts back at page 1).
+
+### Bulk import
+
+`/items/import` (`BulkImportContainer`/`BulkImportStateService`) accepts
+a `.xlsx`, `.ods`, or `.csv` file (picked via `file_picker`, decoded with
+`spreadsheet_decoder` for the spreadsheet formats or the `csv` package
+for `.csv`) with a header row and one item per row; `parseBulkImportFile`
+(`application/bulk_import_parser.dart`) normalizes header names against
+a fixed set of aliases (`author`/`authors`/`creator`/`creators` all map
+to the `creator` column, `isbn`/`reference` both map to `reference`,
+etc.), then validates each row against the same constraints the domain
+value objects enforce — an invalid or missing required field doesn't
+abort the import, it's collected as a per-row error and surfaces in a
+preview table (`BulkImportPreview.validRows`/`invalidCount`) before
+anything is written. Confirming the import calls
+`ItemWriteService.create` once per valid row sequentially, emitting
+`BulkImportImporting(total, completed)` after each one so the view can
+show live progress, and finishes on `BulkImportDone(succeeded, failures)`
+— a per-row try/catch means one row failing (e.g. a transient write
+error) doesn't stop the rest of the batch.
 
 ### Adding and viewing an item
 
@@ -129,17 +208,35 @@ prevented). The image is picked from the gallery (`image_picker`) and
 uploaded to Firebase Storage (`FirestoreItemRepository._uploadImage`);
 removing it clears the `image_url` field and deletes the stored object.
 
-`/items/:id` (`ItemDetailStateService`) shows the image beside the rest
-of the item's fields on a wide screen, and stacks title/creator → image →
-the rest of the fields on a narrow one, with a back button that pops the
-navigation stack (falling back to `/items` if the page was opened
-directly, e.g. from a shared link). A chip next to the title reflects
-`completed` ("Completed" vs. "Not completed") and is itself tappable —
-toggling it calls `ItemDetailStateService.toggleCompleted()`, which
-writes through `ItemWriteService.update` and updates the chip in place,
-without a full page reload. Each tag chip in the field list is also
-tappable, navigating to `/tags?tag=<tag>` with that tag pre-selected
-(see "Browsing: categories, tags, and search" below).
+`/items/:id` (`ItemDetailStateService`) lays out differently either side
+of `itemDetailWideBreakpoint` (700px, `item_detail_view.dart`). Wide: the
+image sits beside a scrollable column of the rest of the fields, with
+text **Back**/**Edit** buttons above them. Narrow: the image becomes a
+full-bleed hero behind the title/creator (`_ItemHeroImage`, a dark
+gradient over the bottom of the image keeps that text legible over any
+photo), and Back/Edit become translucent `OverlayIconButton`s
+(`shared/layout/overlay_icon_button.dart` — a pill-shaped semi-transparent
+button meant to sit on top of image content) that fade in as the page
+scrolls (`_headerOpacity` tracks `ScrollController.offset` over a
+120px fade distance in `_NarrowItemDetailState`), so they're legible
+against both the image and the plain background beneath it. On narrow
+screens `AppShellView` also hides the app's own header entirely on this
+route (`_isItemDetailPage` check), letting the hero image use the full
+viewport height instead of losing space to two stacked toolbars. Either
+layout's back button pops the navigation stack (falling back to `/items`
+if the page was opened directly, e.g. from a shared link). Tapping the
+image opens it fullscreen (`openFullscreenImage` →
+`presentation/item_detail/fullscreen_image_view.dart`): a black
+`InteractiveViewer` (pinch/scroll to zoom, up to 4x) with a tap-to-toggle
+`OverlayIconButton` back control, pushed on the root navigator so it
+covers the app shell too. A chip next to the title reflects `completed`
+("Completed" vs. "Not completed") and is itself tappable — toggling it
+calls `ItemDetailStateService.toggleCompleted()`, which writes through
+`ItemWriteService.update` and updates the chip in place, without a full
+page reload. Each tag chip in the field list is also tappable, navigating
+to `/tags?tag=<tag>` with that tag pre-selected (see "Browsing:
+categories, tags, topics, authors, languages, publishers, and search"
+above).
 
 Editing an item also offers **Delete**, which confirms via a dialog
 before calling `EditItemStateService.delete()` — this removes both the
@@ -169,8 +266,12 @@ redirect decision, rather than flashing `/login` first.
   on the app's dark background (`AppTheme._darkBackground`, a dark
   near-black rather than pure `#000000`) so it stays legible there.
 - **Theme switching** — `ThemeStateService` toggles `ThemeMode` app-wide
-  from the header button; both `ThemeData`s are pre-built in `AppTheme`
-  rather than computed per-toggle.
+  from the header button (light/dark/system, not just a two-way toggle);
+  both `ThemeData`s are pre-built in `AppTheme` rather than computed
+  per-toggle. The choice persists across reloads via `shared_preferences`
+  (`ThemeStateService`'s constructor seeds its initial state by reading
+  the `theme_mode` key, `setMode` writes it back), defaulting to dark
+  when nothing's stored yet rather than following the OS.
 - **Icons** — `pixelarticons` (`Pixel.*`) throughout instead of Material
   icons, matching the pixel-art aesthetic.
 
@@ -180,21 +281,27 @@ redirect decision, rather than flashing `/login` first.
   that feature's `application/` layer, not presentation (`LoginStateService`,
   `SignupStateService`, `HomeStateService`, `ItemListStateService`,
   `AddItemStateService`, `EditItemStateService`, `ItemDetailStateService`,
-  `CategoriesStateService`, `TagsStateService`, `SearchStateService`),
-  plus two app-wide ones outside any single page, in `shared/`:
-  `SessionStateService` (who's signed in) and `ThemeStateService`
-  (light/dark). Each is implemented as
-  a `Cubit<State>`, but named/placed to say what it *is* (application's
-  reactive state holder) rather than which library implements it — see
+  `BulkImportStateService`, `CategoriesStateService`, `TagsStateService`,
+  `TopicsStateService`, `AuthorsStateService`, `LanguagesStateService`,
+  `PublishersStateService`, `SearchStateService`), plus two app-wide ones
+  outside any single page, in `shared/`: `SessionStateService` (who's
+  signed in) and `ThemeStateService` (light/dark/system). Each is
+  implemented as a `Cubit<State>` (the sealed state classes live
+  alongside their service in the same file, not split out separately),
+  but named/placed to say what it *is* (application's reactive state
+  holder) rather than which library implements it — see
   [03-application-layer-cqrs.md](03-application-layer-cqrs.md#readwrite-services-stay-pure-the-state-service-holds-the-reactive-state).
   Pages subscribe to state via `BlocProvider`/`BlocBuilder` and choose
   which view to render; views are pure/props-only — see
   [05-presentation-layer.md](05-presentation-layer.md).
 - **Wiring** — `get_it` as the composition root (`composition_root.dart`),
   explicit `registerLazySingleton`/`registerFactory` calls, no codegen —
-  see [08-tech-flutter-dart.md](08-tech-flutter-dart.md). Only the two
-  app-wide state services are registered in `getIt`; a per-page one is
-  constructed directly in its Page's `BlocProvider.create`.
+  see [08-tech-flutter-dart.md](08-tech-flutter-dart.md). Besides the two
+  app-wide state services, `getIt` also holds the `SharedPreferences`
+  instance (`registerSingleton`, awaited once during
+  `configureDependencies` since obtaining it is itself async) that
+  `ThemeStateService` reads/writes; a per-page state service is
+  constructed directly in its Page's `BlocProvider.create` instead.
 - **Firebase** — `firebase_auth` and `cloud_firestore` are called
   directly from infrastructure (`FirebaseIdentityRepository`,
   `FirestoreItemRepository`); nothing above the infrastructure layer
