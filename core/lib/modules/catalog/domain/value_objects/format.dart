@@ -8,6 +8,7 @@ enum Format {
   bluRay,
   cd,
   vinyl,
+  cassette,
   cartridge,
   digitalDownload;
 

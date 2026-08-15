@@ -15,6 +15,7 @@ const formatLabels = {
   'bluRay': 'Blu-ray',
   'cd': 'CD',
   'vinyl': 'Vinyl',
+  'cassette': 'Cassette',
   'cartridge': 'Cartridge',
   'digitalDownload': 'Digital download',
 };

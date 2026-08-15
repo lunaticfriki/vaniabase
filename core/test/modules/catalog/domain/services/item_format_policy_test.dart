@@ -124,7 +124,7 @@ void main() {
       );
     });
 
-    test('musicAlbum allows cd, vinyl and digital download', () {
+    test('musicAlbum allows cd, vinyl, cassette and digital download', () {
       expect(
         ItemFormatPolicy.allows(Category.musicAlbum, _formats([Format.cd])),
         isTrue,
@@ -133,6 +133,13 @@ void main() {
         ItemFormatPolicy.allows(
           Category.musicAlbum,
           _formats([Format.vinyl]),
+        ),
+        isTrue,
+      );
+      expect(
+        ItemFormatPolicy.allows(
+          Category.musicAlbum,
+          _formats([Format.cassette]),
         ),
         isTrue,
       );

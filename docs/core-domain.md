@@ -53,7 +53,7 @@ not something either owns alone):
 | `magazine` | `paperback`, `digitalDownload` |
 | `movie` | `dvd`, `bluRay`, `digitalDownload` |
 | `videogame` | `cartridge`, `dvd`, `bluRay`, `digitalDownload` |
-| `musicAlbum` | `cd`, `vinyl`, `digitalDownload` |
+| `musicAlbum` | `cd`, `vinyl`, `cassette`, `digitalDownload` |
 
 Since `format` is a list (`ItemFormats`, holding at least one `Format`),
 the policy checks *every* selected format against the category — a

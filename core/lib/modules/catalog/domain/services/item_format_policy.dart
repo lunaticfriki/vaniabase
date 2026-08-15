@@ -14,7 +14,12 @@ class ItemFormatPolicy {
       Format.bluRay,
       Format.digitalDownload,
     },
-    Category.musicAlbum: {Format.cd, Format.vinyl, Format.digitalDownload},
+    Category.musicAlbum: {
+      Format.cd,
+      Format.vinyl,
+      Format.cassette,
+      Format.digitalDownload,
+    },
   };
 
   /// Every format in [formats] must be allowed for [category].
