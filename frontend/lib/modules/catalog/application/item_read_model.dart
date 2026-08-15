@@ -25,12 +25,12 @@ class ItemReadModel {
   final List<String> creator;
   final String publisher;
   final String category;
-  final String format;
+  final List<String> format;
   final List<String> tags;
   final String topic;
   final int year;
   final String description;
-  final String language;
+  final List<String> language;
   final String imageUrl;
   final bool completed;
   final String reference;

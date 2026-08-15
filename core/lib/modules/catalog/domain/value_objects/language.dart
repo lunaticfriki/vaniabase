@@ -29,5 +29,5 @@ class Language {
 
 class InvalidLanguageError extends DomainError {
   InvalidLanguageError(String value)
-    : super('"$value" is not a valid 2-letter language code');
+      : super('"$value" is not a valid 2-letter language code');
 }

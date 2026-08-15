@@ -37,7 +37,8 @@ class RefreshToken {
 
   factory RefreshToken.empty() {
     final now = Timestamp.empty();
-    return RefreshToken._(RefreshTokenId.empty(), UserId.empty(), now, now, false);
+    return RefreshToken._(
+        RefreshTokenId.empty(), UserId.empty(), now, now, false);
   }
 
   final RefreshTokenId id;

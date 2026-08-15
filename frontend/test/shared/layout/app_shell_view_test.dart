@@ -17,7 +17,9 @@ void main() {
 
   setUp(() async {
     final firebaseAuth = MockFirebaseAuth();
-    when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => const Stream.empty());
+    when(
+      () => firebaseAuth.authStateChanges(),
+    ).thenAnswer((_) => const Stream.empty());
     session = SessionStateService(firebaseAuth);
     SharedPreferences.setMockInitialValues({});
     theme = ThemeStateService(await SharedPreferences.getInstance());
@@ -28,12 +30,22 @@ void main() {
       initialLocation: initialLocation,
       routes: [
         ShellRoute(
-          builder: (context, state, child) => AppShellView(state: state, child: child),
+          builder: (context, state, child) =>
+              AppShellView(state: state, child: child),
           routes: [
             GoRoute(path: '/', builder: (context, state) => const SizedBox()),
-            GoRoute(path: '/items', builder: (context, state) => const SizedBox()),
-            GoRoute(path: '/items/new', builder: (context, state) => const SizedBox()),
-            GoRoute(path: '/items/:id', builder: (context, state) => const SizedBox()),
+            GoRoute(
+              path: '/items',
+              builder: (context, state) => const SizedBox(),
+            ),
+            GoRoute(
+              path: '/items/new',
+              builder: (context, state) => const SizedBox(),
+            ),
+            GoRoute(
+              path: '/items/:id',
+              builder: (context, state) => const SizedBox(),
+            ),
           ],
         ),
       ],

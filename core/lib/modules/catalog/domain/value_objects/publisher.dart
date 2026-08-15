@@ -16,8 +16,7 @@ class Publisher {
   final String value;
 
   @override
-  bool operator ==(Object other) =>
-      other is Publisher && other.value == value;
+  bool operator ==(Object other) => other is Publisher && other.value == value;
 
   @override
   int get hashCode => value.hashCode;
@@ -28,5 +27,5 @@ class Publisher {
 
 class InvalidPublisherError extends DomainError {
   InvalidPublisherError(String value)
-    : super('"$value" is not a valid publisher (1-150 characters)');
+      : super('"$value" is not a valid publisher (1-150 characters)');
 }

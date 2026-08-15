@@ -93,6 +93,9 @@ class ItemListStateService extends Cubit<ItemListState> {
     );
   }
 
+  /// The full filtered/sorted list backing the current page, for export.
+  List<ItemReadModel> exportableItems() => _sortedItems();
+
   void setSortOption(ItemSortOption sortOption) {
     if (sortOption == _sortOption) return;
     _sortOption = sortOption;

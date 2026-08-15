@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/publishers_state_service.dart';
+import 'package:frontend/modules/catalog/presentation/bulk_export_feedback.dart';
 import 'package:frontend/modules/catalog/presentation/publishers/publishers_view.dart';
 import 'package:go_router/go_router.dart';
 
@@ -45,6 +46,8 @@ class _PublishersContainerState extends State<PublishersContainer> {
           onPublisherTap: (publisher) =>
               context.read<PublishersStateService>().selectPublisher(publisher),
           onItemTap: (item) => context.push('/items/${item.id}'),
+          onExport: (items, publisher) =>
+              exportItemsWithFeedback(context, items, 'publisher-$publisher'),
         ),
       ),
     );

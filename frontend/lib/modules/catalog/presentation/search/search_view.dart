@@ -12,6 +12,7 @@ class SearchView extends StatelessWidget {
     required this.controller,
     required this.onQueryChanged,
     required this.onItemTap,
+    this.onExport,
     super.key,
   });
 
@@ -19,6 +20,7 @@ class SearchView extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String query) onQueryChanged;
   final void Function(ItemReadModel item) onItemTap;
+  final VoidCallback? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,23 @@ class SearchView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Search', style: Theme.of(context).textTheme.headlineSmall),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  'Search',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ),
+              if (onExport != null)
+                IconButton(
+                  tooltip: 'Export',
+                  icon: const Icon(Pixel.download),
+                  onPressed: onExport,
+                ),
+            ],
+          ),
           const SizedBox(height: 12),
           TextField(
             controller: controller,

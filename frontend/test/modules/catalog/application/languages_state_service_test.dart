@@ -15,11 +15,11 @@ void main() {
     readService = MockItemReadService();
     when(() => readService.watchAll()).thenAnswer(
       (_) => Stream.value([
-        ItemReadModelMother.random(id: 'item-1', language: 'English'),
-        ItemReadModelMother.random(id: 'item-2', language: 'English'),
-        ItemReadModelMother.random(id: 'item-3', language: 'Spanish'),
-        ItemReadModelMother.random(id: 'item-4', language: ''),
-        ItemReadModelMother.random(id: 'item-5', language: 'Esperanto'),
+        ItemReadModelMother.random(id: 'item-1', language: const ['English']),
+        ItemReadModelMother.random(id: 'item-2', language: const ['English']),
+        ItemReadModelMother.random(id: 'item-3', language: const ['Spanish']),
+        ItemReadModelMother.random(id: 'item-4', language: const []),
+        ItemReadModelMother.random(id: 'item-5', language: const ['Esperanto']),
       ]),
     );
   });
@@ -103,6 +103,32 @@ void main() {
         final state = service.state as LanguagesLoaded;
         expect(state.selectedLanguage, isNull);
         expect(state.selectedLetter, 'E');
+      },
+    );
+
+    blocTest<LanguagesStateService, LanguagesState>(
+      'an item with multiple languages is grouped and selectable under each',
+      build: () {
+        when(() => readService.watchAll()).thenAnswer(
+          (_) => Stream.value([
+            ItemReadModelMother.random(
+              id: 'item-multi',
+              language: const ['English', 'Spanish'],
+            ),
+          ]),
+        );
+        return LanguagesStateService(readService);
+      },
+      skip: 1,
+      act: (service) async {
+        await Future<void>.delayed(Duration.zero);
+        service.selectLanguage('Spanish');
+      },
+      expect: () => [isA<LanguagesLoaded>()],
+      verify: (service) {
+        final loaded = service.state as LanguagesLoaded;
+        expect(loaded.languages, ['English', 'Spanish']);
+        expect(loaded.selectedItems.map((i) => i.id), ['item-multi']);
       },
     );
 

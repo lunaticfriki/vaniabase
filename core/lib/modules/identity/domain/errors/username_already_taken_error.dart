@@ -3,5 +3,5 @@ import 'package:core/shared/errors/domain_error.dart';
 
 class UsernameAlreadyTakenError extends DomainError {
   UsernameAlreadyTakenError(Username username)
-    : super('"${username.value}" is already taken');
+      : super('"${username.value}" is already taken');
 }

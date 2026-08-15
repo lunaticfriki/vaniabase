@@ -40,7 +40,8 @@ void main() {
     });
 
     test('equality is structural', () {
-      expect(Email.create('user@example.com'), equals(Email.create('user@example.com')));
+      expect(Email.create('user@example.com'),
+          equals(Email.create('user@example.com')));
     });
   });
 }

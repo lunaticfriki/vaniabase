@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeStateService extends Cubit<ThemeMode> {
-  ThemeStateService(this._preferences)
-    : super(_readMode(_preferences));
+  ThemeStateService(this._preferences) : super(_readMode(_preferences));
 
   static const _prefsKey = 'theme_mode';
 

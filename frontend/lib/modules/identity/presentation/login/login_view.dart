@@ -11,7 +11,8 @@ class LoginView extends StatefulWidget {
 
   final bool isSubmitting;
   final String? errorMessage;
-  final void Function({required String email, required String password}) onSubmit;
+  final void Function({required String email, required String password})
+  onSubmit;
   final VoidCallback onNavigateToSignup;
 
   @override
@@ -43,14 +44,18 @@ class _LoginViewState extends State<LoginView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Log in', style: Theme.of(context).textTheme.headlineSmall),
+                  Text(
+                    'Log in',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(labelText: 'Email'),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (value) =>
-                        (value == null || value.isEmpty) ? 'Email is required' : null,
+                    validator: (value) => (value == null || value.isEmpty)
+                        ? 'Email is required'
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
@@ -67,7 +72,9 @@ class _LoginViewState extends State<LoginView> {
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Text(
                         widget.errorMessage!,
-                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                       ),
                     ),
                   FilledButton(
@@ -82,7 +89,9 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 12),
                   TextButton(
-                    onPressed: widget.isSubmitting ? null : widget.onNavigateToSignup,
+                    onPressed: widget.isSubmitting
+                        ? null
+                        : widget.onNavigateToSignup,
                     child: const Text("Don't have an account? Sign up"),
                   ),
                 ],

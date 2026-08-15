@@ -6,11 +6,14 @@ import '../entities/item_mother.dart';
 
 void main() {
   group('ItemSearch.filter', () {
-    test('returns items whose title, creator, publisher, topic, reference or tags match', () {
+    test(
+        'returns items whose title, creator, publisher, topic, reference or tags match',
+        () {
       final book = ItemMother.book();
       final movie = ItemMother.movie();
 
-      final results = ItemSearch.filter([book, movie], SearchTerm.create('Blade Runner'));
+      final results =
+          ItemSearch.filter([book, movie], SearchTerm.create('Blade Runner'));
 
       expect(results, [movie]);
     });
@@ -27,7 +30,8 @@ void main() {
     test('returns an empty list when nothing matches', () {
       final book = ItemMother.book();
 
-      final results = ItemSearch.filter([book], SearchTerm.create('nonexistent'));
+      final results =
+          ItemSearch.filter([book], SearchTerm.create('nonexistent'));
 
       expect(results, isEmpty);
     });

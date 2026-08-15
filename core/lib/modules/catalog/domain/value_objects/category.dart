@@ -17,5 +17,6 @@ enum Category {
 }
 
 class InvalidCategoryError extends DomainError {
-  InvalidCategoryError(String value) : super('"$value" is not a valid category');
+  InvalidCategoryError(String value)
+      : super('"$value" is not a valid category');
 }

@@ -6,9 +6,10 @@ import 'package:core/modules/catalog/domain/value_objects/creator.dart';
 import 'package:core/modules/catalog/domain/value_objects/format.dart';
 import 'package:core/modules/catalog/domain/value_objects/image_url.dart';
 import 'package:core/modules/catalog/domain/value_objects/item_description.dart';
+import 'package:core/modules/catalog/domain/value_objects/item_formats.dart';
 import 'package:core/modules/catalog/domain/value_objects/item_id.dart';
 import 'package:core/modules/catalog/domain/value_objects/item_tags.dart';
-import 'package:core/modules/catalog/domain/value_objects/language.dart';
+import 'package:core/modules/catalog/domain/value_objects/languages.dart';
 import 'package:core/modules/catalog/domain/value_objects/publication_year.dart';
 import 'package:core/modules/catalog/domain/value_objects/publisher.dart';
 import 'package:core/modules/catalog/domain/value_objects/reference.dart';
@@ -43,12 +44,12 @@ class Item {
     required Creator creator,
     required Publisher publisher,
     required Category category,
-    required Format format,
+    required ItemFormats format,
     ItemTags? tags,
     Topic? topic,
     PublicationYear? year,
     ItemDescription? description,
-    Language? language,
+    Languages? language,
     Reference? reference,
     ImageUrl? imageUrl,
   }) {
@@ -69,7 +70,7 @@ class Item {
       topic ?? Topic.empty(),
       year ?? PublicationYear.empty(),
       description ?? ItemDescription.empty(),
-      language ?? Language.empty(),
+      language ?? Languages.empty(),
       reference ?? Reference.empty(),
       imageUrl ?? ImageUrl.empty(),
       now,
@@ -83,12 +84,12 @@ class Item {
     required Creator creator,
     required Publisher publisher,
     required Category category,
-    required Format format,
+    required ItemFormats format,
     required ItemTags tags,
     required Topic topic,
     required PublicationYear year,
     required ItemDescription description,
-    required Language language,
+    required Languages language,
     required Reference reference,
     required ImageUrl imageUrl,
     required Timestamp createdAt,
@@ -127,12 +128,12 @@ class Item {
       Creator.empty(),
       Publisher.empty(),
       Category.book,
-      Format.paperback,
+      ItemFormats.create([Format.paperback]),
       ItemTags.empty(),
       Topic.empty(),
       PublicationYear.empty(),
       ItemDescription.empty(),
-      Language.empty(),
+      Languages.empty(),
       Reference.empty(),
       ImageUrl.empty(),
       now,
@@ -147,12 +148,12 @@ class Item {
   Creator _creator;
   Publisher _publisher;
   Category _category;
-  Format _format;
+  ItemFormats _format;
   ItemTags _tags;
   Topic _topic;
   PublicationYear _year;
   ItemDescription _description;
-  Language _language;
+  Languages _language;
   Reference _reference;
   ImageUrl _imageUrl;
   Timestamp _updatedAt;
@@ -161,12 +162,12 @@ class Item {
   Creator get creator => _creator;
   Publisher get publisher => _publisher;
   Category get category => _category;
-  Format get format => _format;
+  ItemFormats get format => _format;
   ItemTags get tags => _tags;
   Topic get topic => _topic;
   PublicationYear get year => _year;
   ItemDescription get description => _description;
-  Language get language => _language;
+  Languages get language => _language;
   Reference get reference => _reference;
   ImageUrl get imageUrl => _imageUrl;
   Timestamp get updatedAt => _updatedAt;
@@ -176,12 +177,12 @@ class Item {
     Creator? creator,
     Publisher? publisher,
     Category? category,
-    Format? format,
+    ItemFormats? format,
     ItemTags? tags,
     Topic? topic,
     PublicationYear? year,
     ItemDescription? description,
-    Language? language,
+    Languages? language,
     Reference? reference,
     ImageUrl? imageUrl,
   }) {

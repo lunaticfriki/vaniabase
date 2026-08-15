@@ -43,10 +43,8 @@ class _PaginatedItemGridViewState extends State<PaginatedItemGridView> {
         ResponsiveItemGrid<ItemReadModel>(
           items: pageItems,
           keyBuilder: (item) => ValueKey(item.id),
-          itemBuilder: (context, item) => ItemCardView(
-            item: item,
-            onTap: () => widget.onItemTap(item),
-          ),
+          itemBuilder: (context, item) =>
+              ItemCardView(item: item, onTap: () => widget.onItemTap(item)),
         ),
         if (totalPages > 1) ...[
           const SizedBox(height: 12),

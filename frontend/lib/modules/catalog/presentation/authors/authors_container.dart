@@ -4,6 +4,7 @@ import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/authors_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/presentation/authors/authors_view.dart';
+import 'package:frontend/modules/catalog/presentation/bulk_export_feedback.dart';
 import 'package:go_router/go_router.dart';
 
 class AuthorsContainer extends StatefulWidget {
@@ -45,6 +46,8 @@ class _AuthorsContainerState extends State<AuthorsContainer> {
           onAuthorTap: (author) =>
               context.read<AuthorsStateService>().selectAuthor(author),
           onItemTap: (item) => context.push('/items/${item.id}'),
+          onExport: (items, author) =>
+              exportItemsWithFeedback(context, items, 'author-$author'),
         ),
       ),
     );

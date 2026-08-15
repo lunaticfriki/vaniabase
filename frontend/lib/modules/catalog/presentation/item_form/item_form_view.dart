@@ -29,12 +29,12 @@ class ItemFormInitialValues {
   final List<String> creator;
   final String publisher;
   final String category;
-  final String format;
+  final List<String> format;
   final List<String> tags;
   final String topic;
   final int year;
   final String description;
-  final String language;
+  final List<String> language;
   final String imageUrl;
   final bool completed;
   final String reference;
@@ -63,12 +63,12 @@ class ItemFormView extends StatefulWidget {
     required List<String> creator,
     required String publisher,
     required String category,
-    required String format,
+    required List<String> format,
     List<String>? tags,
     String? topic,
     int? year,
     String? description,
-    String? language,
+    List<String>? language,
     Uint8List? imageBytes,
     bool removeImage,
     bool completed,
@@ -111,11 +111,11 @@ class _ItemFormViewState extends State<ItemFormView> {
     text: widget.initial?.description,
   );
   late final _languageController = TextEditingController(
-    text: widget.initial?.language,
+    text: widget.initial?.language.join(', '),
   );
 
   late String? _category = widget.initial?.category;
-  late String? _format = widget.initial?.format;
+  late final Set<String> _format = {...?widget.initial?.format};
   String? _categoryError;
   String? _formatError;
   late bool _completed = widget.initial?.completed ?? false;
@@ -221,49 +221,53 @@ class _ItemFormViewState extends State<ItemFormView> {
                   },
                 ),
                 const SizedBox(height: 12),
-                Row(
+                DropdownMenu<String>(
+                  initialSelection: _category,
+                  label: const Text('Category'),
+                  errorText: _categoryError,
+                  expandedInsets: EdgeInsets.zero,
+                  dropdownMenuEntries: [
+                    for (final entry in categoryLabels.entries)
+                      DropdownMenuEntry(value: entry.key, label: entry.value),
+                  ],
+                  onSelected: (value) => setState(() {
+                    _category = value;
+                    _categoryError = null;
+                  }),
+                ),
+                const SizedBox(height: 12),
+                Text('Format', style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
-                    Expanded(
-                      child: DropdownMenu<String>(
-                        initialSelection: _category,
-                        label: const Text('Category'),
-                        errorText: _categoryError,
-                        expandedInsets: EdgeInsets.zero,
-                        dropdownMenuEntries: [
-                          for (final entry in categoryLabels.entries)
-                            DropdownMenuEntry(
-                              value: entry.key,
-                              label: entry.value,
-                            ),
-                        ],
-                        onSelected: (value) => setState(() {
-                          _category = value;
-                          _categoryError = null;
-                        }),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: DropdownMenu<String>(
-                        initialSelection: _format,
-                        label: const Text('Format'),
-                        errorText: _formatError,
-                        expandedInsets: EdgeInsets.zero,
-                        dropdownMenuEntries: [
-                          for (final entry in formatLabels.entries)
-                            DropdownMenuEntry(
-                              value: entry.key,
-                              label: entry.value,
-                            ),
-                        ],
-                        onSelected: (value) => setState(() {
-                          _format = value;
+                    for (final entry in formatLabels.entries)
+                      FilterChip(
+                        label: Text(entry.value),
+                        selected: _format.contains(entry.key),
+                        onSelected: (selected) => setState(() {
+                          if (selected) {
+                            _format.add(entry.key);
+                          } else {
+                            _format.remove(entry.key);
+                          }
                           _formatError = null;
                         }),
                       ),
-                    ),
                   ],
                 ),
+                if (_formatError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      _formatError!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _tagsController,
@@ -331,13 +335,14 @@ class _ItemFormViewState extends State<ItemFormView> {
                   controller: _languageController,
                   decoration: const InputDecoration(
                     labelText: 'Language (optional)',
-                    helperText: '2-letter code, e.g. "en"',
+                    helperText: 'Comma-separated 2-letter codes, e.g. "en, fr"',
                   ),
                   validator: (value) {
-                    final trimmed = value?.trim() ?? '';
-                    if (trimmed.isEmpty) return null;
-                    if (!_languageCodePattern.hasMatch(trimmed)) {
-                      return 'Enter a 2-letter language code';
+                    final languages = _parseLanguages(value);
+                    if (languages.any(
+                      (language) => !_languageCodePattern.hasMatch(language),
+                    )) {
+                      return 'Each language must be a 2-letter code';
                     }
                     return null;
                   },
@@ -434,30 +439,38 @@ class _ItemFormViewState extends State<ItemFormView> {
         .toList();
   }
 
+  List<String> _parseLanguages(String? value) {
+    return (value ?? '')
+        .split(',')
+        .map((language) => language.trim().toLowerCase())
+        .where((language) => language.isNotEmpty)
+        .toList();
+  }
+
   void _submit() {
     final isFormValid = _formKey.currentState!.validate();
     setState(() {
       _categoryError = _category == null ? 'Category is required' : null;
-      _formatError = _format == null ? 'Format is required' : null;
+      _formatError = _format.isEmpty ? 'Format is required' : null;
     });
-    if (!isFormValid || _category == null || _format == null) return;
+    if (!isFormValid || _category == null || _format.isEmpty) return;
     final tags = _parseTags(_tagsController.text);
     final topic = _topicController.text.trim();
     final year = int.tryParse(_yearController.text.trim());
     final description = _descriptionController.text.trim();
-    final language = _languageController.text.trim();
+    final language = _parseLanguages(_languageController.text);
     final reference = _referenceController.text.trim();
     widget.onSubmit(
       title: _titleController.text.trim(),
       creator: _parseNames(_creatorController.text),
       publisher: _publisherController.text.trim(),
       category: _category!,
-      format: _format!,
+      format: _format.toList(),
       tags: tags.isEmpty ? null : tags,
       topic: topic.isEmpty ? null : topic,
       year: year,
       description: description.isEmpty ? null : description,
-      language: language.isEmpty ? null : language.toLowerCase(),
+      language: language.isEmpty ? null : language,
       imageBytes: _pickedImageBytes,
       removeImage: _imageRemoved,
       completed: _completed,

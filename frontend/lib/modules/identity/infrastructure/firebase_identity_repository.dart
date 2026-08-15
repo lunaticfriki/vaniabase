@@ -9,7 +9,10 @@ class FirebaseIdentityRepository implements IdentityWriteService {
   @override
   Future<void> login({required String email, required String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
     } on FirebaseAuthException catch (error) {
       throw Exception(error.message ?? error.code);
     }

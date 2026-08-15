@@ -27,5 +27,5 @@ class PublicationYear {
 
 class InvalidPublicationYearError extends DomainError {
   InvalidPublicationYearError(int value)
-    : super('"$value" is not a valid publication year');
+      : super('"$value" is not a valid publication year');
 }

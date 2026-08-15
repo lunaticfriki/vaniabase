@@ -10,6 +10,7 @@ class PublishersView extends StatelessWidget {
     required this.onLetterTap,
     required this.onPublisherTap,
     required this.onItemTap,
+    this.onExport,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class PublishersView extends StatelessWidget {
   final void Function(String letter) onLetterTap;
   final void Function(String publisher) onPublisherTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String publisher)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class PublishersView extends StatelessWidget {
               onLetterTap: onLetterTap,
               onPublisherTap: onPublisherTap,
               onItemTap: onItemTap,
+              onExport: onExport,
             ),
           ),
         ],
@@ -47,12 +50,14 @@ class _PublishersBody extends StatelessWidget {
     required this.onLetterTap,
     required this.onPublisherTap,
     required this.onItemTap,
+    this.onExport,
   });
 
   final PublishersState state;
   final void Function(String letter) onLetterTap;
   final void Function(String publisher) onPublisherTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String publisher)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +85,7 @@ class _PublishersBody extends StatelessWidget {
                 onEntryTap: onPublisherTap,
                 onItemTap: onItemTap,
                 entryNoun: 'publisher',
+                onExport: onExport,
               ),
               const SizedBox(height: 24),
               const AppFooterView(),

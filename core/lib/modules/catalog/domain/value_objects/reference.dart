@@ -27,5 +27,5 @@ class Reference {
 
 class InvalidReferenceError extends DomainError {
   InvalidReferenceError(String value)
-    : super('"$value" is not a valid reference (1-50 characters)');
+      : super('"$value" is not a valid reference (1-50 characters)');
 }

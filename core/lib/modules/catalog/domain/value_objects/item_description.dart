@@ -28,5 +28,5 @@ class ItemDescription {
 
 class InvalidItemDescriptionError extends DomainError {
   InvalidItemDescriptionError(String value)
-    : super('"$value" is not a valid description (1-2000 characters)');
+      : super('"$value" is not a valid description (1-2000 characters)');
 }

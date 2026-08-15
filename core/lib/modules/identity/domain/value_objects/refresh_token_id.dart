@@ -33,5 +33,5 @@ class RefreshTokenId {
 
 class InvalidRefreshTokenIdError extends DomainError {
   InvalidRefreshTokenIdError(String value)
-    : super('"$value" is not a valid refresh token id');
+      : super('"$value" is not a valid refresh token id');
 }

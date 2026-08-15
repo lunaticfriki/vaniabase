@@ -5,13 +5,15 @@ import 'package:test/test.dart';
 void main() {
   group('ItemTags', () {
     test('create accepts a list of tags', () {
-      final tags = ItemTags.create([Tag.create('sci-fi'), Tag.create('classic')]);
+      final tags =
+          ItemTags.create([Tag.create('sci-fi'), Tag.create('classic')]);
 
       expect(tags.value, [Tag.create('sci-fi'), Tag.create('classic')]);
     });
 
     test('create dedups equal tags', () {
-      final tags = ItemTags.create([Tag.create('sci-fi'), Tag.create('sci-fi')]);
+      final tags =
+          ItemTags.create([Tag.create('sci-fi'), Tag.create('sci-fi')]);
 
       expect(tags.value, [Tag.create('sci-fi')]);
     });
@@ -30,7 +32,8 @@ void main() {
     });
 
     test('count reflects the number of tags', () {
-      final tags = ItemTags.create([Tag.create('sci-fi'), Tag.create('classic')]);
+      final tags =
+          ItemTags.create([Tag.create('sci-fi'), Tag.create('classic')]);
 
       expect(tags.count, 2);
     });

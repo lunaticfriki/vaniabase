@@ -30,8 +30,8 @@ class Password {
 
 class WeakPasswordError extends DomainError {
   WeakPasswordError()
-    : super(
-        'password must be 8-128 characters and contain at least one letter '
-        'and one digit',
-      );
+      : super(
+          'password must be 8-128 characters and contain at least one letter '
+          'and one digit',
+        );
 }

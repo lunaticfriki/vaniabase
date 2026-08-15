@@ -3,6 +3,7 @@ import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/tags_state_service.dart';
 import 'package:frontend/modules/catalog/presentation/paginated_item_grid_view.dart';
 import 'package:frontend/shared/layout/app_footer_view.dart';
+import 'package:pixelarticons/pixel.dart';
 
 const _minTagFontSize = 14.0;
 const _maxTagFontSize = 34.0;
@@ -12,12 +13,14 @@ class TagsView extends StatelessWidget {
     required this.state,
     required this.onTagTap,
     required this.onItemTap,
+    this.onExport,
     super.key,
   });
 
   final TagsState state;
   final void Function(String tag) onTagTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String tag)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,7 @@ class TagsView extends StatelessWidget {
               state: state,
               onTagTap: onTagTap,
               onItemTap: onItemTap,
+              onExport: onExport,
             ),
           ),
         ],
@@ -46,11 +50,13 @@ class _TagsBody extends StatefulWidget {
     required this.state,
     required this.onTagTap,
     required this.onItemTap,
+    this.onExport,
   });
 
   final TagsState state;
   final void Function(String tag) onTagTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String tag)? onExport;
 
   @override
   State<_TagsBody> createState() => _TagsBodyState();
@@ -101,10 +107,23 @@ class _TagsBodyState extends State<_TagsBody> {
               ),
               if (selectedTag != null) ...[
                 const SizedBox(height: 24),
-                Text(
+                Row(
                   key: _resultsKey,
-                  '"$selectedTag" — ${selectedItems.length} item${selectedItems.length == 1 ? '' : 's'}',
-                  style: Theme.of(context).textTheme.titleSmall,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '"$selectedTag" — ${selectedItems.length} item${selectedItems.length == 1 ? '' : 's'}',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    if (widget.onExport != null)
+                      IconButton(
+                        tooltip: 'Export',
+                        icon: const Icon(Pixel.download),
+                        onPressed: () =>
+                            widget.onExport!(selectedItems, selectedTag),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 12),
                 selectedItems.isEmpty

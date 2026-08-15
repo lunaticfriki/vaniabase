@@ -129,10 +129,11 @@ void main() {
         final state = service.state as ItemListLoaded;
         expect(state.sortOption, ItemSortOption.title);
         expect(state.result.page, 1);
-        expect(
-          state.result.items.map((item) => item.title),
-          ['Apple', 'Mango', 'Zebra'],
-        );
+        expect(state.result.items.map((item) => item.title), [
+          'Apple',
+          'Mango',
+          'Zebra',
+        ]);
       },
     );
 
@@ -153,10 +154,10 @@ void main() {
       act: (service) => service.setSortOption(ItemSortOption.author),
       verify: (service) {
         final state = service.state as ItemListLoaded;
-        expect(
-          state.result.items.map((item) => item.creator.first),
-          ['Apple Author', 'Zebra Author'],
-        );
+        expect(state.result.items.map((item) => item.creator.first), [
+          'Apple Author',
+          'Zebra Author',
+        ]);
       },
     );
   });

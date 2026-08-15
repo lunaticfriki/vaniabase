@@ -47,32 +47,35 @@ void main() {
     },
   );
 
-  testWidgets('narrow screen: title and author overlay the bottom of the hero image', (tester) async {
-    tester.view.physicalSize = const Size(375, 900);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+  testWidgets(
+    'narrow screen: title and author overlay the bottom of the hero image',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(buildApp());
-    await tester.pumpAndSettle();
-    expect(tester.takeException(), isNull);
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
 
-    final imageRect = tester.getRect(find.byKey(itemDetailImageKey));
-    final backButtonY = tester.getTopLeft(find.text('Back')).dy;
+      final imageRect = tester.getRect(find.byKey(itemDetailImageKey));
+      final backButtonY = tester.getTopLeft(find.text('Back')).dy;
 
-    expect(imageRect.top, 0);
-    expect(imageRect.height, closeTo(900, 1));
-    expect(backButtonY, lessThan(50));
+      expect(imageRect.top, 0);
+      expect(imageRect.height, closeTo(900, 1));
+      expect(backButtonY, lessThan(50));
 
-    final titleY = tester.getTopLeft(find.text('Dune')).dy;
-    final creatorY = tester.getTopLeft(find.text(item.creator.join(', '))).dy;
-    final publisherLabelY = tester.getTopLeft(find.text('Publisher')).dy;
+      final titleY = tester.getTopLeft(find.text('Dune')).dy;
+      final creatorY = tester.getTopLeft(find.text(item.creator.join(', '))).dy;
+      final publisherLabelY = tester.getTopLeft(find.text('Publisher')).dy;
 
-    expect(titleY, lessThan(imageRect.height));
-    expect(titleY, lessThan(creatorY));
-    expect(creatorY, lessThan(imageRect.height));
-    expect(publisherLabelY, greaterThan(imageRect.height));
-  });
+      expect(titleY, lessThan(imageRect.height));
+      expect(titleY, lessThan(creatorY));
+      expect(creatorY, lessThan(imageRect.height));
+      expect(publisherLabelY, greaterThan(imageRect.height));
+    },
+  );
 
   testWidgets(
     'narrow screen: below a real app bar, the image and title are visible without scrolling',
@@ -112,26 +115,38 @@ void main() {
     },
   );
 
-  testWidgets('narrow screen: the floating header is transparent until the user scrolls', (tester) async {
-    tester.view.physicalSize = const Size(375, 900);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+  testWidgets(
+    'narrow screen: the floating header is transparent until the user scrolls',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(buildApp());
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
 
-    final headerBefore = tester.widget<Container>(find.byKey(itemDetailHeaderKey));
-    expect((headerBefore.color as Color).a, 0);
+      final headerBefore = tester.widget<Container>(
+        find.byKey(itemDetailHeaderKey),
+      );
+      expect((headerBefore.color as Color).a, 0);
 
-    await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -300));
-    await tester.pumpAndSettle();
+      await tester.drag(
+        find.byType(SingleChildScrollView),
+        const Offset(0, -300),
+      );
+      await tester.pumpAndSettle();
 
-    final headerAfter = tester.widget<Container>(find.byKey(itemDetailHeaderKey));
-    expect((headerAfter.color as Color).a, greaterThan(0.9));
-  });
+      final headerAfter = tester.widget<Container>(
+        find.byKey(itemDetailHeaderKey),
+      );
+      expect((headerAfter.color as Color).a, greaterThan(0.9));
+    },
+  );
 
-  testWidgets('tapping the cover image opens the fullscreen image viewer', (tester) async {
+  testWidgets('tapping the cover image opens the fullscreen image viewer', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 

@@ -44,5 +44,6 @@ class PageRequest {
 }
 
 class InvalidPageRequestError extends DomainError {
-  InvalidPageRequestError(String reason) : super('invalid page request: $reason');
+  InvalidPageRequestError(String reason)
+      : super('invalid page request: $reason');
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/topics_state_service.dart';
+import 'package:frontend/modules/catalog/presentation/bulk_export_feedback.dart';
 import 'package:frontend/modules/catalog/presentation/topics/topics_view.dart';
 import 'package:go_router/go_router.dart';
 
@@ -45,6 +46,8 @@ class _TopicsContainerState extends State<TopicsContainer> {
           onTopicTap: (topic) =>
               context.read<TopicsStateService>().selectTopic(topic),
           onItemTap: (item) => context.push('/items/${item.id}'),
+          onExport: (items, topic) =>
+              exportItemsWithFeedback(context, items, 'topic-$topic'),
         ),
       ),
     );

@@ -27,5 +27,5 @@ class Title {
 
 class InvalidTitleError extends DomainError {
   InvalidTitleError(String value)
-    : super('"$value" is not a valid title (1-200 characters)');
+      : super('"$value" is not a valid title (1-200 characters)');
 }

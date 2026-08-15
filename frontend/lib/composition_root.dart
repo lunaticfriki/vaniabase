@@ -15,10 +15,14 @@ final getIt = GetIt.instance;
 
 Future<void> configureDependencies() async {
   getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-  getIt.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+  getIt.registerLazySingleton<FirebaseFirestore>(
+    () => FirebaseFirestore.instance,
+  );
   getIt.registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
 
-  getIt.registerSingleton<SharedPreferences>(await SharedPreferences.getInstance());
+  getIt.registerSingleton<SharedPreferences>(
+    await SharedPreferences.getInstance(),
+  );
 
   getIt.registerLazySingleton<SessionStateService>(
     () => SessionStateService(getIt<FirebaseAuth>()),
@@ -30,11 +34,21 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<FirebaseIdentityRepository>(
     () => FirebaseIdentityRepository(getIt<FirebaseAuth>()),
   );
-  getIt.registerFactory<IdentityWriteService>(() => getIt<FirebaseIdentityRepository>());
+  getIt.registerFactory<IdentityWriteService>(
+    () => getIt<FirebaseIdentityRepository>(),
+  );
 
   getIt.registerLazySingleton<FirestoreItemRepository>(
-    () => FirestoreItemRepository(getIt<FirebaseFirestore>(), getIt<FirebaseAuth>(), getIt<FirebaseStorage>()),
+    () => FirestoreItemRepository(
+      getIt<FirebaseFirestore>(),
+      getIt<FirebaseAuth>(),
+      getIt<FirebaseStorage>(),
+    ),
   );
-  getIt.registerFactory<ItemReadService>(() => getIt<FirestoreItemRepository>());
-  getIt.registerFactory<ItemWriteService>(() => getIt<FirestoreItemRepository>());
+  getIt.registerFactory<ItemReadService>(
+    () => getIt<FirestoreItemRepository>(),
+  );
+  getIt.registerFactory<ItemWriteService>(
+    () => getIt<FirestoreItemRepository>(),
+  );
 }

@@ -16,11 +16,13 @@ void main() {
     });
 
     test('create throws when empty after trim', () {
-      expect(() => SearchTerm.create('   '), throwsA(isA<InvalidSearchTermError>()));
+      expect(() => SearchTerm.create('   '),
+          throwsA(isA<InvalidSearchTermError>()));
     });
 
     test('create throws when longer than 100 characters', () {
-      expect(() => SearchTerm.create('a' * 101), throwsA(isA<InvalidSearchTermError>()));
+      expect(() => SearchTerm.create('a' * 101),
+          throwsA(isA<InvalidSearchTermError>()));
     });
 
     test('empty returns the neutral instance', () {

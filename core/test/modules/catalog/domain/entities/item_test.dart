@@ -6,9 +6,10 @@ import 'package:core/modules/catalog/domain/value_objects/creator.dart';
 import 'package:core/modules/catalog/domain/value_objects/format.dart';
 import 'package:core/modules/catalog/domain/value_objects/image_url.dart';
 import 'package:core/modules/catalog/domain/value_objects/item_description.dart';
+import 'package:core/modules/catalog/domain/value_objects/item_formats.dart';
 import 'package:core/modules/catalog/domain/value_objects/item_id.dart';
 import 'package:core/modules/catalog/domain/value_objects/item_tags.dart';
-import 'package:core/modules/catalog/domain/value_objects/language.dart';
+import 'package:core/modules/catalog/domain/value_objects/languages.dart';
 import 'package:core/modules/catalog/domain/value_objects/publication_year.dart';
 import 'package:core/modules/catalog/domain/value_objects/publisher.dart';
 import 'package:core/modules/catalog/domain/value_objects/reference.dart';
@@ -32,13 +33,13 @@ void main() {
         creator: Creator.single('Frank Herbert'),
         publisher: Publisher.create('Chilton Books'),
         category: Category.book,
-        format: Format.hardcover,
+        format: ItemFormats.create([Format.hardcover]),
       );
 
       expect(item.ownerId, ownerId);
       expect(item.title, Title.create('Dune'));
       expect(item.category, Category.book);
-      expect(item.format, Format.hardcover);
+      expect(item.format, ItemFormats.create([Format.hardcover]));
       expect(item.id, isNot(equals(ItemId.empty())));
       expect(item.createdAt, item.updatedAt);
     });
@@ -51,7 +52,7 @@ void main() {
           creator: Creator.single('Frank Herbert'),
           publisher: Publisher.create('Chilton Books'),
           category: Category.book,
-          format: Format.vinyl,
+          format: ItemFormats.create([Format.vinyl]),
         ),
         throwsA(isA<InvalidFormatForCategoryError>()),
       );
@@ -118,7 +119,7 @@ void main() {
         creator: Creator.single('Frank Herbert'),
         publisher: Publisher.create('Chilton Books'),
         category: Category.book,
-        format: Format.hardcover,
+        format: ItemFormats.create([Format.hardcover]),
       );
 
       expect(item.isOwnedBy(ownerId), isTrue);
@@ -154,12 +155,12 @@ void main() {
         creator: Creator.single('Frank Herbert'),
         publisher: Publisher.create('Chilton Books'),
         category: Category.book,
-        format: Format.hardcover,
+        format: ItemFormats.create([Format.hardcover]),
         tags: ItemTags.empty(),
         topic: Topic.empty(),
         year: PublicationYear.empty(),
         description: ItemDescription.empty(),
-        language: Language.empty(),
+        language: Languages.empty(),
         reference: Reference.empty(),
         imageUrl: ImageUrl.empty(),
         createdAt: createdAt,
@@ -173,7 +174,8 @@ void main() {
       expect(item.title, Title.create('Dune'));
     });
 
-    test('fromPersistence throws for a corrupt row with mismatched '
+    test(
+        'fromPersistence throws for a corrupt row with mismatched '
         'category/format', () {
       expect(
         () => Item.fromPersistence(
@@ -183,12 +185,12 @@ void main() {
           creator: Creator.single('Frank Herbert'),
           publisher: Publisher.create('Chilton Books'),
           category: Category.book,
-          format: Format.vinyl,
+          format: ItemFormats.create([Format.vinyl]),
           tags: ItemTags.empty(),
           topic: Topic.empty(),
           year: PublicationYear.empty(),
           description: ItemDescription.empty(),
-          language: Language.empty(),
+          language: Languages.empty(),
           reference: Reference.empty(),
           imageUrl: ImageUrl.empty(),
           createdAt: Timestamp.now(),

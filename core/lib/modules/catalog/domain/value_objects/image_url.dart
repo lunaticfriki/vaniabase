@@ -5,8 +5,7 @@ class ImageUrl {
 
   factory ImageUrl.create(String value) {
     final uri = Uri.tryParse(value);
-    final isValid =
-        uri != null &&
+    final isValid = uri != null &&
         (uri.scheme == 'http' || uri.scheme == 'https') &&
         uri.host.isNotEmpty;
     if (!isValid) {
@@ -31,5 +30,5 @@ class ImageUrl {
 
 class InvalidImageUrlError extends DomainError {
   InvalidImageUrlError(String value)
-    : super('"$value" is not a valid http/https image URL');
+      : super('"$value" is not a valid http/https image URL');
 }

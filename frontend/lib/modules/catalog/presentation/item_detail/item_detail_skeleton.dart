@@ -8,13 +8,18 @@ class ItemDetailSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.sizeOf(context).width >= itemDetailWideBreakpoint;
-    final placeholderColor = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final placeholderColor = Theme.of(
+      context,
+    ).colorScheme.surfaceContainerHighest;
 
     Widget block({double? width, required double height}) {
       return Container(
         width: width,
         height: height,
-        decoration: BoxDecoration(color: placeholderColor, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: placeholderColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
       );
     }
 
@@ -60,7 +65,11 @@ class ItemDetailSkeleton extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [titleAndCreator, const SizedBox(height: 20), details],
+                      children: [
+                        titleAndCreator,
+                        const SizedBox(height: 20),
+                        details,
+                      ],
                     ),
                   ),
                 ],
@@ -71,7 +80,10 @@ class ItemDetailSkeleton extends StatelessWidget {
       );
     }
 
-    final image = AspectRatio(aspectRatio: 3 / 4, child: block(height: double.infinity));
+    final image = AspectRatio(
+      aspectRatio: 3 / 4,
+      child: block(height: double.infinity),
+    );
 
     return Padding(
       padding: const EdgeInsets.all(16),

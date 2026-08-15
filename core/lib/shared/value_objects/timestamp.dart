@@ -35,5 +35,5 @@ class Timestamp {
 
 class FutureTimestampError extends DomainError {
   FutureTimestampError(DateTime value)
-    : super('"$value" cannot be in the future');
+      : super('"$value" cannot be in the future');
 }

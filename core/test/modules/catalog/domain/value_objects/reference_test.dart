@@ -16,11 +16,13 @@ void main() {
     });
 
     test('create throws when empty after trim', () {
-      expect(() => Reference.create('   '), throwsA(isA<InvalidReferenceError>()));
+      expect(
+          () => Reference.create('   '), throwsA(isA<InvalidReferenceError>()));
     });
 
     test('create throws when longer than 50 characters', () {
-      expect(() => Reference.create('a' * 51), throwsA(isA<InvalidReferenceError>()));
+      expect(() => Reference.create('a' * 51),
+          throwsA(isA<InvalidReferenceError>()));
     });
 
     test('empty returns the neutral instance', () {

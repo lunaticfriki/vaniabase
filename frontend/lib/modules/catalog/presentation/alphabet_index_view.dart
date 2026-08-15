@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/alphabet_util.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/presentation/paginated_item_grid_view.dart';
+import 'package:pixelarticons/pixel.dart';
 
 class AlphabetIndexView extends StatefulWidget {
   const AlphabetIndexView({
@@ -13,6 +14,7 @@ class AlphabetIndexView extends StatefulWidget {
     required this.onEntryTap,
     required this.onItemTap,
     required this.entryNoun,
+    this.onExport,
     super.key,
   });
 
@@ -23,6 +25,7 @@ class AlphabetIndexView extends StatefulWidget {
   final void Function(String letter) onLetterTap;
   final void Function(String entry) onEntryTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String entry)? onExport;
 
   /// Singular noun describing an entry (e.g. "topic", "author"), used in hint copy.
   final String entryNoun;
@@ -87,10 +90,25 @@ class _AlphabetIndexViewState extends State<AlphabetIndexView> {
           ),
         if (widget.selectedEntry != null) ...[
           const SizedBox(height: 24),
-          Text(
+          Row(
             key: _resultsKey,
-            '"${widget.selectedEntry}" — ${widget.selectedItems.length} item${widget.selectedItems.length == 1 ? '' : 's'}',
-            style: Theme.of(context).textTheme.titleSmall,
+            children: [
+              Expanded(
+                child: Text(
+                  '"${widget.selectedEntry}" — ${widget.selectedItems.length} item${widget.selectedItems.length == 1 ? '' : 's'}',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              if (widget.onExport != null)
+                IconButton(
+                  tooltip: 'Export',
+                  icon: const Icon(Pixel.download),
+                  onPressed: () => widget.onExport!(
+                    widget.selectedItems,
+                    widget.selectedEntry!,
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 12),
           widget.selectedItems.isEmpty

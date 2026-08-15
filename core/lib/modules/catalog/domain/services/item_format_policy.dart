@@ -1,5 +1,6 @@
 import 'package:core/modules/catalog/domain/value_objects/category.dart';
 import 'package:core/modules/catalog/domain/value_objects/format.dart';
+import 'package:core/modules/catalog/domain/value_objects/item_formats.dart';
 
 class ItemFormatPolicy {
   static const Map<Category, Set<Format>> _allowedFormats = {
@@ -16,7 +17,10 @@ class ItemFormatPolicy {
     Category.musicAlbum: {Format.cd, Format.vinyl, Format.digitalDownload},
   };
 
-  static bool allows(Category category, Format format) {
-    return _allowedFormats[category]?.contains(format) ?? false;
+  /// Every format in [formats] must be allowed for [category].
+  static bool allows(Category category, ItemFormats formats) {
+    final allowed = _allowedFormats[category];
+    if (allowed == null) return false;
+    return formats.value.every(allowed.contains);
   }
 }

@@ -29,7 +29,7 @@ class LanguagesLoaded extends LanguagesState {
   List<ItemReadModel> get selectedItems {
     final language = selectedLanguage;
     if (language == null) return const [];
-    return items.where((item) => item.language == language).toList();
+    return items.where((item) => item.language.contains(language)).toList();
   }
 }
 
@@ -56,7 +56,7 @@ class LanguagesStateService extends Cubit<LanguagesState> {
   void _onItems(List<ItemReadModel> items) {
     final languages =
         items
-            .map((item) => item.language)
+            .expand((item) => item.language)
             .where((language) => language.isNotEmpty)
             .toSet()
             .toList()

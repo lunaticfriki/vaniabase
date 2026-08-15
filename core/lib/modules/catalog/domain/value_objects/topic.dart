@@ -27,5 +27,5 @@ class Topic {
 
 class InvalidTopicError extends DomainError {
   InvalidTopicError(String value)
-    : super('"$value" is not a valid topic (1-100 characters)');
+      : super('"$value" is not a valid topic (1-100 characters)');
 }

@@ -29,8 +29,8 @@ class Username {
 
 class InvalidUsernameError extends DomainError {
   InvalidUsernameError(String value)
-    : super(
-        '"$value" is not a valid username '
-        '(3-30 chars, letters/digits/underscore only)',
-      );
+      : super(
+          '"$value" is not a valid username '
+          '(3-30 chars, letters/digits/underscore only)',
+        );
 }

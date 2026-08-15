@@ -12,7 +12,9 @@ void main() {
   AnimatedOpacity backButtonOpacity(WidgetTester tester) =>
       tester.widget<AnimatedOpacity>(find.byKey(fullscreenImageBackButtonKey));
 
-  testWidgets('shows the image and a visible back button initially', (tester) async {
+  testWidgets('shows the image and a visible back button initially', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
@@ -21,18 +23,21 @@ void main() {
     expect(backButtonOpacity(tester).opacity, 1);
   });
 
-  testWidgets('tapping the image hides the back button, tapping again shows it', (tester) async {
-    await tester.pumpWidget(buildApp());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'tapping the image hides the back button, tapping again shows it',
+    (tester) async {
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(fullscreenImageKey));
-    await tester.pumpAndSettle();
-    expect(backButtonOpacity(tester).opacity, 0);
+      await tester.tap(find.byKey(fullscreenImageKey));
+      await tester.pumpAndSettle();
+      expect(backButtonOpacity(tester).opacity, 0);
 
-    await tester.tap(find.byKey(fullscreenImageKey));
-    await tester.pumpAndSettle();
-    expect(backButtonOpacity(tester).opacity, 1);
-  });
+      await tester.tap(find.byKey(fullscreenImageKey));
+      await tester.pumpAndSettle();
+      expect(backButtonOpacity(tester).opacity, 1);
+    },
+  );
 
   testWidgets('tapping the back button pops the route', (tester) async {
     await tester.pumpWidget(
@@ -41,7 +46,10 @@ void main() {
           builder: (context) => Scaffold(
             body: Center(
               child: TextButton(
-                onPressed: () => openFullscreenImage(context, 'https://example.com/cover.jpg'),
+                onPressed: () => openFullscreenImage(
+                  context,
+                  'https://example.com/cover.jpg',
+                ),
                 child: const Text('Open'),
               ),
             ),

@@ -17,6 +17,7 @@ class ItemListView extends StatelessWidget {
     required this.onItemTap,
     this.sortOption,
     this.onSortChanged,
+    this.onExport,
     super.key,
   });
 
@@ -24,6 +25,7 @@ class ItemListView extends StatelessWidget {
   final PageResult<ItemReadModel> result;
   final ItemSortOption? sortOption;
   final ValueChanged<ItemSortOption>? onSortChanged;
+  final VoidCallback? onExport;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
   final void Function(ItemReadModel item) onItemTap;
@@ -44,6 +46,12 @@ class ItemListView extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
+              if (onExport != null)
+                IconButton(
+                  tooltip: 'Export',
+                  icon: const Icon(Pixel.download),
+                  onPressed: onExport,
+                ),
               if (sortOption != null && onSortChanged != null)
                 PopupMenuButton<ItemSortOption>(
                   tooltip: 'Sort',
@@ -56,7 +64,9 @@ class ItemListView extends StatelessWidget {
                         value: option,
                         child: Row(
                           children: [
-                            Expanded(child: Text(itemSortOptionLabels[option]!)),
+                            Expanded(
+                              child: Text(itemSortOptionLabels[option]!),
+                            ),
                             if (option == sortOption)
                               const Icon(Pixel.check, size: 18),
                           ],

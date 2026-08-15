@@ -7,11 +7,11 @@ class PageResult<T> {
   });
 
   factory PageResult.empty({int pageSize = 10}) => PageResult<T>(
-    items: const [],
-    page: 1,
-    pageSize: pageSize,
-    totalItems: 0,
-  );
+        items: const [],
+        page: 1,
+        pageSize: pageSize,
+        totalItems: 0,
+      );
 
   final List<T> items;
   final int page;

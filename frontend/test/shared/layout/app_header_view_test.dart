@@ -19,7 +19,9 @@ void main() {
 
   setUp(() async {
     final firebaseAuth = MockFirebaseAuth();
-    when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => const Stream.empty());
+    when(
+      () => firebaseAuth.authStateChanges(),
+    ).thenAnswer((_) => const Stream.empty());
     session = SessionStateService(firebaseAuth);
     SharedPreferences.setMockInitialValues({});
     theme = ThemeStateService(await SharedPreferences.getInstance());
@@ -53,25 +55,30 @@ void main() {
     );
   }
 
-  testWidgets('wide screen: nav options render inline with icons, no hamburger', (tester) async {
-    tester.view.physicalSize = const Size(1024, 800);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+  testWidgets(
+    'wide screen: nav options render inline with icons, no hamburger',
+    (tester) async {
+      tester.view.physicalSize = const Size(1024, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(buildApp());
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
 
-    expect(find.text('Complete collection'), findsNothing);
-    expect(find.widgetWithIcon(IconButton, Pixel.grid), findsOneWidget);
-    expect(find.widgetWithIcon(IconButton, Pixel.bookmarks), findsOneWidget);
-    expect(find.widgetWithIcon(IconButton, Pixel.label), findsOneWidget);
-    expect(find.widgetWithIcon(IconButton, Pixel.search), findsOneWidget);
-    expect(find.widgetWithIcon(IconButton, Pixel.fileplus), findsOneWidget);
-    expect(find.byIcon(Pixel.menu), findsNothing);
-  });
+      expect(find.text('Complete collection'), findsNothing);
+      expect(find.widgetWithIcon(IconButton, Pixel.grid), findsOneWidget);
+      expect(find.widgetWithIcon(IconButton, Pixel.bookmarks), findsOneWidget);
+      expect(find.widgetWithIcon(IconButton, Pixel.label), findsOneWidget);
+      expect(find.widgetWithIcon(IconButton, Pixel.search), findsOneWidget);
+      expect(find.widgetWithIcon(IconButton, Pixel.fileplus), findsOneWidget);
+      expect(find.byIcon(Pixel.menu), findsNothing);
+    },
+  );
 
-  testWidgets('narrow screen: nav options collapse into a hamburger menu', (tester) async {
+  testWidgets('narrow screen: nav options collapse into a hamburger menu', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(375, 800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -125,13 +132,18 @@ void main() {
     expect(homeTapped, isTrue);
   });
 
-  SessionStateService authenticatedSession({String? displayName, String? email}) {
+  SessionStateService authenticatedSession({
+    String? displayName,
+    String? email,
+  }) {
     final firebaseAuth = MockFirebaseAuth();
     final user = MockUser();
     when(() => user.uid).thenReturn('user-1');
     when(() => user.email).thenReturn(email ?? 'jane@example.com');
     when(() => user.displayName).thenReturn(displayName ?? 'Jane');
-    when(() => firebaseAuth.authStateChanges()).thenAnswer((_) => Stream.value(user));
+    when(
+      () => firebaseAuth.authStateChanges(),
+    ).thenAnswer((_) => Stream.value(user));
     return SessionStateService(firebaseAuth);
   }
 
@@ -163,35 +175,41 @@ void main() {
     );
   }
 
-  testWidgets('shows a salutation with the signed-in user\'s name before the menu', (tester) async {
-    final session = authenticatedSession();
-    addTearDown(session.close);
+  testWidgets(
+    'shows a salutation with the signed-in user\'s name before the menu',
+    (tester) async {
+      final session = authenticatedSession();
+      addTearDown(session.close);
 
-    await tester.pumpWidget(buildAuthenticatedApp(session));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildAuthenticatedApp(session));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Hi, Jane!'), findsOneWidget);
-  });
+      expect(find.text('Hi, Jane!'), findsOneWidget);
+    },
+  );
 
-  testWidgets('narrow screen: salutation appears in full inside the hamburger menu', (tester) async {
-    tester.view.physicalSize = const Size(375, 800);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
+  testWidgets(
+    'narrow screen: salutation appears in full inside the hamburger menu',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
-    final session = authenticatedSession(displayName: 'Alexandra');
-    addTearDown(session.close);
+      final session = authenticatedSession(displayName: 'Alexandra');
+      addTearDown(session.close);
 
-    await tester.pumpWidget(buildAuthenticatedApp(session));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(buildAuthenticatedApp(session));
+      await tester.pumpAndSettle();
 
-    expect(tester.takeException(), isNull);
-    expect(find.text('Hi, Alexandra!'), findsNothing);
+      expect(tester.takeException(), isNull);
+      expect(find.text('Hi, Alexandra!'), findsNothing);
 
-    await tester.tap(find.byIcon(Pixel.menu));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Pixel.menu));
+      await tester.pumpAndSettle();
 
-    expect(tester.takeException(), isNull);
-    expect(find.text('Hi, Alexandra!'), findsOneWidget);
-  });
+      expect(tester.takeException(), isNull);
+      expect(find.text('Hi, Alexandra!'), findsOneWidget);
+    },
+  );
 }

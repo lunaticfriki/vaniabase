@@ -267,6 +267,23 @@ class _ItemHeroImage extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
+                    stops: const [0, 0.45],
+                    colors: [
+                      Colors.black.withValues(alpha: 0.75),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                     stops: const [0.55, 1],
                     colors: [
                       Colors.transparent,
@@ -385,10 +402,13 @@ class _DetailFields extends StatelessWidget {
         if (item.reference.isNotEmpty)
           _DetailRow(label: 'Reference', value: item.reference),
         _DetailRow(label: 'Category', value: categoryLabel(item.category)),
-        _DetailRow(label: 'Format', value: formatLabel(item.format)),
+        _DetailRow(
+          label: 'Format',
+          value: item.format.map(formatLabel).join(', '),
+        ),
         if (item.year > 0) _DetailRow(label: 'Year', value: '${item.year}'),
         if (item.language.isNotEmpty)
-          _DetailRow(label: 'Language', value: item.language),
+          _DetailRow(label: 'Language', value: item.language.join(', ')),
         if (item.topic.isNotEmpty)
           _DetailRow(label: 'Topic', value: item.topic),
         if (item.tags.isNotEmpty) ...[

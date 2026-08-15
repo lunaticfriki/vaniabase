@@ -194,19 +194,43 @@ show live progress, and finishes on `BulkImportDone(succeeded, failures)`
 — a per-row try/catch means one row failing (e.g. a transient write
 error) doesn't stop the rest of the batch.
 
+### Export
+
+Every page that shows a filtered list of items — `/items`, `/completed`,
+`/categories/:category`, `/search`, and the selected-entry results on
+`/tags`/`/topics`/`/authors`/`/languages`/`/publishers` — has an Export
+button (`exportItemsWithFeedback`, `presentation/bulk_export_feedback.dart`)
+that writes exactly the items currently displayed to a `.csv` file, in
+the same column layout `parseBulkImportFile` reads
+(`application/bulk_export_service.dart`: `buildBulkExportCsvBytes` +
+`buildBulkExportFileName`, UTF-8 BOM prefixed so Excel detects the
+encoding), so an exported file can be re-imported without remapping.
+Saving goes through `FilePicker.platform.saveFile` — the same package
+already used for picking the bulk-import file — which opens a native
+save dialog on desktop/mobile and triggers a browser download on web, no
+extra platform-specific code needed.
+
 ### Adding and viewing an item
 
 `/items/new` and editing an existing item both use the same
 `ItemFormView` (`initial: null` means "add" mode) covering every field
-an item has — title, creator(s), publisher, category, format, a
+an item has — title, creator(s), publisher, category, format(s), a
 completed checkbox, and the optional tags/topic/year/description/
-language/reference/image — client-validated against the same
-constraints the domain value objects enforce (so a bad category/format
-combination still surfaces the domain's exact
-`InvalidFormatForCategoryError` message rather than being silently
-prevented). The image is picked from the gallery (`image_picker`) and
-uploaded to Firebase Storage (`FirestoreItemRepository._uploadImage`);
-removing it clears the `image_url` field and deletes the stored object.
+language(s)/reference/image. `format` is multi-select (a `Wrap` of
+`FilterChip`s over every `formatLabels` entry — at least one is
+required) and `language` is a comma-separated text field, mirroring
+`tags`/`creator`, each entry checked against the same 2-letter-code
+pattern the domain's `Language` value object enforces — both are lists
+end-to-end (`ItemReadModel.format`/`.language`, Firestore array fields)
+since a real-world item can have more than one (a movie's multiple audio
+tracks, a DVD+Blu-ray combo pack). `ItemMapper.toReadModel` also accepts
+a legacy single-string value for either field (items written before this
+became a list), wrapping it in a one-element list on read — so existing
+data keeps working with no migration, and just becomes a proper array
+the next time the item is edited and saved. The image is picked from the
+gallery (`image_picker`) and uploaded to Firebase Storage
+(`FirestoreItemRepository._uploadImage`); removing it clears the
+`image_url` field and deletes the stored object.
 
 `/items/:id` (`ItemDetailStateService`) lays out differently either side
 of `itemDetailWideBreakpoint` (700px, `item_detail_view.dart`). Wide: the

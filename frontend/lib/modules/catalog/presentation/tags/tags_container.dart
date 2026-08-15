@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/tags_state_service.dart';
+import 'package:frontend/modules/catalog/presentation/bulk_export_feedback.dart';
 import 'package:frontend/modules/catalog/presentation/tags/tags_view.dart';
 import 'package:go_router/go_router.dart';
 
@@ -42,6 +43,8 @@ class _TagsContainerState extends State<TagsContainer> {
           state: state,
           onTagTap: (tag) => context.read<TagsStateService>().selectTag(tag),
           onItemTap: (item) => context.push('/items/${item.id}'),
+          onExport: (items, tag) =>
+              exportItemsWithFeedback(context, items, 'tag-$tag'),
         ),
       ),
     );

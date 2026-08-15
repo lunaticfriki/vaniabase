@@ -40,7 +40,8 @@ void main() {
     test('equality is structural', () {
       final value = 'b' * 64;
 
-      expect(RefreshTokenId.create(value), equals(RefreshTokenId.create(value)));
+      expect(
+          RefreshTokenId.create(value), equals(RefreshTokenId.create(value)));
     });
   });
 }

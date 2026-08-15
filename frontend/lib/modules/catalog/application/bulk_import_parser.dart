@@ -64,16 +64,22 @@ List<BulkImportRow> parseBulkImportFile(Uint8List bytes, String fileName) {
     throw const BulkImportParseException('The file is empty.');
   }
 
-  final headers = rawRows.first.map((cell) => _normalize(cell?.toString() ?? '')).toList();
+  final headers = rawRows.first
+      .map((cell) => _normalize(cell?.toString() ?? ''))
+      .toList();
   final fieldColumns = <String, int>{};
   for (var i = 0; i < headers.length; i++) {
     final field = _headerAliasToField[headers[i]];
     if (field != null) fieldColumns[field] = i;
   }
 
-  final missingRequired = _requiredFields.where((field) => !fieldColumns.containsKey(field)).toList();
+  final missingRequired = _requiredFields
+      .where((field) => !fieldColumns.containsKey(field))
+      .toList();
   if (missingRequired.isNotEmpty) {
-    throw BulkImportParseException('Missing required column(s): ${missingRequired.join(', ')}.');
+    throw BulkImportParseException(
+      'Missing required column(s): ${missingRequired.join(', ')}.',
+    );
   }
 
   String cellText(List<dynamic> row, String field) {
@@ -113,24 +119,33 @@ List<BulkImportRow> parseBulkImportFile(Uint8List bytes, String fileName) {
     }
 
     final categoryRaw = cellText(row, 'category');
-    final category = categoryRaw.isEmpty ? null : _resolveOption(categoryRaw, categoryLabels);
+    final category = categoryRaw.isEmpty
+        ? null
+        : _resolveOption(categoryRaw, categoryLabels);
     if (categoryRaw.isEmpty) {
       errors.add('Category is required');
     } else if (category == null) {
       errors.add('Unknown category "$categoryRaw"');
     }
 
-    final formatRaw = cellText(row, 'format');
-    final format = formatRaw.isEmpty ? null : _resolveOption(formatRaw, formatLabels);
+    final formatRaw = _parseList(cellText(row, 'format'));
+    final format = formatRaw
+        .map((raw) => _resolveOption(raw, formatLabels))
+        .toList();
     if (formatRaw.isEmpty) {
       errors.add('Format is required');
-    } else if (format == null) {
-      errors.add('Unknown format "$formatRaw"');
+    } else if (format.any((resolved) => resolved == null)) {
+      final unknown = [
+        for (var i = 0; i < formatRaw.length; i++)
+          if (format[i] == null) formatRaw[i],
+      ];
+      errors.add('Unknown format "${unknown.join(', ')}"');
     }
 
     final tags = _parseList(cellText(row, 'tags'));
     if (tags.length > 10) errors.add('At most 10 tags are allowed');
-    if (tags.any((tag) => tag.length > 30)) errors.add('Each tag must be at most 30 characters');
+    if (tags.any((tag) => tag.length > 30))
+      errors.add('Each tag must be at most 30 characters');
 
     final topic = cellText(row, 'topic');
     if (topic.length > 100) errors.add('Topic must be at most 100 characters');
@@ -138,16 +153,20 @@ List<BulkImportRow> parseBulkImportFile(Uint8List bytes, String fileName) {
     final yearText = cellText(row, 'year');
     final year = _parseYear(cellRaw(row, 'year'));
     final currentYear = DateTime.now().year;
-    if (yearText.isNotEmpty && (year == null || year < 1000 || year > currentYear)) {
+    if (yearText.isNotEmpty &&
+        (year == null || year < 1000 || year > currentYear)) {
       errors.add('Year must be between 1000 and $currentYear');
     }
 
     final description = cellText(row, 'description');
-    if (description.length > 2000) errors.add('Description must be at most 2000 characters');
+    if (description.length > 2000)
+      errors.add('Description must be at most 2000 characters');
 
-    final languageRaw = cellText(row, 'language');
-    if (languageRaw.isNotEmpty && !_languageCodePattern.hasMatch(languageRaw)) {
-      errors.add('Language must be a 2-letter code');
+    final language = _parseList(
+      cellText(row, 'language'),
+    ).map((raw) => raw.toLowerCase()).toList();
+    if (language.any((raw) => !_languageCodePattern.hasMatch(raw))) {
+      errors.add('Each language must be a 2-letter code');
     }
 
     final imageUrl = cellText(row, 'imageUrl');
@@ -156,7 +175,8 @@ List<BulkImportRow> parseBulkImportFile(Uint8List bytes, String fileName) {
     }
 
     final reference = cellText(row, 'reference');
-    if (reference.length > 50) errors.add('Reference must be at most 50 characters');
+    if (reference.length > 50)
+      errors.add('Reference must be at most 50 characters');
 
     rows.add(
       BulkImportRow(
@@ -165,12 +185,12 @@ List<BulkImportRow> parseBulkImportFile(Uint8List bytes, String fileName) {
         creator: creator,
         publisher: publisher,
         category: category,
-        format: format,
+        format: format.whereType<String>().toList(),
         tags: tags,
         topic: topic,
         year: year,
         description: description,
-        language: languageRaw.toLowerCase(),
+        language: language,
         imageUrl: imageUrl,
         completed: _parseBool(cellRaw(row, 'completed')),
         reference: reference,
@@ -182,13 +202,15 @@ List<BulkImportRow> parseBulkImportFile(Uint8List bytes, String fileName) {
   return rows;
 }
 
-String _normalize(String raw) => raw.toLowerCase().replaceAll(_nonAlphaNumericPattern, '');
+String _normalize(String raw) =>
+    raw.toLowerCase().replaceAll(_nonAlphaNumericPattern, '');
 
 String? _resolveOption(String raw, Map<String, String> labels) {
   final normalized = _normalize(raw);
   if (normalized.isEmpty) return null;
   for (final entry in labels.entries) {
-    if (_normalize(entry.key) == normalized || _normalize(entry.value) == normalized) {
+    if (_normalize(entry.key) == normalized ||
+        _normalize(entry.value) == normalized) {
       return entry.key;
     }
   }
@@ -196,7 +218,11 @@ String? _resolveOption(String raw, Map<String, String> labels) {
 }
 
 List<String> _parseList(String value) {
-  return value.split(',').map((part) => part.trim()).where((part) => part.isNotEmpty).toList();
+  return value
+      .split(',')
+      .map((part) => part.trim())
+      .where((part) => part.isNotEmpty)
+      .toList();
 }
 
 int? _parseYear(dynamic raw) {
@@ -210,10 +236,16 @@ int? _parseYear(dynamic raw) {
 bool _parseBool(dynamic raw) {
   if (raw is bool) return raw;
   final text = raw?.toString().trim().toLowerCase() ?? '';
-  return text == 'true' || text == 'yes' || text == '1' || text == 'x' || text == 'y';
+  return text == 'true' ||
+      text == 'yes' ||
+      text == '1' ||
+      text == 'x' ||
+      text == 'y';
 }
 
 bool _isValidImageUrl(String value) {
   final uri = Uri.tryParse(value);
-  return uri != null && (uri.scheme == 'http' || uri.scheme == 'https') && uri.host.isNotEmpty;
+  return uri != null &&
+      (uri.scheme == 'http' || uri.scheme == 'https') &&
+      uri.host.isNotEmpty;
 }

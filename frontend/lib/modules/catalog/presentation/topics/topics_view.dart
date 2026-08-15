@@ -10,6 +10,7 @@ class TopicsView extends StatelessWidget {
     required this.onLetterTap,
     required this.onTopicTap,
     required this.onItemTap,
+    this.onExport,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class TopicsView extends StatelessWidget {
   final void Function(String letter) onLetterTap;
   final void Function(String topic) onTopicTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String topic)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class TopicsView extends StatelessWidget {
               onLetterTap: onLetterTap,
               onTopicTap: onTopicTap,
               onItemTap: onItemTap,
+              onExport: onExport,
             ),
           ),
         ],
@@ -47,12 +50,14 @@ class _TopicsBody extends StatelessWidget {
     required this.onLetterTap,
     required this.onTopicTap,
     required this.onItemTap,
+    this.onExport,
   });
 
   final TopicsState state;
   final void Function(String letter) onLetterTap;
   final void Function(String topic) onTopicTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String topic)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +86,7 @@ class _TopicsBody extends StatelessWidget {
                 onEntryTap: onTopicTap,
                 onItemTap: onItemTap,
                 entryNoun: 'topic',
+                onExport: onExport,
               ),
               const SizedBox(height: 24),
               const AppFooterView(),

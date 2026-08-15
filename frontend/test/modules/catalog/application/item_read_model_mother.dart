@@ -11,7 +11,8 @@ class ItemReadModelMother {
     List<String> creator = const ['Frank Herbert'],
     String topic = 'Science Fiction',
     String publisher = 'Chilton Books',
-    String language = 'en',
+    List<String> language = const ['en'],
+    List<String> format = const ['hardcover'],
   }) {
     final now = DateTime.now();
     return ItemReadModel(
@@ -21,7 +22,7 @@ class ItemReadModelMother {
       creator: creator,
       publisher: publisher,
       category: 'book',
-      format: 'hardcover',
+      format: format,
       tags: tags,
       topic: topic,
       year: 1965,

@@ -10,6 +10,7 @@ class AuthorsView extends StatelessWidget {
     required this.onLetterTap,
     required this.onAuthorTap,
     required this.onItemTap,
+    this.onExport,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class AuthorsView extends StatelessWidget {
   final void Function(String letter) onLetterTap;
   final void Function(String author) onAuthorTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String author)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class AuthorsView extends StatelessWidget {
               onLetterTap: onLetterTap,
               onAuthorTap: onAuthorTap,
               onItemTap: onItemTap,
+              onExport: onExport,
             ),
           ),
         ],
@@ -47,12 +50,14 @@ class _AuthorsBody extends StatelessWidget {
     required this.onLetterTap,
     required this.onAuthorTap,
     required this.onItemTap,
+    this.onExport,
   });
 
   final AuthorsState state;
   final void Function(String letter) onLetterTap;
   final void Function(String author) onAuthorTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String author)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +86,7 @@ class _AuthorsBody extends StatelessWidget {
                 onEntryTap: onAuthorTap,
                 onItemTap: onItemTap,
                 entryNoun: 'author',
+                onExport: onExport,
               ),
               const SizedBox(height: 24),
               const AppFooterView(),

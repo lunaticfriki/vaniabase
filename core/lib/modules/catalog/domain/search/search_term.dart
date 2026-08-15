@@ -20,7 +20,8 @@ class SearchTerm {
   bool matchesAny(Iterable<String> candidates) {
     if (isEmpty) return true;
     final needle = value.toLowerCase();
-    return candidates.any((candidate) => candidate.toLowerCase().contains(needle));
+    return candidates
+        .any((candidate) => candidate.toLowerCase().contains(needle));
   }
 
   @override
@@ -35,5 +36,5 @@ class SearchTerm {
 
 class InvalidSearchTermError extends DomainError {
   InvalidSearchTermError(String value)
-    : super('"$value" is not a valid search term (1-100 characters)');
+      : super('"$value" is not a valid search term (1-100 characters)');
 }

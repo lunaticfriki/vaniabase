@@ -24,11 +24,11 @@ void main() {
       expect(row.creator, ['Frank Herbert']);
       expect(row.publisher, 'Chilton Books');
       expect(row.category, 'book');
-      expect(row.format, 'hardcover');
+      expect(row.format, ['hardcover']);
       expect(row.tags, ['sci-fi', 'classic']);
       expect(row.topic, 'Science Fiction');
       expect(row.year, 1965);
-      expect(row.language, 'en');
+      expect(row.language, ['en']);
       expect(row.imageUrl, 'https://example.com/dune.jpg');
       expect(row.completed, isTrue);
       expect(row.reference, 'ISBN-1');
@@ -42,7 +42,19 @@ void main() {
       final rows = parseBulkImportFile(_csvBytes(csv), 'items.csv');
 
       expect(rows.single.category, 'movie');
-      expect(rows.single.format, 'bluRay');
+      expect(rows.single.format, ['bluRay']);
+    });
+
+    test('parses multiple comma-separated formats and languages', () {
+      const csv =
+          'title,creator,publisher,category,format,language\n'
+          'Blade Runner,Ridley Scott,Warner,movie,"dvd, bluRay","en, fr"\n';
+
+      final rows = parseBulkImportFile(_csvBytes(csv), 'items.csv');
+
+      expect(rows.single.isValid, isTrue);
+      expect(rows.single.format, ['dvd', 'bluRay']);
+      expect(rows.single.language, ['en', 'fr']);
     });
 
     test('flags rows missing required fields', () {
@@ -75,7 +87,10 @@ void main() {
       final rows = parseBulkImportFile(_csvBytes(csv), 'items.csv');
 
       expect(rows.single.isValid, isFalse);
-      expect(rows.single.errors, contains('Year must be between 1000 and ${DateTime.now().year}'));
+      expect(
+        rows.single.errors,
+        contains('Year must be between 1000 and ${DateTime.now().year}'),
+      );
     });
 
     test('flags a language that is not a 2-letter code', () {
@@ -86,7 +101,10 @@ void main() {
       final rows = parseBulkImportFile(_csvBytes(csv), 'items.csv');
 
       expect(rows.single.isValid, isFalse);
-      expect(rows.single.errors, contains('Language must be a 2-letter code'));
+      expect(
+        rows.single.errors,
+        contains('Each language must be a 2-letter code'),
+      );
     });
 
     test('flags an image URL that is not http(s)', () {
@@ -97,7 +115,10 @@ void main() {
       final rows = parseBulkImportFile(_csvBytes(csv), 'items.csv');
 
       expect(rows.single.isValid, isFalse);
-      expect(rows.single.errors, contains('Image URL must be a valid http(s) URL'));
+      expect(
+        rows.single.errors,
+        contains('Image URL must be a valid http(s) URL'),
+      );
     });
 
     test('skips fully blank rows', () {

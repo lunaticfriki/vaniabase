@@ -120,7 +120,7 @@ class BulkImportStateService extends Cubit<BulkImportState> {
           creator: row.creator,
           publisher: row.publisher,
           category: row.category!,
-          format: row.format!,
+          format: row.format,
           tags: row.tags.isEmpty ? null : row.tags,
           topic: row.topic.isEmpty ? null : row.topic,
           year: row.year,

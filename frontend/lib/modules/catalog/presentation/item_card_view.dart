@@ -63,7 +63,7 @@ class ItemCardView extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${categoryLabel(item.category)} · ${formatLabel(item.format)}',
+                    '${categoryLabel(item.category)} · ${item.format.map(formatLabel).join(', ')}',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),

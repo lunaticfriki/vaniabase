@@ -28,12 +28,12 @@ Fields:
 | `creator` | yes | Author(s)/director(s)/artist(s) — a list, so co-authored works aren't forced into one string |
 | `publisher` | yes | Who put it out |
 | `category` | yes | `book`, `comic`, `magazine`, `movie`, `videogame`, or `musicAlbum` |
-| `format` | yes | The physical/digital shape it's in — see below |
+| `format` | yes | The physical/digital shape(s) it's in — a list, so a combo pack (e.g. DVD+Blu-ray) or a reissue isn't forced into one value — see below |
 | `tags` | no | Freeform labels, for the user's own filtering/organizing |
 | `topic` | no | Subject matter, distinct from tags (e.g. "cooking" vs. a personal tag like "to re-read") |
 | `year` | no | Publication year |
 | `description` | no | Free text |
-| `language` | no | — |
+| `language` | no | A list of 2-letter codes — a movie can carry more than one audio track |
 | `reference` | no | ISBN or other catalog/reference number |
 | `imageUrl` | no | Cover art |
 
@@ -55,7 +55,10 @@ not something either owns alone):
 | `videogame` | `cartridge`, `dvd`, `bluRay`, `digitalDownload` |
 | `musicAlbum` | `cd`, `vinyl`, `digitalDownload` |
 
-`Item.create` and `Item.update` both check this policy and throw
+Since `format` is a list (`ItemFormats`, holding at least one `Format`),
+the policy checks *every* selected format against the category — a
+`movie` can be `[dvd, bluRay]` but not `[dvd, cd]`. `Item.create` and
+`Item.update` both check this policy and throw
 `InvalidFormatForCategoryError` if it's violated — so an invalid
 category/format pairing can never exist in the system, not even
 transiently, regardless of which layer is constructing the item.

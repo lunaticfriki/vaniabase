@@ -39,6 +39,45 @@ void main() {
       expect(model.updatedAt, updatedAt);
     });
 
+    test(
+      'reads a legacy single-string format/language as a single-item list',
+      () {
+        final now = DateTime(2026, 1, 1);
+
+        final model = ItemMapper.toReadModel('item-legacy', {
+          'owner_id': 'user-1',
+          'title': 'Dune',
+          'publisher': 'Chilton Books',
+          'category': 'book',
+          'format': 'dvd',
+          'language': 'en',
+          'created_at': Timestamp.fromDate(now),
+          'updated_at': Timestamp.fromDate(now),
+        });
+
+        expect(model.format, ['dvd']);
+        expect(model.language, ['en']);
+      },
+    );
+
+    test('reads a format/language array as-is', () {
+      final now = DateTime(2026, 1, 1);
+
+      final model = ItemMapper.toReadModel('item-array', {
+        'owner_id': 'user-1',
+        'title': 'Blade Runner',
+        'publisher': 'Warner',
+        'category': 'movie',
+        'format': ['dvd', 'bluRay'],
+        'language': ['en', 'fr'],
+        'created_at': Timestamp.fromDate(now),
+        'updated_at': Timestamp.fromDate(now),
+      });
+
+      expect(model.format, ['dvd', 'bluRay']);
+      expect(model.language, ['en', 'fr']);
+    });
+
     test('defaults missing optional fields', () {
       final now = DateTime(2026, 1, 1);
 
@@ -57,7 +96,7 @@ void main() {
       expect(model.topic, '');
       expect(model.year, 0);
       expect(model.description, '');
-      expect(model.language, '');
+      expect(model.language, isEmpty);
       expect(model.imageUrl, '');
       expect(model.completed, isFalse);
       expect(model.reference, '');

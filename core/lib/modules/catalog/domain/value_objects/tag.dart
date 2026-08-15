@@ -25,5 +25,5 @@ class Tag {
 
 class InvalidTagError extends DomainError {
   InvalidTagError(String value)
-    : super('"$value" is not a valid tag (1-30 characters)');
+      : super('"$value" is not a valid tag (1-30 characters)');
 }

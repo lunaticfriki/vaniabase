@@ -25,7 +25,7 @@ void main() {
             creator: ['Frank Herbert'],
             publisher: 'Chilton Books',
             category: 'book',
-            format: 'hardcover',
+            format: ['hardcover'],
           ),
         ).thenAnswer((_) async => 'item-1');
       },
@@ -35,7 +35,7 @@ void main() {
         creator: ['Frank Herbert'],
         publisher: 'Chilton Books',
         category: 'book',
-        format: 'hardcover',
+        format: ['hardcover'],
       ),
       expect: () => [isA<AddItemInProgress>(), isA<AddItemSuccess>()],
     );
@@ -49,7 +49,7 @@ void main() {
             creator: ['Frank Herbert'],
             publisher: 'Chilton Books',
             category: 'book',
-            format: 'dvd',
+            format: ['dvd'],
           ),
         ).thenThrow(
           Exception('"dvd" is not a valid format for category "book"'),
@@ -61,7 +61,7 @@ void main() {
         creator: ['Frank Herbert'],
         publisher: 'Chilton Books',
         category: 'book',
-        format: 'dvd',
+        format: ['dvd'],
       ),
       expect: () => [isA<AddItemInProgress>(), isA<AddItemFailure>()],
     );
@@ -75,7 +75,7 @@ void main() {
             creator: ['Frank Herbert'],
             publisher: 'Chilton Books',
             category: 'book',
-            format: 'hardcover',
+            format: ['hardcover'],
             imageBytes: Uint8List.fromList([1, 2, 3]),
           ),
         ).thenAnswer((_) async => 'item-1');
@@ -86,7 +86,7 @@ void main() {
         creator: ['Frank Herbert'],
         publisher: 'Chilton Books',
         category: 'book',
-        format: 'hardcover',
+        format: ['hardcover'],
         imageBytes: Uint8List.fromList([1, 2, 3]),
       ),
       expect: () => [isA<AddItemInProgress>(), isA<AddItemSuccess>()],

@@ -21,7 +21,8 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     return uid;
   }
 
-  CollectionReference<Map<String, dynamic>> get _items => _firestore.collection('items');
+  CollectionReference<Map<String, dynamic>> get _items =>
+      _firestore.collection('items');
 
   Reference _imageRef(String itemId) => _storage.ref('items/$itemId/image');
 
@@ -41,7 +42,10 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
 
   @override
   Stream<List<ItemReadModel>> watchAll({String? category, bool? completed}) {
-    Query<Map<String, dynamic>> query = _items.where('owner_id', isEqualTo: _uid);
+    Query<Map<String, dynamic>> query = _items.where(
+      'owner_id',
+      isEqualTo: _uid,
+    );
     if (category != null) {
       query = query.where('category', isEqualTo: category);
     }
@@ -51,7 +55,11 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     return query
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => ItemMapper.toReadModel(doc.id, doc.data())).toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => ItemMapper.toReadModel(doc.id, doc.data()))
+              .toList(),
+        );
   }
 
   @override
@@ -66,12 +74,12 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     required List<String> creator,
     required String publisher,
     required String category,
-    required String format,
+    required List<String> format,
     List<String>? tags,
     String? topic,
     int? year,
     String? description,
-    String? language,
+    List<String>? language,
     Uint8List? imageBytes,
     String? imageUrl,
     bool completed = false,
@@ -92,7 +100,7 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
       'topic': topic ?? '',
       'year': year ?? 0,
       'description': description ?? '',
-      'language': language ?? '',
+      'language': language ?? const <String>[],
       'image_url': resolvedImageUrl,
       'completed': completed,
       'reference': reference ?? '',
@@ -109,12 +117,12 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
     List<String>? creator,
     String? publisher,
     String? category,
-    String? format,
+    List<String>? format,
     List<String>? tags,
     String? topic,
     int? year,
     String? description,
-    String? language,
+    List<String>? language,
     Uint8List? imageBytes,
     bool removeImage = false,
     bool? completed,

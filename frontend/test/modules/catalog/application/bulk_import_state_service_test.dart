@@ -55,7 +55,7 @@ void main() {
             creator: ['Frank Herbert'],
             publisher: 'Chilton Books',
             category: 'book',
-            format: 'hardcover',
+            format: ['hardcover'],
           ),
         ).thenAnswer((_) async => 'item-1');
         when(
@@ -64,7 +64,7 @@ void main() {
             creator: ['Isaac Asimov'],
             publisher: 'Gnome Press',
             category: 'book',
-            format: 'hardcover',
+            format: ['hardcover'],
           ),
         ).thenAnswer((_) async => 'item-2');
       },
@@ -84,7 +84,7 @@ void main() {
             creator: ['Frank Herbert'],
             publisher: 'Chilton Books',
             category: 'book',
-            format: 'hardcover',
+            format: ['hardcover'],
           ),
         ).called(1);
       },
@@ -99,7 +99,7 @@ void main() {
             creator: ['Frank Herbert'],
             publisher: 'Chilton Books',
             category: 'book',
-            format: 'hardcover',
+            format: ['hardcover'],
           ),
         ).thenThrow(Exception('backend unavailable'));
         when(
@@ -108,7 +108,7 @@ void main() {
             creator: ['Isaac Asimov'],
             publisher: 'Gnome Press',
             category: 'book',
-            format: 'hardcover',
+            format: ['hardcover'],
           ),
         ).thenAnswer((_) async => 'item-2');
       },

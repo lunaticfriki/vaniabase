@@ -3,5 +3,5 @@ import 'package:core/shared/errors/domain_error.dart';
 
 class EmailAlreadyRegisteredError extends DomainError {
   EmailAlreadyRegisteredError(Email email)
-    : super('"${email.value}" is already registered');
+      : super('"${email.value}" is already registered');
 }

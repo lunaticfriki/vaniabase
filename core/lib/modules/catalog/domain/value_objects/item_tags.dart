@@ -39,5 +39,5 @@ class ItemTags {
 
 class InvalidItemTagsError extends DomainError {
   InvalidItemTagsError(int count)
-    : super('an item cannot have more than 10 tags (got $count)');
+      : super('an item cannot have more than 10 tags (got $count)');
 }

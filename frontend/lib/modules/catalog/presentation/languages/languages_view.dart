@@ -10,6 +10,7 @@ class LanguagesView extends StatelessWidget {
     required this.onLetterTap,
     required this.onLanguageTap,
     required this.onItemTap,
+    this.onExport,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class LanguagesView extends StatelessWidget {
   final void Function(String letter) onLetterTap;
   final void Function(String language) onLanguageTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String language)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class LanguagesView extends StatelessWidget {
               onLetterTap: onLetterTap,
               onLanguageTap: onLanguageTap,
               onItemTap: onItemTap,
+              onExport: onExport,
             ),
           ),
         ],
@@ -47,12 +50,14 @@ class _LanguagesBody extends StatelessWidget {
     required this.onLetterTap,
     required this.onLanguageTap,
     required this.onItemTap,
+    this.onExport,
   });
 
   final LanguagesState state;
   final void Function(String letter) onLetterTap;
   final void Function(String language) onLanguageTap;
   final void Function(ItemReadModel item) onItemTap;
+  final void Function(List<ItemReadModel> items, String language)? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +86,7 @@ class _LanguagesBody extends StatelessWidget {
                 onEntryTap: onLanguageTap,
                 onItemTap: onItemTap,
                 entryNoun: 'language',
+                onExport: onExport,
               ),
               const SizedBox(height: 24),
               const AppFooterView(),

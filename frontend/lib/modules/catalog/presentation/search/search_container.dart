@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/search_state_service.dart';
+import 'package:frontend/modules/catalog/presentation/bulk_export_feedback.dart';
 import 'package:frontend/modules/catalog/presentation/search/search_view.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,13 +36,23 @@ class _SearchContainerState extends State<SearchContainer> {
     return BlocProvider.value(
       value: _stateService,
       child: BlocBuilder<SearchStateService, SearchState>(
-        builder: (context, state) => SearchView(
-          state: state,
-          controller: _controller,
-          onQueryChanged: (query) =>
-              context.read<SearchStateService>().onQueryChanged(query),
-          onItemTap: (item) => context.push('/items/${item.id}'),
-        ),
+        builder: (context, state) {
+          final loaded = state is SearchLoaded ? state : null;
+          return SearchView(
+            state: state,
+            controller: _controller,
+            onQueryChanged: (query) =>
+                context.read<SearchStateService>().onQueryChanged(query),
+            onItemTap: (item) => context.push('/items/${item.id}'),
+            onExport: loaded == null
+                ? null
+                : () => exportItemsWithFeedback(
+                    context,
+                    loaded.items,
+                    'search-${loaded.query}',
+                  ),
+          );
+        },
       ),
     );
   }

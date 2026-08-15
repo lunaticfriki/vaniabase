@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class OverlayIconButton extends StatelessWidget {
-  const OverlayIconButton({required this.icon, required this.label, required this.onTap, super.key});
+  const OverlayIconButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    super.key,
+  });
 
   final IconData icon;
   final String label;
@@ -24,7 +29,13 @@ class OverlayIconButton extends StatelessWidget {
               children: [
                 Icon(icon, size: 18, color: Colors.white),
                 const SizedBox(width: 6),
-                Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
           ),

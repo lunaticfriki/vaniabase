@@ -50,14 +50,18 @@ class _SignupViewState extends State<SignupView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Sign up', style: Theme.of(context).textTheme.headlineSmall),
+                  Text(
+                    'Sign up',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
                   const SizedBox(height: 24),
                   TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(labelText: 'Email'),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (value) =>
-                        (value == null || value.isEmpty) ? 'Email is required' : null,
+                    validator: (value) => (value == null || value.isEmpty)
+                        ? 'Email is required'
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
@@ -82,7 +86,9 @@ class _SignupViewState extends State<SignupView> {
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Text(
                         widget.errorMessage!,
-                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                       ),
                     ),
                   FilledButton(
@@ -97,7 +103,9 @@ class _SignupViewState extends State<SignupView> {
                   ),
                   const SizedBox(height: 12),
                   TextButton(
-                    onPressed: widget.isSubmitting ? null : widget.onNavigateToLogin,
+                    onPressed: widget.isSubmitting
+                        ? null
+                        : widget.onNavigateToLogin,
                     child: const Text('Already have an account? Log in'),
                   ),
                 ],

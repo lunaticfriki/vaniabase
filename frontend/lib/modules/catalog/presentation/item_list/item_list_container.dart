@@ -4,6 +4,7 @@ import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/catalog/application/item_list_state_service.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
+import 'package:frontend/modules/catalog/presentation/bulk_export_feedback.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_skeleton.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_view.dart';
 import 'package:go_router/go_router.dart';
@@ -43,6 +44,12 @@ class _ItemListContainerState extends State<ItemListContainer> {
     super.dispose();
   }
 
+  String get _title => widget.completed == true
+      ? 'Completed'
+      : widget.category == null
+      ? 'Complete collection'
+      : categoryLabel(widget.category!);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -52,15 +59,16 @@ class _ItemListContainerState extends State<ItemListContainer> {
           ItemListLoading() => const ItemListSkeleton(),
           ItemListError(:final message) => Center(child: Text(message)),
           ItemListLoaded(:final result, :final sortOption) => ItemListView(
-            title: widget.completed == true
-                ? 'Completed'
-                : widget.category == null
-                ? 'Complete collection'
-                : categoryLabel(widget.category!),
+            title: _title,
             result: result,
             sortOption: widget.enableSort ? sortOption : null,
             onSortChanged: (option) =>
                 context.read<ItemListStateService>().setSortOption(option),
+            onExport: () => exportItemsWithFeedback(
+              context,
+              _stateService.exportableItems(),
+              _title,
+            ),
             onPrevious: () =>
                 context.read<ItemListStateService>().previousPage(),
             onNext: () => context.read<ItemListStateService>().nextPage(),
