@@ -62,6 +62,23 @@ than a generic "something went wrong." Neither state service touches
 to it) updates itself, and that's what flips the router's redirect logic
 and reveals the authenticated shell.
 
+`LoginStateService` also tracks up to 5 remembered accounts
+(`RememberedAccount`, `RememberedAccountsRepository`), shown as
+dismissible chips above the form (`_RememberedAccountsList` in
+`login_view.dart`) that fill in the email (and password, if saved) on
+tap. `LocalRememberedAccountsRepository` is the only implementation:
+emails live in `shared_preferences` (most-recently-used first,
+`_maxAccounts`-capped, oldest dropped on overflow) while passwords —
+only stored when the "Remember password on this device" checkbox is
+checked — go in `flutter_secure_storage` instead, keyed per email, so
+plaintext passwords never sit in `shared_preferences`. A successful
+login always upserts the email (moving it to the front); the password
+entry is written or deleted based on the checkbox each time, so
+unchecking it on a later login for the same account forgets the saved
+password without forgetting the account itself. The list refreshes
+after every login and after `forgetAccount`, which removes both the
+`shared_preferences` entry and the secure-storage password in one call.
+
 ### Live data: `watchAll` over one-shot fetches
 
 `ItemReadService.watchAll({category, completed})` returns a
@@ -85,8 +102,16 @@ Home shows the 10 most-recently-added items (`homeItemCount` in
 link — it is deliberately not paginated, so it reads as a preview, not a
 second copy of the list page. `/items` is the real browse experience:
 every item, sortable (see below), `PaginationControlView` stepping one
-page at a time via `ItemListStateService.nextPage`/`previousPage` over
-the sorted list held in memory. `/completed` reuses the exact same
+page at a time via `ItemListStateService.nextPage`/`previousPage`, or
+jumping straight to one via `goToPage`, over the sorted list held in
+memory. Besides the prev/next buttons, `PaginationControlView` has an
+editable "Page N of M" text field — typing a number and pressing
+enter/tapping away jumps straight there, clamped to `[1, totalPages]`
+and reverted to the current page on an unparseable value
+(`_PaginationControlViewState._submit`); `PaginatedItemGridView` wires
+the same field to a local `setState` instead of a state service, since
+its pages are already fully in memory (see "Browsing" below).
+`/completed` reuses the exact same
 `ItemListContainer`/`ItemListView` with `completed: true` passed through
 to `watchAll`, just without the sort control
 (`ItemListContainer(completed: true)`, `enableSort` left at its default
