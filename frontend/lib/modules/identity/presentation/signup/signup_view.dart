@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pixelarticons/pixel.dart';
 
 class SignupView extends StatefulWidget {
   const SignupView({
@@ -28,6 +29,7 @@ class _SignupViewState extends State<SignupView> {
   final _emailController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -74,8 +76,21 @@ class _SignupViewState extends State<SignupView> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Pixel.eye : Pixel.eyeclosed,
+                        ),
+                        tooltip: _obscurePassword
+                            ? 'Show password'
+                            : 'Hide password',
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
+                      ),
+                    ),
+                    obscureText: _obscurePassword,
                     validator: (value) => (value == null || value.isEmpty)
                         ? 'Password is required'
                         : null,

@@ -55,6 +55,7 @@ class _PaginatedItemGridViewState extends State<PaginatedItemGridView> {
             hasNextPage: _page < totalPages,
             onPrevious: () => setState(() => _page--),
             onNext: () => setState(() => _page++),
+            onPageChanged: (page) => setState(() => _page = page),
           ),
         ],
       ],

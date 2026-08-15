@@ -63,6 +63,36 @@ void main() {
     );
 
     blocTest<ItemListStateService, ItemListState>(
+      'goToPage jumps directly to the requested page',
+      build: () => ItemListStateService(readService),
+      skip: 1,
+      act: (service) async {
+        await Future<void>.delayed(Duration.zero);
+        service.goToPage(3);
+      },
+      expect: () => [isA<ItemListLoaded>()],
+      verify: (service) {
+        final state = service.state as ItemListLoaded;
+        expect(state.result.page, 3);
+      },
+    );
+
+    blocTest<ItemListStateService, ItemListState>(
+      'goToPage clamps to the valid page range',
+      build: () => ItemListStateService(readService),
+      skip: 1,
+      act: (service) async {
+        await Future<void>.delayed(Duration.zero);
+        service.goToPage(99);
+      },
+      expect: () => [isA<ItemListLoaded>()],
+      verify: (service) {
+        final state = service.state as ItemListLoaded;
+        expect(state.result.page, 3);
+      },
+    );
+
+    blocTest<ItemListStateService, ItemListState>(
       'nextPage is a no-op when already on the only page',
       setUp: () {
         when(

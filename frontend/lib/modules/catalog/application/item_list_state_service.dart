@@ -119,6 +119,18 @@ class ItemListStateService extends Cubit<ItemListState> {
     }
   }
 
+  void goToPage(int page) {
+    final current = state;
+    if (current is! ItemListLoaded) return;
+    final totalPages = current.result.totalPages;
+    final clamped = page < 1
+        ? 1
+        : (page > totalPages ? totalPages : page);
+    if (clamped == _page) return;
+    _page = clamped;
+    _emitPage();
+  }
+
   @override
   Future<void> close() {
     _subscription.cancel();

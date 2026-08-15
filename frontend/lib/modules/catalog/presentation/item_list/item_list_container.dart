@@ -72,6 +72,8 @@ class _ItemListContainerState extends State<ItemListContainer> {
             onPrevious: () =>
                 context.read<ItemListStateService>().previousPage(),
             onNext: () => context.read<ItemListStateService>().nextPage(),
+            onPageChanged: (page) =>
+                context.read<ItemListStateService>().goToPage(page),
             onItemTap: (item) => context.push('/items/${item.id}'),
           ),
         },

@@ -4,8 +4,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/application/item_write_service.dart';
 import 'package:frontend/modules/catalog/infrastructure/firestore_item_repository.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/modules/identity/application/identity_write_service.dart';
+import 'package:frontend/modules/identity/application/remembered_accounts_repository.dart';
 import 'package:frontend/modules/identity/infrastructure/firebase_identity_repository.dart';
+import 'package:frontend/modules/identity/infrastructure/local_remembered_accounts_repository.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:get_it/get_it.dart';
@@ -36,6 +39,19 @@ Future<void> configureDependencies() async {
   );
   getIt.registerFactory<IdentityWriteService>(
     () => getIt<FirebaseIdentityRepository>(),
+  );
+
+  getIt.registerLazySingleton<FlutterSecureStorage>(
+    () => const FlutterSecureStorage(),
+  );
+  getIt.registerLazySingleton<LocalRememberedAccountsRepository>(
+    () => LocalRememberedAccountsRepository(
+      getIt<SharedPreferences>(),
+      getIt<FlutterSecureStorage>(),
+    ),
+  );
+  getIt.registerFactory<RememberedAccountsRepository>(
+    () => getIt<LocalRememberedAccountsRepository>(),
   );
 
   getIt.registerLazySingleton<FirestoreItemRepository>(

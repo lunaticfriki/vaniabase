@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/composition_root.dart';
 import 'package:frontend/modules/identity/application/identity_write_service.dart';
 import 'package:frontend/modules/identity/application/login_state_service.dart';
+import 'package:frontend/modules/identity/application/remembered_accounts_repository.dart';
 import 'package:frontend/modules/identity/presentation/login/login_view.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,7 +20,10 @@ class _LoginContainerState extends State<LoginContainer> {
   @override
   void initState() {
     super.initState();
-    _stateService = LoginStateService(getIt<IdentityWriteService>());
+    _stateService = LoginStateService(
+      getIt<IdentityWriteService>(),
+      getIt<RememberedAccountsRepository>(),
+    );
   }
 
   @override
@@ -36,9 +40,15 @@ class _LoginContainerState extends State<LoginContainer> {
         builder: (context, state) => LoginView(
           isSubmitting: state is LoginInProgress,
           errorMessage: state is LoginFailure ? state.message : null,
-          onSubmit: ({required email, required password}) => context
-              .read<LoginStateService>()
-              .submit(email: email, password: password),
+          rememberedAccounts: state.rememberedAccounts,
+          onSubmit: ({required email, required password, required rememberPassword}) =>
+              context.read<LoginStateService>().submit(
+                email: email,
+                password: password,
+                rememberPassword: rememberPassword,
+              ),
+          onForgetAccount: (email) =>
+              context.read<LoginStateService>().forgetAccount(email),
           onNavigateToSignup: () => context.go('/signup'),
         ),
       ),

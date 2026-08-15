@@ -14,6 +14,7 @@ class ItemListView extends StatelessWidget {
     required this.result,
     required this.onPrevious,
     required this.onNext,
+    required this.onPageChanged,
     required this.onItemTap,
     this.sortOption,
     this.onSortChanged,
@@ -28,6 +29,7 @@ class ItemListView extends StatelessWidget {
   final VoidCallback? onExport;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
+  final ValueChanged<int> onPageChanged;
   final void Function(ItemReadModel item) onItemTap;
 
   @override
@@ -115,6 +117,7 @@ class ItemListView extends StatelessWidget {
               hasNextPage: result.hasNextPage,
               onPrevious: onPrevious,
               onNext: onNext,
+              onPageChanged: onPageChanged,
             ),
           ],
         ],
