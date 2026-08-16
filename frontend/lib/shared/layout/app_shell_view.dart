@@ -34,6 +34,7 @@ class AppShellView extends StatelessWidget {
               onNavigateItems: () => context.go('/items'),
               onNavigateCompleted: () => context.go('/completed'),
               onNavigateCategories: () => context.go('/categories'),
+              onNavigateFormats: () => context.go('/formats'),
               onNavigateTags: () => context.go('/tags'),
               onNavigateTopics: () => context.go('/topics'),
               onNavigateAuthors: () => context.go('/authors'),

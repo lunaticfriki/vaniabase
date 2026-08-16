@@ -7,6 +7,8 @@ class ResponsiveItemGrid<T> extends StatelessWidget {
     this.keyBuilder,
     this.targetColumns = 5,
     this.horizontalPadding = 32,
+    this.minItemWidth = _minItemWidth,
+    this.maxItemWidth = _maxItemWidth,
     super.key,
   });
 
@@ -16,23 +18,38 @@ class ResponsiveItemGrid<T> extends StatelessWidget {
   final int targetColumns;
 
   final double horizontalPadding;
+  final double minItemWidth;
+  final double maxItemWidth;
 
   static const _spacing = 12.0;
   static const _minItemWidth = 140.0;
   static const _maxItemWidth = 220.0;
+
+  /// How many columns of [minItemWidth] (plus spacing) fit in
+  /// [availableWidth], capped at [maxColumns].
+  static int columnsThatFit({
+    required double availableWidth,
+    required double minItemWidth,
+    int maxColumns = 100,
+  }) {
+    return ((availableWidth + _spacing) / (minItemWidth + _spacing))
+        .floor()
+        .clamp(1, maxColumns);
+  }
 
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) return const SizedBox.shrink();
 
     final availableWidth = MediaQuery.sizeOf(context).width - horizontalPadding;
-    final columnsThatFit =
-        ((availableWidth + _spacing) / (_minItemWidth + _spacing))
-            .floor()
-            .clamp(1, targetColumns);
+    final columnsThatFit = ResponsiveItemGrid.columnsThatFit(
+      availableWidth: availableWidth,
+      minItemWidth: minItemWidth,
+      maxColumns: targetColumns,
+    );
     final columns = columnsThatFit.clamp(1, items.length);
     final itemWidth = ((availableWidth - _spacing * (columns - 1)) / columns)
-        .clamp(_minItemWidth, _maxItemWidth);
+        .clamp(minItemWidth, maxItemWidth);
     final gridWidth = itemWidth * columns + _spacing * (columns - 1);
 
     return Center(

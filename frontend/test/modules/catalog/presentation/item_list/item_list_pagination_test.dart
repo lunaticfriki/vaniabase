@@ -5,6 +5,7 @@ import 'package:frontend/modules/catalog/application/item_list_state_service.dar
 import 'package:frontend/modules/catalog/application/item_read_service.dart';
 import 'package:frontend/modules/catalog/presentation/item_card_view.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_view.dart';
+import 'package:frontend/shared/layout/item_view_mode.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../application/item_read_model_mother.dart';
@@ -17,7 +18,11 @@ void main() {
     (tester) async {
       final readService = MockItemReadService();
       when(
-        () => readService.watchAll(category: null, completed: null),
+        () => readService.watchAll(
+          category: null,
+          format: null,
+          completed: null,
+        ),
       ).thenAnswer((_) => Stream.value(ItemReadModelMother.list(45)));
       final service = ItemListStateService(readService);
       addTearDown(service.close);
@@ -36,6 +41,8 @@ void main() {
                         onNext: service.nextPage,
                         onPageChanged: service.goToPage,
                         onItemTap: (_) {},
+                        viewMode: ItemViewMode.grid,
+                        onViewModeChanged: (_) {},
                       )
                     : const SizedBox(),
               ),

@@ -6,9 +6,11 @@ enum Format {
   ebook,
   dvd,
   bluRay,
+  vhs,
   cd,
   vinyl,
   cassette,
+  miniDisc,
   cartridge,
   digitalDownload;
 

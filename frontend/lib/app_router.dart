@@ -4,6 +4,7 @@ import 'package:frontend/modules/catalog/presentation/authors/authors_container.
 import 'package:frontend/modules/catalog/presentation/bulk_import/bulk_import_container.dart';
 import 'package:frontend/modules/catalog/presentation/category_list/category_list_container.dart';
 import 'package:frontend/modules/catalog/presentation/edit_item/edit_item_container.dart';
+import 'package:frontend/modules/catalog/presentation/format_list/format_list_container.dart';
 import 'package:frontend/modules/catalog/presentation/home/home_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/item_detail_container.dart';
 import 'package:frontend/modules/catalog/presentation/item_list/item_list_container.dart';
@@ -153,6 +154,18 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
             pageBuilder: (context, state) => _fastPage(
               state,
               ItemListContainer(category: state.pathParameters['category']),
+            ),
+          ),
+          GoRoute(
+            path: '/formats',
+            pageBuilder: (context, state) =>
+                _fastPage(state, const FormatListContainer()),
+          ),
+          GoRoute(
+            path: '/formats/:format',
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              ItemListContainer(format: state.pathParameters['format']),
             ),
           ),
         ],

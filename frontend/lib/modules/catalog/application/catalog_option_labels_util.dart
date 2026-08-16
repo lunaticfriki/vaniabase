@@ -13,9 +13,11 @@ const formatLabels = {
   'ebook': 'Ebook',
   'dvd': 'DVD',
   'bluRay': 'Blu-ray',
+  'vhs': 'VHS',
   'cd': 'CD',
   'vinyl': 'Vinyl',
   'cassette': 'Cassette',
+  'miniDisc': 'MiniDisc',
   'cartridge': 'Cartridge',
   'digitalDownload': 'Digital download',
 };

@@ -7,17 +7,24 @@ class ItemFormatPolicy {
     Category.book: {Format.hardcover, Format.paperback, Format.ebook},
     Category.comic: {Format.hardcover, Format.paperback, Format.ebook},
     Category.magazine: {Format.paperback, Format.digitalDownload},
-    Category.movie: {Format.dvd, Format.bluRay, Format.digitalDownload},
+    Category.movie: {
+      Format.dvd,
+      Format.bluRay,
+      Format.vhs,
+      Format.digitalDownload,
+    },
     Category.videogame: {
       Format.cartridge,
       Format.dvd,
       Format.bluRay,
+      Format.miniDisc,
       Format.digitalDownload,
     },
     Category.musicAlbum: {
       Format.cd,
       Format.vinyl,
       Format.cassette,
+      Format.miniDisc,
       Format.digitalDownload,
     },
   };

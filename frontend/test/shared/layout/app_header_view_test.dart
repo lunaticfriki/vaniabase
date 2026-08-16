@@ -40,6 +40,7 @@ void main() {
             onNavigateItems: () {},
             onNavigateCompleted: () {},
             onNavigateCategories: () {},
+            onNavigateFormats: () {},
             onNavigateTags: () {},
             onNavigateTopics: () {},
             onNavigateAuthors: () {},
@@ -69,6 +70,7 @@ void main() {
       expect(find.text('Complete collection'), findsNothing);
       expect(find.widgetWithIcon(IconButton, Pixel.grid), findsOneWidget);
       expect(find.widgetWithIcon(IconButton, Pixel.bookmarks), findsOneWidget);
+      expect(find.widgetWithIcon(IconButton, Pixel.cardstack), findsOneWidget);
       expect(find.widgetWithIcon(IconButton, Pixel.label), findsOneWidget);
       expect(find.widgetWithIcon(IconButton, Pixel.search), findsOneWidget);
       expect(find.widgetWithIcon(IconButton, Pixel.fileplus), findsOneWidget);
@@ -87,6 +89,8 @@ void main() {
     await tester.pumpWidget(buildApp());
     await tester.pumpAndSettle();
 
+    // Search stays pinned in the header, outside the collapsible menu.
+    expect(find.widgetWithIcon(IconButton, Pixel.search), findsOneWidget);
     expect(find.byIcon(Pixel.menu), findsOneWidget);
     expect(find.text('Complete collection'), findsNothing);
     expect(find.text('Add item'), findsNothing);
@@ -96,6 +100,10 @@ void main() {
 
     expect(find.text('Complete collection'), findsOneWidget);
     expect(find.text('Add item'), findsOneWidget);
+    // Theme options live inside the menu on narrow screens.
+    expect(find.text('Dark'), findsOneWidget);
+    // Not authenticated in this test, so no logout entry.
+    expect(find.text('Log out'), findsNothing);
   });
 
   testWidgets('title navigates home when tapped', (tester) async {
@@ -113,6 +121,7 @@ void main() {
               onNavigateItems: () {},
               onNavigateCompleted: () {},
               onNavigateCategories: () {},
+              onNavigateFormats: () {},
               onNavigateTags: () {},
               onNavigateTopics: () {},
               onNavigateAuthors: () {},
@@ -160,6 +169,7 @@ void main() {
             onNavigateItems: () {},
             onNavigateCompleted: () {},
             onNavigateCategories: () {},
+            onNavigateFormats: () {},
             onNavigateTags: () {},
             onNavigateTopics: () {},
             onNavigateAuthors: () {},
@@ -210,6 +220,27 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.text('Hi, Alexandra!'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'narrow screen: authenticated users see logout inside the hamburger menu',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final session = authenticatedSession();
+      addTearDown(session.close);
+
+      await tester.pumpWidget(buildAuthenticatedApp(session));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Pixel.menu));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Log out'), findsOneWidget);
     },
   );
 }

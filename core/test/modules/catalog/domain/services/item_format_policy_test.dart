@@ -70,13 +70,17 @@ void main() {
       );
     });
 
-    test('movie allows dvd, bluRay and digital download', () {
+    test('movie allows dvd, bluRay, vhs and digital download', () {
       expect(
         ItemFormatPolicy.allows(Category.movie, _formats([Format.dvd])),
         isTrue,
       );
       expect(
         ItemFormatPolicy.allows(Category.movie, _formats([Format.bluRay])),
+        isTrue,
+      );
+      expect(
+        ItemFormatPolicy.allows(Category.movie, _formats([Format.vhs])),
         isTrue,
       );
       expect(
@@ -92,7 +96,9 @@ void main() {
       );
     });
 
-    test('videogame allows cartridge, dvd, bluRay and digital download', () {
+    test(
+        'videogame allows cartridge, dvd, bluRay, miniDisc and digital download',
+        () {
       expect(
         ItemFormatPolicy.allows(
           Category.videogame,
@@ -114,6 +120,13 @@ void main() {
       expect(
         ItemFormatPolicy.allows(
           Category.videogame,
+          _formats([Format.miniDisc]),
+        ),
+        isTrue,
+      );
+      expect(
+        ItemFormatPolicy.allows(
+          Category.videogame,
           _formats([Format.digitalDownload]),
         ),
         isTrue,
@@ -124,7 +137,9 @@ void main() {
       );
     });
 
-    test('musicAlbum allows cd, vinyl, cassette and digital download', () {
+    test(
+        'musicAlbum allows cd, vinyl, cassette, miniDisc and digital download',
+        () {
       expect(
         ItemFormatPolicy.allows(Category.musicAlbum, _formats([Format.cd])),
         isTrue,
@@ -140,6 +155,13 @@ void main() {
         ItemFormatPolicy.allows(
           Category.musicAlbum,
           _formats([Format.cassette]),
+        ),
+        isTrue,
+      );
+      expect(
+        ItemFormatPolicy.allows(
+          Category.musicAlbum,
+          _formats([Format.miniDisc]),
         ),
         isTrue,
       );

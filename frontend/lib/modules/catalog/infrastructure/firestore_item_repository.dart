@@ -41,13 +41,20 @@ class FirestoreItemRepository implements ItemReadService, ItemWriteService {
   }
 
   @override
-  Stream<List<ItemReadModel>> watchAll({String? category, bool? completed}) {
+  Stream<List<ItemReadModel>> watchAll({
+    String? category,
+    String? format,
+    bool? completed,
+  }) {
     Query<Map<String, dynamic>> query = _items.where(
       'owner_id',
       isEqualTo: _uid,
     );
     if (category != null) {
       query = query.where('category', isEqualTo: category);
+    }
+    if (format != null) {
+      query = query.where('format', arrayContains: format);
     }
     if (completed != null) {
       query = query.where('completed', isEqualTo: completed);

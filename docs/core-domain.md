@@ -51,9 +51,9 @@ not something either owns alone):
 | `book` | `hardcover`, `paperback`, `ebook` |
 | `comic` | `hardcover`, `paperback`, `ebook` |
 | `magazine` | `paperback`, `digitalDownload` |
-| `movie` | `dvd`, `bluRay`, `digitalDownload` |
-| `videogame` | `cartridge`, `dvd`, `bluRay`, `digitalDownload` |
-| `musicAlbum` | `cd`, `vinyl`, `cassette`, `digitalDownload` |
+| `movie` | `dvd`, `bluRay`, `vhs`, `digitalDownload` |
+| `videogame` | `cartridge`, `dvd`, `bluRay`, `miniDisc`, `digitalDownload` |
+| `musicAlbum` | `cd`, `vinyl`, `cassette`, `miniDisc`, `digitalDownload` |
 
 Since `format` is a list (`ItemFormats`, holding at least one `Format`),
 the policy checks *every* selected format against the category — a

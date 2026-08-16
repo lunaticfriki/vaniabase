@@ -6,6 +6,8 @@ void main() {
     test('parse accepts a valid format name', () {
       expect(Format.parse('hardcover'), Format.hardcover);
       expect(Format.parse('bluRay'), Format.bluRay);
+      expect(Format.parse('vhs'), Format.vhs);
+      expect(Format.parse('miniDisc'), Format.miniDisc);
     });
 
     test('parse throws for an unknown name', () {

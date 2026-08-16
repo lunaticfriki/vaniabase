@@ -29,10 +29,16 @@ class ItemListError extends ItemListState {
 }
 
 class ItemListStateService extends Cubit<ItemListState> {
-  ItemListStateService(this._readService, {String? category, bool? completed})
-    : super(const ItemListLoading()) {
+  ItemListStateService(
+    this._readService, {
+    String? category,
+    String? format,
+    bool? completed,
+    int pageSize = PageRequest.defaultPageSize,
+  }) : _pageSize = pageSize,
+       super(const ItemListLoading()) {
     _subscription = _readService
-        .watchAll(category: category, completed: completed)
+        .watchAll(category: category, format: format, completed: completed)
         .listen(
           _onItems,
           onError: (Object error) => emit(ItemListError(error.toString())),
@@ -43,6 +49,7 @@ class ItemListStateService extends Cubit<ItemListState> {
   late final StreamSubscription<List<ItemReadModel>> _subscription;
   List<ItemReadModel> _allItems = const [];
   ItemSortOption _sortOption = ItemSortOption.createdAtDesc;
+  int _pageSize;
   int _page = 1;
 
   void _onItems(List<ItemReadModel> items) {
@@ -74,7 +81,7 @@ class ItemListStateService extends Cubit<ItemListState> {
 
   void _emitPage() {
     final sortedItems = _sortedItems();
-    final pageRequest = PageRequest.create(page: _page);
+    final pageRequest = PageRequest.create(page: _page, pageSize: _pageSize);
     final start = pageRequest.offset;
     final end = (start + pageRequest.limit).clamp(0, sortedItems.length);
     final pageItems = start >= sortedItems.length
@@ -99,6 +106,13 @@ class ItemListStateService extends Cubit<ItemListState> {
   void setSortOption(ItemSortOption sortOption) {
     if (sortOption == _sortOption) return;
     _sortOption = sortOption;
+    _page = 1;
+    _emitPage();
+  }
+
+  void setPageSize(int pageSize) {
+    if (pageSize == _pageSize) return;
+    _pageSize = pageSize;
     _page = 1;
     _emitPage();
   }

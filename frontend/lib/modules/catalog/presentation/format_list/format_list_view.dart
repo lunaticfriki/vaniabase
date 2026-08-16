@@ -3,15 +3,15 @@ import 'package:frontend/modules/catalog/application/catalog_option_labels_util.
 import 'package:frontend/shared/layout/app_footer_view.dart';
 import 'package:frontend/shared/layout/preview_tile_view.dart';
 
-class CategoryListView extends StatelessWidget {
-  const CategoryListView({
+class FormatListView extends StatelessWidget {
+  const FormatListView({
     required this.previewImageUrls,
-    required this.onCategoryTap,
+    required this.onFormatTap,
     super.key,
   });
 
   final Map<String, List<String>> previewImageUrls;
-  final void Function(String category) onCategoryTap;
+  final void Function(String format) onFormatTap;
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +20,17 @@ class CategoryListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Categories', style: Theme.of(context).textTheme.headlineSmall),
+          Text('Formats', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 12),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  for (final entry in categoryLabels.entries) ...[
+                  for (final entry in formatLabels.entries) ...[
                     PreviewTileView(
                       label: entry.value,
                       previewImageUrls: previewImageUrls[entry.key] ?? const [],
-                      onTap: () => onCategoryTap(entry.key),
+                      onTap: () => onFormatTap(entry.key),
                     ),
                     const SizedBox(height: 8),
                   ],

@@ -29,6 +29,8 @@ screen on-screen.
 | `/items/:id/edit` | Edit an item | yes |
 | `/categories` | Categories, each with a preview of its items | yes |
 | `/categories/:category` | Items in one category, paginated (reuses `/items`'s list view) | yes |
+| `/formats` | Formats, each with a preview of its items | yes |
+| `/formats/:format` | Items in one format, paginated (reuses `/items`'s list view) | yes |
 | `/tags` | Tag cloud; click a tag to filter items below | yes |
 | `/topics` | Topics, browsable by first letter | yes |
 | `/authors` | Authors/creators, browsable by first letter | yes |
@@ -37,17 +39,25 @@ screen on-screen.
 | `/search` | Debounced text search across the catalog | yes |
 
 All of the above except `/login` and `/signup` share a persistent shell
-(`AppShellView`): a header with links to each page plus a light/dark
-theme toggle and a logout button when signed in; a floating **Add item**
-button bottom-right on every shell page except the add/import/detail/edit
-ones (where it would either be redundant or overlap the page's own
-controls — see `_addItemFabHiddenRoutes` in `app_shell_view.dart`); a
-footer with a GitHub link and the current year. On screens narrower than
-`navWideBreakpoint` (640px) the nav collapses from icon buttons into a
-single hamburger menu (`_showResponsiveMenu` in `app_header_view.dart`)
-that opens as a full-width dropdown listing every page by icon and label,
-so adding a page never requires shrinking the wide-screen icon row.
-`/login` and `/signup` render standalone, outside the shell.
+(`AppShellView`): a header with links to each page, a search button
+that's always pinned directly in the header (never inside the collapsible
+menu, on any screen width, so it's one tap away regardless of layout),
+and a floating **Add item** button bottom-right on every shell page except
+the add/import/detail/edit ones (where it would either be redundant or
+overlap the page's own controls — see `_addItemFabHiddenRoutes` in
+`app_shell_view.dart`); a footer with a GitHub link and the current year.
+The light/dark theme toggle and the logout button (signed-in only) live
+inside the nav menu itself rather than as separate pinned header buttons —
+on screens narrower than `navWideBreakpoint` (640px) that means they're
+part of the same hamburger dropdown as every other page link
+(`_showResponsiveMenu` in `app_header_view.dart`, which opens as a
+full-width dropdown listing every page by icon and label, followed by the
+theme options and, if signed in, log out); on wide screens they render as
+the trailing icons in the same horizontally-scrollable icon row as the
+rest of the nav (wrapped in a `SingleChildScrollView` so the row degrades
+to a horizontal scroll instead of overflowing as pages are added, rather
+than requiring the wide-screen icon row to keep shrinking). `/login` and
+`/signup` render standalone, outside the shell.
 
 ### Signing in and up
 
@@ -81,19 +91,21 @@ after every login and after `forgetAccount`, which removes both the
 
 ### Live data: `watchAll` over one-shot fetches
 
-`ItemReadService.watchAll({category, completed})` returns a
+`ItemReadService.watchAll({category, format, completed})` returns a
 `Stream<List<ItemReadModel>>`, not a `Future` — `FirestoreItemRepository`
 backs it with a Firestore `snapshots()` listener, so every page/state
 service that subscribes to it (`HomeStateService`, `ItemListStateService`,
-`CategoriesStateService`, `TagsStateService`, `SearchStateService`, and
-the authors/languages/publishers/topics state services) re-emits
-automatically when the underlying data changes, with no manual refresh
-or refetch-after-write step anywhere in the app. `category`/`completed`
-are pushed down as Firestore `where` clauses so the server does that
-filtering; anything beyond that (sorting, paging, letter/tag grouping)
-happens client-side over whatever the stream last delivered, since the
-client SDK has no server-side `offset()`, sort-by-derived-field, or
-grouping support.
+`CategoriesStateService`, `FormatsStateService`, `TagsStateService`,
+`SearchStateService`, and the authors/languages/publishers/topics state
+services) re-emits automatically when the underlying data changes, with
+no manual refresh or refetch-after-write step anywhere in the app.
+`category`/`completed` are pushed down as Firestore `where` clauses so
+the server does that filtering; `format` is pushed down the same way but
+as `arrayContains`, since an item's `format` field is itself a list.
+Anything beyond that (sorting, paging, letter/tag grouping) happens
+client-side over whatever the stream last delivered, since the client SDK
+has no server-side `offset()`, sort-by-derived-field, or grouping
+support.
 
 ### Home vs. "All items" vs. "Completed"
 
@@ -118,16 +130,30 @@ to `watchAll`, just without the sort control
 `false` — see "Sorting" below for why sort and the completed filter don't
 combine).
 
-Both pages, plus `/categories/:category`, lay out items with the same
-`ResponsiveItemGrid` (`shared/layout/responsive_item_grid.dart`):
-centered, targeting 5 columns so a 10-item page reads as two clean rows
-on a wide screen, narrowing to fewer, wider columns (and more rows) on
-small screens. Home additionally centers that grid vertically in the
-available space when there are only a few items, rather than pinning it
-to the top of an otherwise empty page. Tapping a card on any of these
-pages opens `/items/:id`. A floating **Add item** button (see "Pages and
-navigation" above) is the primary way to reach `/items/new` from any of
-them.
+Both pages, plus `/categories/:category` and `/formats/:format`, lay out
+items with the same `ResponsiveItemGrid`
+(`shared/layout/responsive_item_grid.dart`): centered, targeting 5
+columns by default so a 10-item page reads as two clean rows on a wide
+screen, narrowing to fewer, wider columns (and more rows) on small
+screens. Home additionally centers that grid vertically in the available
+space when there are only a few items, rather than pinning it to the top
+of an otherwise empty page. Tapping a card on any of these pages opens
+`/items/:id`. A floating **Add item** button (see "Pages and navigation"
+above) is the primary way to reach `/items/new` from any of them.
+
+Home and every `ItemListView`-backed page also carry an independent
+**view mode** toggle (`ItemViewModeToggle`,
+`shared/layout/item_view_mode_toggle.dart`) next to the page title:
+`list` (one item per row, `ResponsiveItemGrid.targetColumns = 1` with a
+wider `maxItemWidth`), `twoColumns` (2 per row), or `grid` (the default
+auto-fit-up-to-5 layout). Each is backed by its own
+`ItemViewModeStateService`, a small `Cubit<ItemViewMode>` that persists
+its choice to `shared_preferences` under a page-specific key
+(`home_view_mode` for `/`, `item_list_view_mode` shared by `/items` and
+everything built on `ItemListContainer` — `/completed`,
+`/categories/:category`, `/formats/:format`) — so Home and the rest of
+the catalog can be browsed in different layouts at the same time, each
+remembered independently across reloads.
 
 ### Sorting
 
@@ -142,19 +168,25 @@ item list and resets to page 1 (`ItemListStateService._emitPage`).
 sorting was scoped to the one page people actually reorder rather than
 threaded through every `ItemListContainer` use.
 
-### Browsing: categories, tags, topics, authors, languages, publishers, and search
+### Browsing: categories, formats, tags, topics, authors, languages, publishers, and search
 
-Seven more ways into the same catalog, all reachable from the header nav:
+Eight more ways into the same catalog, all reachable from the header nav:
 
 - **`/categories`** (`CategoryListContainer`/`CategoriesStateService`) —
   one tile per category, each showing up to a handful of that
   category's most recent item covers as small thumbnails next to the
   name, so a tile reads as a preview rather than just a label. The
   thumbnail count is computed from the tile's actual width
-  (`LayoutBuilder` in `category_list_view.dart`), so a wider window
-  shows more covers instead of a fixed number. Tapping a tile opens
-  `/categories/:category`, which reuses the same `ItemListView` as
+  (`LayoutBuilder`, in the shared `PreviewTileView` widget), so a wider
+  window shows more covers instead of a fixed number. Tapping a tile
+  opens `/categories/:category`, which reuses the same `ItemListView` as
   `/items` with a category filter.
+- **`/formats`** (`FormatListContainer`/`FormatsStateService`) — the same
+  tile-per-entry shape as `/categories`, over `formatLabels` instead of
+  `categoryLabels`, sharing the same `PreviewTileView` widget for the
+  tile itself. Tapping a tile opens `/formats/:format`, which reuses
+  `ItemListView` with a format filter the same way `/categories/:category`
+  does with a category filter.
 - **`/tags`** (`TagsContainer`/`TagsStateService`) — every tag used
   across the catalog, laid out as a tag cloud where font size scales
   with how often that tag appears (a `Map<String, int>` frequency count
@@ -330,11 +362,15 @@ redirect decision, rather than flashing `/login` first.
   that feature's `application/` layer, not presentation (`LoginStateService`,
   `SignupStateService`, `HomeStateService`, `ItemListStateService`,
   `AddItemStateService`, `EditItemStateService`, `ItemDetailStateService`,
-  `BulkImportStateService`, `CategoriesStateService`, `TagsStateService`,
-  `TopicsStateService`, `AuthorsStateService`, `LanguagesStateService`,
-  `PublishersStateService`, `SearchStateService`), plus two app-wide ones
-  outside any single page, in `shared/`: `SessionStateService` (who's
-  signed in) and `ThemeStateService` (light/dark/system). Each is
+  `BulkImportStateService`, `CategoriesStateService`, `FormatsStateService`,
+  `TagsStateService`, `TopicsStateService`, `AuthorsStateService`,
+  `LanguagesStateService`, `PublishersStateService`, `SearchStateService`),
+  plus three app-wide/shared ones outside any single page's `application/`
+  layer, in `shared/`: `SessionStateService` (who's signed in),
+  `ThemeStateService` (light/dark/system), and `ItemViewModeStateService`
+  (list/two-columns/grid — instantiated once per page rather than as a
+  single app-wide singleton, so Home and the item-list pages each keep
+  their own choice). Each is
   implemented as a `Cubit<State>` (the sealed state classes live
   alongside their service in the same file, not split out separately),
   but named/placed to say what it *is* (application's reactive state

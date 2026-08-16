@@ -10,6 +10,10 @@ Future<void> _showResponsiveMenu(
   BuildContext context, {
   required List<_NavItem> navItems,
   required String? greetingName,
+  required ThemeMode themeMode,
+  required ValueChanged<ThemeMode> onThemeChanged,
+  required bool isAuthenticated,
+  required VoidCallback onLogout,
 }) async {
   final width = MediaQuery.sizeOf(context).width;
   final top = MediaQuery.paddingOf(context).top + kToolbarHeight;
@@ -41,6 +45,32 @@ Future<void> _showResponsiveMenu(
             ],
           ),
         ),
+      const PopupMenuDivider(),
+      for (final mode in ThemeMode.values)
+        PopupMenuItem<VoidCallback>(
+          value: () => onThemeChanged(mode),
+          child: Row(
+            children: [
+              Icon(_themeModeIcon(mode), size: 20),
+              const SizedBox(width: 12),
+              Expanded(child: Text(_themeModeLabel(mode))),
+              if (mode == themeMode) const Icon(Pixel.check, size: 18),
+            ],
+          ),
+        ),
+      if (isAuthenticated) ...[
+        const PopupMenuDivider(),
+        PopupMenuItem<VoidCallback>(
+          value: onLogout,
+          child: Row(
+            children: [
+              const Icon(Pixel.logout, size: 20),
+              const SizedBox(width: 12),
+              Text('Log out', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            ],
+          ),
+        ),
+      ],
     ],
   );
   onTap?.call();
@@ -52,19 +82,23 @@ IconData _themeModeIcon(ThemeMode mode) => switch (mode) {
   ThemeMode.system => Pixel.monitor,
 };
 
+String _themeModeLabel(ThemeMode mode) => switch (mode) {
+  ThemeMode.light => 'Light',
+  ThemeMode.dark => 'Dark',
+  ThemeMode.system => 'System',
+};
+
 PopupMenuItem<ThemeMode> _themeModeMenuItem(
   ThemeMode mode,
-  String label,
-  IconData icon,
   ThemeMode selected,
 ) {
   return PopupMenuItem<ThemeMode>(
     value: mode,
     child: Row(
       children: [
-        Icon(icon, size: 20),
+        Icon(_themeModeIcon(mode), size: 20),
         const SizedBox(width: 12),
-        Expanded(child: Text(label)),
+        Expanded(child: Text(_themeModeLabel(mode))),
         if (mode == selected) const Icon(Pixel.check, size: 18),
       ],
     ),
@@ -89,6 +123,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     required this.onNavigateItems,
     required this.onNavigateCompleted,
     required this.onNavigateCategories,
+    required this.onNavigateFormats,
     required this.onNavigateTags,
     required this.onNavigateTopics,
     required this.onNavigateAuthors,
@@ -105,6 +140,7 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onNavigateItems;
   final VoidCallback onNavigateCompleted;
   final VoidCallback onNavigateCategories;
+  final VoidCallback onNavigateFormats;
   final VoidCallback onNavigateTags;
   final VoidCallback onNavigateTopics;
   final VoidCallback onNavigateAuthors;
@@ -134,6 +170,8 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     });
     final themeMode = context.watch<ThemeStateService>().state;
     final isWide = MediaQuery.sizeOf(context).width >= navWideBreakpoint;
+    void onThemeChanged(ThemeMode mode) =>
+        context.read<ThemeStateService>().setMode(mode);
 
     final navItems = [
       _NavItem(
@@ -151,6 +189,11 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
         icon: Pixel.bookmarks,
         onTap: onNavigateCategories,
       ),
+      _NavItem(
+        label: 'Formats',
+        icon: Pixel.cardstack,
+        onTap: onNavigateFormats,
+      ),
       _NavItem(label: 'Tags', icon: Pixel.label, onTap: onNavigateTags),
       _NavItem(label: 'Topics', icon: Pixel.note, onTap: onNavigateTopics),
       _NavItem(label: 'Authors', icon: Pixel.user, onTap: onNavigateAuthors),
@@ -164,7 +207,6 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
         icon: Pixel.building,
         onTap: onNavigatePublishers,
       ),
-      _NavItem(label: 'Search', icon: Pixel.search, onTap: onNavigateSearch),
       _NavItem(
         label: 'Add item',
         icon: Pixel.fileplus,
@@ -188,14 +230,44 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
+        IconButton(
+          onPressed: onNavigateSearch,
+          icon: const Icon(Pixel.search),
+          tooltip: 'Search',
+        ),
         ...isWide
             ? [
-                for (final item in navItems)
-                  IconButton(
-                    onPressed: item.onTap,
-                    icon: Icon(item.icon),
-                    tooltip: item.label,
+                Flexible(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final item in navItems)
+                          IconButton(
+                            onPressed: item.onTap,
+                            icon: Icon(item.icon),
+                            tooltip: item.label,
+                          ),
+                        PopupMenuButton<ThemeMode>(
+                          tooltip: 'Theme',
+                          icon: Icon(_themeModeIcon(themeMode)),
+                          onSelected: onThemeChanged,
+                          itemBuilder: (context) => [
+                            for (final mode in ThemeMode.values)
+                              _themeModeMenuItem(mode, themeMode),
+                          ],
+                        ),
+                        if (isAuthenticated)
+                          IconButton(
+                            onPressed: onLogout,
+                            icon: const Icon(Pixel.logout),
+                            tooltip: 'Log out',
+                          ),
+                      ],
+                    ),
                   ),
+                ),
               ]
             : [
                 Builder(
@@ -206,31 +278,14 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
                       context,
                       navItems: navItems,
                       greetingName: greetingName,
+                      themeMode: themeMode,
+                      onThemeChanged: onThemeChanged,
+                      isAuthenticated: isAuthenticated,
+                      onLogout: onLogout,
                     ),
                   ),
                 ),
               ],
-        PopupMenuButton<ThemeMode>(
-          tooltip: 'Theme',
-          icon: Icon(_themeModeIcon(themeMode)),
-          onSelected: (mode) => context.read<ThemeStateService>().setMode(mode),
-          itemBuilder: (context) => [
-            _themeModeMenuItem(ThemeMode.light, 'Light', Pixel.sun, themeMode),
-            _themeModeMenuItem(ThemeMode.dark, 'Dark', Pixel.moon, themeMode),
-            _themeModeMenuItem(
-              ThemeMode.system,
-              'System',
-              Pixel.monitor,
-              themeMode,
-            ),
-          ],
-        ),
-        if (isAuthenticated)
-          IconButton(
-            onPressed: onLogout,
-            icon: const Icon(Pixel.logout),
-            tooltip: 'Log out',
-          ),
       ],
     );
   }
