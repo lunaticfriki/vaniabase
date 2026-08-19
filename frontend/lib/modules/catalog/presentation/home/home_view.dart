@@ -20,6 +20,10 @@ class HomeView extends StatelessWidget {
   final ItemViewMode viewMode;
   final ValueChanged<ItemViewMode> onViewModeChanged;
 
+  /// Desktop's grid mode is otherwise column-unlimited; cap "Recently
+  /// added" so it reads as a curated row rather than filling the window.
+  static const _desktopMaxColumns = 5;
+
   @override
   Widget build(BuildContext context) {
     final isWide =
@@ -59,7 +63,9 @@ class HomeView extends StatelessWidget {
                   : ResponsiveItemGrid<ItemReadModel>(
                       items: items,
                       keyBuilder: (item) => ValueKey(item.id),
-                      targetColumns: effectiveMode.targetColumns(isWide),
+                      targetColumns: isWide
+                          ? _desktopMaxColumns
+                          : effectiveMode.targetColumns(isWide),
                       minItemWidth: effectiveMode.minItemWidth(isWide),
                       maxItemWidth: effectiveMode.maxItemWidth(isWide),
                       itemBuilder: (context, item) => ItemCardView(
