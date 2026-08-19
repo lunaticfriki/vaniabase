@@ -173,15 +173,11 @@ class _LetterButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: enabled ? onTap : null,
-      borderRadius: BorderRadius.circular(4),
       child: Container(
         width: 28,
         height: 28,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: selected ? colorScheme.primary : null,
-          borderRadius: BorderRadius.circular(4),
-        ),
+        color: selected ? colorScheme.primary : null,
         child: Text(
           letter,
           style: TextStyle(
@@ -217,23 +213,24 @@ class _EntryRow extends StatelessWidget {
       runSpacing: 8,
       children: [
         for (final entry in entries)
-          InkWell(
-            onTap: () => onEntryTap(entry),
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: entry == selectedEntry
-                    ? colorScheme.primary
-                    : colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                entry,
-                style: TextStyle(
-                  color: entry == selectedEntry
-                      ? colorScheme.onPrimary
-                      : colorScheme.onSurface,
+          Material(
+            color: entry == selectedEntry
+                ? colorScheme.primary
+                : colorScheme.surfaceContainerHighest,
+            child: InkWell(
+              onTap: () => onEntryTap(entry),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: Text(
+                  entry,
+                  style: TextStyle(
+                    color: entry == selectedEntry
+                        ? colorScheme.onPrimary
+                        : colorScheme.onSurface,
+                  ),
                 ),
               ),
             ),

@@ -4,7 +4,6 @@ import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
 import 'package:frontend/modules/catalog/presentation/item_detail/fullscreen_image_view.dart';
 import 'package:frontend/shared/layout/overlay_icon_button.dart';
-import 'package:frontend/shared/layout/top_right_corner_clipper.dart';
 import 'package:pixelarticons/pixel.dart';
 
 const itemDetailWideBreakpoint = 700.0;
@@ -274,11 +273,7 @@ class _WideLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
-          child: _ItemHeroImage(
-            item: item,
-            onAuthorTap: onAuthorTap,
-            notched: true,
-          ),
+          child: _ItemHeroImage(item: item, onAuthorTap: onAuthorTap),
         ),
         const SizedBox(width: 40),
         Expanded(
@@ -376,28 +371,21 @@ class _NarrowLayout extends StatelessWidget {
 }
 
 class _ItemHeroImage extends StatelessWidget {
-  const _ItemHeroImage({
-    required this.item,
-    required this.onAuthorTap,
-    this.notched = false,
-  });
+  const _ItemHeroImage({required this.item, required this.onAuthorTap});
 
   final ItemReadModel item;
   final void Function(String author) onAuthorTap;
-  final bool notched;
-
-  static const _cornerCut = 32.0;
 
   @override
   Widget build(BuildContext context) {
-    final content = GestureDetector(
+    return GestureDetector(
       onTap: item.imageUrl.isEmpty
           ? null
           : () => openFullscreenImage(context, item.imageUrl),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _ItemImageFill(imageUrl: item.imageUrl, rounded: !notched),
+          _ItemImageFill(imageUrl: item.imageUrl),
           Positioned.fill(
             child: IgnorePointer(
               child: DecoratedBox(
@@ -457,11 +445,6 @@ class _ItemHeroImage extends StatelessWidget {
         ],
       ),
     );
-    if (!notched) return content;
-    return ClipPath(
-      clipper: const TopRightCornerClipper(cut: _cornerCut),
-      child: content,
-    );
   }
 }
 
@@ -520,10 +503,9 @@ class _CompletedBadge extends StatelessWidget {
 }
 
 class _ItemImageFill extends StatelessWidget {
-  const _ItemImageFill({required this.imageUrl, this.rounded = true});
+  const _ItemImageFill({required this.imageUrl});
 
   final String imageUrl;
-  final bool rounded;
 
   @override
   Widget build(BuildContext context) {
@@ -547,7 +529,6 @@ class _ItemImageFill extends StatelessWidget {
             ),
           );
 
-    if (!rounded) return KeyedSubtree(key: itemDetailImageKey, child: child);
     return ClipRRect(
       key: itemDetailImageKey,
       borderRadius: BorderRadius.circular(8),

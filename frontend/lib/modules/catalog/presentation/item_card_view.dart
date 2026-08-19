@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
-import 'package:frontend/shared/layout/top_right_corner_clipper.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class ItemCardView extends StatelessWidget {
@@ -17,7 +16,8 @@ class ItemCardView extends StatelessWidget {
   final VoidCallback onTap;
   final bool showDetails;
 
-  static const _cornerCut = 20.0;
+  static const _shadowOffset = 6.0;
+  static const _shadowInset = 12.0;
 
   @override
   Widget build(BuildContext context) {
@@ -40,51 +40,67 @@ class ItemCardView extends StatelessWidget {
 
     final sizedImage = AspectRatio(aspectRatio: 3 / 4, child: image);
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      shape: const NotchedCornersShapeBorder(
-        topRightCut: _cornerCut,
-        bottomLeftCut: _cornerCut,
-      ),
-      child: InkWell(
-        onTap: onTap,
-        child: !showDetails
-            ? sizedImage
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  sizedImage,
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, _cornerCut),
-                    child: Column(
+    return Stack(
+      children: [
+        Positioned(
+          left: _shadowInset,
+          top: _shadowInset,
+          right: 0,
+          bottom: 0,
+          child: Container(color: Theme.of(context).colorScheme.primary),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            right: _shadowOffset,
+            bottom: _shadowOffset,
+          ),
+          child: Card(
+            margin: EdgeInsets.zero,
+            elevation: 0,
+            child: InkWell(
+              onTap: onTap,
+              child: !showDetails
+                  ? sizedImage
+                  : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          item.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                        Text(
-                          item.creator.join(', '),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${categoryLabel(item.category)} · ${item.format.map(formatLabel).join(', ')}',
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.primary,
+                        sizedImage,
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                item.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleSmall,
                               ),
+                              Text(
+                                item.creator.join(', '),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${categoryLabel(item.category)} · ${item.format.map(formatLabel).join(', ')}',
+                                style: Theme.of(context).textTheme.labelSmall
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-      ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

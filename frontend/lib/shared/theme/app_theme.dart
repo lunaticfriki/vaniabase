@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/shared/layout/top_right_corner_clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 enum AppAccentColor {
@@ -42,7 +41,7 @@ class AppTheme {
     dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
   ).copyWith(surface: _darkSurface, onSurface: const Color(0xFFEAE4F0));
 
-  static const _buttonShape = NotchedCornersShapeBorder(topRightCut: 8);
+  static const _buttonShape = RoundedRectangleBorder();
 
   static ThemeData _themeFrom(ColorScheme colorScheme) {
     final textTheme = GoogleFonts.inconsolataTextTheme(
@@ -82,6 +81,7 @@ class AppTheme {
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         shape: _buttonShape,
       ),
+      cardTheme: const CardThemeData(shape: _buttonShape),
     );
   }
 }

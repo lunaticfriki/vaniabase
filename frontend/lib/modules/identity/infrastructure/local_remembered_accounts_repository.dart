@@ -3,7 +3,8 @@ import 'package:frontend/modules/identity/application/remembered_account.dart';
 import 'package:frontend/modules/identity/application/remembered_accounts_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalRememberedAccountsRepository implements RememberedAccountsRepository {
+class LocalRememberedAccountsRepository
+    implements RememberedAccountsRepository {
   LocalRememberedAccountsRepository(this._preferences, this._secureStorage);
 
   static const _emailsKey = 'remembered_accounts_emails';
@@ -19,11 +20,19 @@ class LocalRememberedAccountsRepository implements RememberedAccountsRepository 
     final emails = _preferences.getStringList(_emailsKey) ?? const [];
     return [
       for (final email in emails)
-        RememberedAccount(
-          email: email,
-          password: await _secureStorage.read(key: _passwordKey(email)),
-        ),
+        RememberedAccount(email: email, password: await _readPassword(email)),
     ];
+  }
+
+  // The OS can restore this encrypted value from a backup without restoring
+  // the Keystore key that encrypted it, which makes decryption throw.
+  Future<String?> _readPassword(String email) async {
+    try {
+      return await _secureStorage.read(key: _passwordKey(email));
+    } catch (_) {
+      await _secureStorage.delete(key: _passwordKey(email));
+      return null;
+    }
   }
 
   @override
