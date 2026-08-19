@@ -218,9 +218,13 @@ Eight more ways into the same catalog, all reachable from the header nav:
   re-query on every keystroke. Firestore has no server-side text search,
   so this filters the live item stream in memory using `core`'s
   `SearchTerm.matchesAny` against each item's title, creator, publisher,
-  topic, reference, and tags — see
+  topic, reference, tags, and year (as a string) — see
   [core-domain.md](core-domain.md#search) for why that matching logic
-  lives in `core` rather than being reimplemented here.
+  lives in `core` rather than being reimplemented here. Like `/tags?tag=`,
+  a `?q=` query param pre-fills and immediately runs the search on load
+  (`SearchContainer.initialQuery` → `SearchStateService`'s constructor);
+  the item detail page's reference and year fields link here, since
+  neither has its own dedicated browsing page.
 
 `PaginatedItemGridView` (`presentation/paginated_item_grid_view.dart`) is
 the client-side-paginated grid `/tags`, `/topics`, `/authors`,
@@ -298,15 +302,29 @@ gradient over the bottom of the image keeps that text legible over any
 photo), and Back/Edit become translucent `OverlayIconButton`s
 (`shared/layout/overlay_icon_button.dart` — a pill-shaped semi-transparent
 button meant to sit on top of image content) that fade in as the page
-scrolls (`_headerOpacity` tracks `ScrollController.offset` over a
-120px fade distance in `_NarrowItemDetailState`), so they're legible
-against both the image and the plain background beneath it. On narrow
-screens `AppShellView` also hides the app's own header entirely on this
-route (`_isItemDetailPage` check), letting the hero image use the full
-viewport height instead of losing space to two stacked toolbars. Either
-layout's back button pops the navigation stack (falling back to `/items`
-if the page was opened directly, e.g. from a shared link). Tapping the
-image opens it fullscreen (`openFullscreenImage` →
+scrolls. On narrow screens the hero image also stays visually pinned in
+place while the field list scrolls up over it, like a bottom sheet over a
+header photo, rather than scrolling away with the rest of the page: the
+image is a normal child at the top of the scrolling `Column` (not a
+separate `Positioned` layer behind the `Scrollable`, which would put it
+outside the scroll gesture's hit-test region and make it untappable —
+`Scrollable` always claims its whole bounds for the drag gesture) and is
+counter-translated by the live scroll offset each frame
+(`Transform.translate` in `_NarrowItemDetailState.build`, offset clamped
+to `[0, constraints.maxHeight]`) so it renders at a fixed screen position
+even as its layout position scrolls normally; the field list's opaque
+background then naturally paints over it as it scrolls up. The same
+scroll offset also drives `headerOpacity` for the Back/Edit bar (a 120px
+fade distance) — both are recomputed straight from
+`ScrollController.offset` on every scroll notification (not cached behind
+a change check), since the sticky-image translate needs to track the
+full scroll range, not just the short header fade. On narrow screens
+`AppShellView` also hides the app's own header entirely on this route
+(`_isItemDetailPage` check), letting the hero image use the full viewport
+height instead of losing space to two stacked toolbars. Either layout's
+back button pops the navigation stack (falling back to `/items` if the
+page was opened directly, e.g. from a shared link). Tapping the image
+opens it fullscreen (`openFullscreenImage` →
 `presentation/item_detail/fullscreen_image_view.dart`): a black
 `InteractiveViewer` (pinch/scroll to zoom, up to 4x) with a tap-to-toggle
 `OverlayIconButton` back control, pushed on the root navigator so it
@@ -314,10 +332,25 @@ covers the app shell too. A chip next to the title reflects `completed`
 ("Completed" vs. "Not completed") and is itself tappable — toggling it
 calls `ItemDetailStateService.toggleCompleted()`, which writes through
 `ItemWriteService.update` and updates the chip in place, without a full
-page reload. Each tag chip in the field list is also tappable, navigating
-to `/tags?tag=<tag>` with that tag pre-selected (see "Browsing:
-categories, tags, topics, authors, languages, publishers, and search"
-above).
+page reload.
+
+Most other fields link back into the browsing pages they came from,
+filtered to that exact value: publisher → `/publishers?publisher=`,
+category → `/categories/:category`, format → `/formats/:format`, topic →
+`/topics?topic=`, language → `/languages?language=`, and the tag chips →
+`/tags?tag=` (see "Browsing: categories, formats, tags, topics, authors,
+languages, publishers, and search" above). Reference and year have no
+dedicated browsing page, so they link to `/search?q=` instead. Creator
+has no field row of its own — since it's already shown right under the
+title on the hero image, that text is itself the tap target
+(`_HeroCreatorLinks`, nested inside the hero image's own tap-to-fullscreen
+`GestureDetector`; Flutter's gesture arena resolves a tap on the name to
+the more specific inner recognizer), linking to `/authors?author=`.
+Format and language can each hold more than one value, so those two
+fields render as plain comma-joined text with each value individually
+tappable (`_LinkedValuesRow`) rather than as chips — chips are reserved
+for tags, the one multi-value field meant to visually stand out as
+freeform/user-defined rather than a fixed catalog value.
 
 Editing an item also offers **Delete**, which confirms via a dialog
 before calling `EditItemStateService.delete()` — this removes both the
