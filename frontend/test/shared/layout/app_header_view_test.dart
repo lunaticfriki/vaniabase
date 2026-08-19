@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/shared/layout/app_header_view.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
+import 'package:frontend/shared/theme/accent_color_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pixelarticons/pixel.dart';
@@ -16,6 +17,7 @@ class MockUser extends Mock implements User {}
 void main() {
   late SessionStateService session;
   late ThemeStateService theme;
+  late AccentColorStateService accentColor;
 
   setUp(() async {
     final firebaseAuth = MockFirebaseAuth();
@@ -24,7 +26,9 @@ void main() {
     ).thenAnswer((_) => const Stream.empty());
     session = SessionStateService(firebaseAuth);
     SharedPreferences.setMockInitialValues({});
-    theme = ThemeStateService(await SharedPreferences.getInstance());
+    final preferences = await SharedPreferences.getInstance();
+    theme = ThemeStateService(preferences);
+    accentColor = AccentColorStateService(preferences);
   });
 
   Widget buildApp() {
@@ -32,6 +36,7 @@ void main() {
       providers: [
         BlocProvider.value(value: session),
         BlocProvider.value(value: theme),
+        BlocProvider.value(value: accentColor),
       ],
       child: MaterialApp(
         home: Scaffold(
@@ -113,6 +118,7 @@ void main() {
         providers: [
           BlocProvider.value(value: session),
           BlocProvider.value(value: theme),
+          BlocProvider.value(value: accentColor),
         ],
         child: MaterialApp(
           home: Scaffold(
@@ -161,6 +167,7 @@ void main() {
       providers: [
         BlocProvider.value(value: authenticatedSession),
         BlocProvider.value(value: theme),
+        BlocProvider.value(value: accentColor),
       ],
       child: MaterialApp(
         home: Scaffold(

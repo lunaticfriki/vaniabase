@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend/shared/layout/app_shell_view.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
+import 'package:frontend/shared/theme/accent_color_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
@@ -14,6 +15,7 @@ class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 void main() {
   late SessionStateService session;
   late ThemeStateService theme;
+  late AccentColorStateService accentColor;
 
   setUp(() async {
     final firebaseAuth = MockFirebaseAuth();
@@ -22,7 +24,9 @@ void main() {
     ).thenAnswer((_) => const Stream.empty());
     session = SessionStateService(firebaseAuth);
     SharedPreferences.setMockInitialValues({});
-    theme = ThemeStateService(await SharedPreferences.getInstance());
+    final preferences = await SharedPreferences.getInstance();
+    theme = ThemeStateService(preferences);
+    accentColor = AccentColorStateService(preferences);
   });
 
   Widget buildApp(String initialLocation) {
@@ -54,6 +58,7 @@ void main() {
       providers: [
         BlocProvider.value(value: session),
         BlocProvider.value(value: theme),
+        BlocProvider.value(value: accentColor),
       ],
       child: MaterialApp.router(routerConfig: router),
     );
