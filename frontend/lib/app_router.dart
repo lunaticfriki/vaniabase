@@ -24,7 +24,11 @@ const _publicRoutes = {'/login', '/signup'};
 
 CustomTransitionPage<void> _fastPage(GoRouterState state, Widget child) {
   return CustomTransitionPage<void>(
-    key: state.pageKey,
+    // Combines go_router's own per-navigation pageKey (unique per push, so
+    // repeated pushes of the same location never collide) with the full URI
+    // (so a `go()` to the same path with a different query, e.g. filter
+    // links, is treated as a new page instead of reusing stale State).
+    key: ValueKey('${state.pageKey.value}|${state.uri}'),
     child: child,
     transitionDuration: const Duration(milliseconds: 120),
     reverseTransitionDuration: const Duration(milliseconds: 120),
@@ -100,8 +104,10 @@ GoRouter buildAppRouter(SessionStateService sessionStateService) {
           ),
           GoRoute(
             path: '/search',
-            pageBuilder: (context, state) =>
-                _fastPage(state, const SearchContainer()),
+            pageBuilder: (context, state) => _fastPage(
+              state,
+              SearchContainer(initialQuery: state.uri.queryParameters['q']),
+            ),
           ),
           GoRoute(
             path: '/tags',

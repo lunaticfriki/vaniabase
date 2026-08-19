@@ -56,6 +56,25 @@ class _ItemDetailContainerState extends State<ItemDetailContainer> {
                 context.read<ItemDetailStateService>().toggleCompleted(),
             onTagTap: (tag) =>
                 context.push('/tags?tag=${Uri.encodeQueryComponent(tag)}'),
+            onAuthorTap: (author) => context.push(
+              '/authors?author=${Uri.encodeQueryComponent(author)}',
+            ),
+            onPublisherTap: (publisher) => context.push(
+              '/publishers?publisher=${Uri.encodeQueryComponent(publisher)}',
+            ),
+            onReferenceTap: (reference) => context.push(
+              '/search?q=${Uri.encodeQueryComponent(reference)}',
+            ),
+            onCategoryTap: (category) => context.push('/categories/$category'),
+            onFormatTap: (format) => context.push('/formats/$format'),
+            onYearTap: (year) =>
+                context.push('/search?q=${Uri.encodeQueryComponent('$year')}'),
+            onLanguageTap: (language) => context.push(
+              '/languages?language=${Uri.encodeQueryComponent(language)}',
+            ),
+            onTopicTap: (topic) => context.push(
+              '/topics?topic=${Uri.encodeQueryComponent(topic)}',
+            ),
           ),
         },
       ),

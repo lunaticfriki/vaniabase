@@ -10,6 +10,7 @@ const itemDetailWideBreakpoint = 700.0;
 
 const itemDetailImageKey = Key('itemDetailImage');
 const itemDetailHeaderKey = Key('itemDetailHeader');
+const itemDetailHeroCreatorKey = Key('itemDetailHeroCreator');
 
 class ItemDetailView extends StatelessWidget {
   const ItemDetailView({
@@ -18,6 +19,14 @@ class ItemDetailView extends StatelessWidget {
     required this.onEdit,
     required this.onToggleCompleted,
     required this.onTagTap,
+    required this.onAuthorTap,
+    required this.onPublisherTap,
+    required this.onReferenceTap,
+    required this.onCategoryTap,
+    required this.onFormatTap,
+    required this.onYearTap,
+    required this.onLanguageTap,
+    required this.onTopicTap,
     super.key,
   });
 
@@ -26,6 +35,14 @@ class ItemDetailView extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onToggleCompleted;
   final void Function(String tag) onTagTap;
+  final void Function(String author) onAuthorTap;
+  final void Function(String publisher) onPublisherTap;
+  final void Function(String reference) onReferenceTap;
+  final void Function(String category) onCategoryTap;
+  final void Function(String format) onFormatTap;
+  final void Function(int year) onYearTap;
+  final void Function(String language) onLanguageTap;
+  final void Function(String topic) onTopicTap;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +57,14 @@ class ItemDetailView extends StatelessWidget {
           onEdit: onEdit,
           onToggleCompleted: onToggleCompleted,
           onTagTap: onTagTap,
+          onAuthorTap: onAuthorTap,
+          onPublisherTap: onPublisherTap,
+          onReferenceTap: onReferenceTap,
+          onCategoryTap: onCategoryTap,
+          onFormatTap: onFormatTap,
+          onYearTap: onYearTap,
+          onLanguageTap: onLanguageTap,
+          onTopicTap: onTopicTap,
         ),
       );
     }
@@ -50,6 +75,14 @@ class ItemDetailView extends StatelessWidget {
       onEdit: onEdit,
       onToggleCompleted: onToggleCompleted,
       onTagTap: onTagTap,
+      onAuthorTap: onAuthorTap,
+      onPublisherTap: onPublisherTap,
+      onReferenceTap: onReferenceTap,
+      onCategoryTap: onCategoryTap,
+      onFormatTap: onFormatTap,
+      onYearTap: onYearTap,
+      onLanguageTap: onLanguageTap,
+      onTopicTap: onTopicTap,
     );
   }
 }
@@ -61,6 +94,14 @@ class _NarrowItemDetail extends StatefulWidget {
     required this.onEdit,
     required this.onToggleCompleted,
     required this.onTagTap,
+    required this.onAuthorTap,
+    required this.onPublisherTap,
+    required this.onReferenceTap,
+    required this.onCategoryTap,
+    required this.onFormatTap,
+    required this.onYearTap,
+    required this.onLanguageTap,
+    required this.onTopicTap,
   });
 
   final ItemReadModel item;
@@ -68,6 +109,14 @@ class _NarrowItemDetail extends StatefulWidget {
   final VoidCallback onEdit;
   final VoidCallback onToggleCompleted;
   final void Function(String tag) onTagTap;
+  final void Function(String author) onAuthorTap;
+  final void Function(String publisher) onPublisherTap;
+  final void Function(String reference) onReferenceTap;
+  final void Function(String category) onCategoryTap;
+  final void Function(String format) onFormatTap;
+  final void Function(int year) onYearTap;
+  final void Function(String language) onLanguageTap;
+  final void Function(String topic) onTopicTap;
 
   @override
   State<_NarrowItemDetail> createState() => _NarrowItemDetailState();
@@ -77,20 +126,15 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
   static const _headerFadeDistance = 120.0;
 
   final _scrollController = ScrollController();
-  double _headerOpacity = 0;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    final opacity = (_scrollController.offset / _headerFadeDistance).clamp(
-      0.0,
-      1.0,
-    );
-    if (opacity != _headerOpacity) setState(() => _headerOpacity = opacity);
+    // Rebuilds on every scroll change (not just when the header opacity
+    // crosses a new value) because the sticky-image translate below tracks
+    // the raw offset continuously for the whole hero image height, not just
+    // the short header fade distance.
+    _scrollController.addListener(() => setState(() {}));
   }
 
   @override
@@ -104,6 +148,21 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
     final colorScheme = Theme.of(context).colorScheme;
     return LayoutBuilder(
       builder: (context, constraints) {
+        // The hero image is a normal scrolling child (not a separate Stack
+        // layer) so its taps stay in the same gesture arena as the scroll
+        // drag — a Stack sibling behind the scroll view would never receive
+        // taps, since Scrollable installs an opaque gesture layer across its
+        // whole bounds. It's kept visually "stuck" by translating it by the
+        // current scroll offset while the sheet below scrolls up over it.
+        final rawOffset = _scrollController.hasClients
+            ? _scrollController.offset
+            : 0.0;
+        final stickyOffset = rawOffset
+            .clamp(0.0, constraints.maxHeight)
+            .toDouble();
+        final headerOpacity = (rawOffset / _headerFadeDistance)
+            .clamp(0.0, 1.0)
+            .toDouble();
         return Stack(
           children: [
             SingleChildScrollView(
@@ -111,16 +170,30 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    height: constraints.maxHeight,
-                    child: _ItemHeroImage(item: widget.item),
+                  Transform.translate(
+                    offset: Offset(0, stickyOffset),
+                    child: SizedBox(
+                      height: constraints.maxHeight,
+                      child: _ItemHeroImage(
+                        item: widget.item,
+                        onAuthorTap: widget.onAuthorTap,
+                      ),
+                    ),
                   ),
-                  Padding(
+                  Container(
+                    color: colorScheme.surface,
                     padding: const EdgeInsets.all(16),
                     child: _NarrowLayout(
                       item: widget.item,
                       onToggleCompleted: widget.onToggleCompleted,
                       onTagTap: widget.onTagTap,
+                      onPublisherTap: widget.onPublisherTap,
+                      onReferenceTap: widget.onReferenceTap,
+                      onCategoryTap: widget.onCategoryTap,
+                      onFormatTap: widget.onFormatTap,
+                      onYearTap: widget.onYearTap,
+                      onLanguageTap: widget.onLanguageTap,
+                      onTopicTap: widget.onTopicTap,
                     ),
                   ),
                 ],
@@ -138,7 +211,7 @@ class _NarrowItemDetailState extends State<_NarrowItemDetail> {
                   right: 4,
                   bottom: 4,
                 ),
-                color: colorScheme.surface.withValues(alpha: _headerOpacity),
+                color: colorScheme.surface.withValues(alpha: headerOpacity),
                 child: Row(
                   children: [
                     OverlayIconButton(
@@ -170,6 +243,14 @@ class _WideLayout extends StatelessWidget {
     required this.onEdit,
     required this.onToggleCompleted,
     required this.onTagTap,
+    required this.onAuthorTap,
+    required this.onPublisherTap,
+    required this.onReferenceTap,
+    required this.onCategoryTap,
+    required this.onFormatTap,
+    required this.onYearTap,
+    required this.onLanguageTap,
+    required this.onTopicTap,
   });
 
   final ItemReadModel item;
@@ -177,13 +258,23 @@ class _WideLayout extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onToggleCompleted;
   final void Function(String tag) onTagTap;
+  final void Function(String author) onAuthorTap;
+  final void Function(String publisher) onPublisherTap;
+  final void Function(String reference) onReferenceTap;
+  final void Function(String category) onCategoryTap;
+  final void Function(String format) onFormatTap;
+  final void Function(int year) onYearTap;
+  final void Function(String language) onLanguageTap;
+  final void Function(String topic) onTopicTap;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(child: _ItemHeroImage(item: item)),
+        Expanded(
+          child: _ItemHeroImage(item: item, onAuthorTap: onAuthorTap),
+        ),
         const SizedBox(width: 40),
         Expanded(
           child: SingleChildScrollView(
@@ -211,7 +302,17 @@ class _WideLayout extends StatelessWidget {
                   onTap: onToggleCompleted,
                 ),
                 const SizedBox(height: 20),
-                _DetailFields(item: item, onTagTap: onTagTap),
+                _DetailFields(
+                  item: item,
+                  onTagTap: onTagTap,
+                  onPublisherTap: onPublisherTap,
+                  onReferenceTap: onReferenceTap,
+                  onCategoryTap: onCategoryTap,
+                  onFormatTap: onFormatTap,
+                  onYearTap: onYearTap,
+                  onLanguageTap: onLanguageTap,
+                  onTopicTap: onTopicTap,
+                ),
               ],
             ),
           ),
@@ -226,11 +327,25 @@ class _NarrowLayout extends StatelessWidget {
     required this.item,
     required this.onToggleCompleted,
     required this.onTagTap,
+    required this.onPublisherTap,
+    required this.onReferenceTap,
+    required this.onCategoryTap,
+    required this.onFormatTap,
+    required this.onYearTap,
+    required this.onLanguageTap,
+    required this.onTopicTap,
   });
 
   final ItemReadModel item;
   final VoidCallback onToggleCompleted;
   final void Function(String tag) onTagTap;
+  final void Function(String publisher) onPublisherTap;
+  final void Function(String reference) onReferenceTap;
+  final void Function(String category) onCategoryTap;
+  final void Function(String format) onFormatTap;
+  final void Function(int year) onYearTap;
+  final void Function(String language) onLanguageTap;
+  final void Function(String topic) onTopicTap;
 
   @override
   Widget build(BuildContext context) {
@@ -239,16 +354,27 @@ class _NarrowLayout extends StatelessWidget {
       children: [
         _CompletedBadge(completed: item.completed, onTap: onToggleCompleted),
         const SizedBox(height: 16),
-        _DetailFields(item: item, onTagTap: onTagTap),
+        _DetailFields(
+          item: item,
+          onTagTap: onTagTap,
+          onPublisherTap: onPublisherTap,
+          onReferenceTap: onReferenceTap,
+          onCategoryTap: onCategoryTap,
+          onFormatTap: onFormatTap,
+          onYearTap: onYearTap,
+          onLanguageTap: onLanguageTap,
+          onTopicTap: onTopicTap,
+        ),
       ],
     );
   }
 }
 
 class _ItemHeroImage extends StatelessWidget {
-  const _ItemHeroImage({required this.item});
+  const _ItemHeroImage({required this.item, required this.onAuthorTap});
 
   final ItemReadModel item;
+  final void Function(String author) onAuthorTap;
 
   @override
   Widget build(BuildContext context) {
@@ -311,18 +437,40 @@ class _ItemHeroImage extends StatelessWidget {
                 ),
                 if (item.creator.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    item.creator.join(', '),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium?.copyWith(color: Colors.white70),
-                  ),
+                  _HeroCreatorLinks(creator: item.creator, onTap: onAuthorTap),
                 ],
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _HeroCreatorLinks extends StatelessWidget {
+  const _HeroCreatorLinks({required this.creator, required this.onTap});
+
+  final List<String> creator;
+  final void Function(String author) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(
+      context,
+    ).textTheme.titleMedium?.copyWith(color: Colors.white70);
+    return Wrap(
+      key: itemDetailHeroCreatorKey,
+      children: [
+        for (var i = 0; i < creator.length; i++) ...[
+          InkWell(
+            borderRadius: BorderRadius.circular(4),
+            onTap: () => onTap(creator[i]),
+            child: Text(creator[i], style: style),
+          ),
+          if (i < creator.length - 1) Text(', ', style: style),
+        ],
+      ],
     );
   }
 }
@@ -388,29 +536,73 @@ class _ItemImageFill extends StatelessWidget {
 }
 
 class _DetailFields extends StatelessWidget {
-  const _DetailFields({required this.item, required this.onTagTap});
+  const _DetailFields({
+    required this.item,
+    required this.onTagTap,
+    required this.onPublisherTap,
+    required this.onReferenceTap,
+    required this.onCategoryTap,
+    required this.onFormatTap,
+    required this.onYearTap,
+    required this.onLanguageTap,
+    required this.onTopicTap,
+  });
 
   final ItemReadModel item;
   final void Function(String tag) onTagTap;
+  final void Function(String publisher) onPublisherTap;
+  final void Function(String reference) onReferenceTap;
+  final void Function(String category) onCategoryTap;
+  final void Function(String format) onFormatTap;
+  final void Function(int year) onYearTap;
+  final void Function(String language) onLanguageTap;
+  final void Function(String topic) onTopicTap;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _DetailRow(label: 'Publisher', value: item.publisher),
-        if (item.reference.isNotEmpty)
-          _DetailRow(label: 'Reference', value: item.reference),
-        _DetailRow(label: 'Category', value: categoryLabel(item.category)),
         _DetailRow(
-          label: 'Format',
-          value: item.format.map(formatLabel).join(', '),
+          label: 'Publisher',
+          value: item.publisher,
+          onTap: () => onPublisherTap(item.publisher),
         ),
-        if (item.year > 0) _DetailRow(label: 'Year', value: '${item.year}'),
+        if (item.reference.isNotEmpty)
+          _DetailRow(
+            label: 'Reference',
+            value: item.reference,
+            onTap: () => onReferenceTap(item.reference),
+          ),
+        _DetailRow(
+          label: 'Category',
+          value: categoryLabel(item.category),
+          onTap: () => onCategoryTap(item.category),
+        ),
+        _LinkedValuesRow(
+          label: 'Format',
+          values: item.format,
+          labelBuilder: formatLabel,
+          onTap: onFormatTap,
+        ),
+        if (item.year > 0)
+          _DetailRow(
+            label: 'Year',
+            value: '${item.year}',
+            onTap: () => onYearTap(item.year),
+          ),
         if (item.language.isNotEmpty)
-          _DetailRow(label: 'Language', value: item.language.join(', ')),
+          _LinkedValuesRow(
+            label: 'Language',
+            values: item.language,
+            onTap: onLanguageTap,
+          ),
         if (item.topic.isNotEmpty)
-          _DetailRow(label: 'Topic', value: item.topic),
+          _DetailRow(
+            label: 'Topic',
+            value: item.topic,
+            onTap: () => onTopicTap(item.topic),
+          ),
         if (item.tags.isNotEmpty) ...[
           const SizedBox(height: 8),
           Text(
@@ -446,13 +638,56 @@ class _DetailFields extends StatelessWidget {
 }
 
 class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
+  const _DetailRow({
+    required this.label,
+    required this.value,
+    required this.onTap,
+  });
 
   final String label;
   final String value;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            Text(value, style: Theme.of(context).textTheme.bodyMedium),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LinkedValuesRow extends StatelessWidget {
+  const _LinkedValuesRow({
+    required this.label,
+    required this.values,
+    required this.onTap,
+    this.labelBuilder,
+  });
+
+  final String label;
+  final List<String> values;
+  final void Function(String value) onTap;
+  final String Function(String value)? labelBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    final valueStyle = Theme.of(context).textTheme.bodyMedium;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Column(
@@ -464,7 +699,21 @@ class _DetailRow extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          Text(value, style: Theme.of(context).textTheme.bodyMedium),
+          Wrap(
+            children: [
+              for (var i = 0; i < values.length; i++) ...[
+                InkWell(
+                  borderRadius: BorderRadius.circular(4),
+                  onTap: () => onTap(values[i]),
+                  child: Text(
+                    labelBuilder?.call(values[i]) ?? values[i],
+                    style: valueStyle,
+                  ),
+                ),
+                if (i < values.length - 1) Text(', ', style: valueStyle),
+              ],
+            ],
+          ),
         ],
       ),
     );

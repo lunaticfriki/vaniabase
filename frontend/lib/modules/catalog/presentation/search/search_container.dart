@@ -11,7 +11,9 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchContainer extends StatefulWidget {
-  const SearchContainer({super.key});
+  const SearchContainer({this.initialQuery, super.key});
+
+  final String? initialQuery;
 
   @override
   State<SearchContainer> createState() => _SearchContainerState();
@@ -20,12 +22,15 @@ class SearchContainer extends StatefulWidget {
 class _SearchContainerState extends State<SearchContainer> {
   late final SearchStateService _stateService;
   late final ItemViewModeStateService _viewModeService;
-  final _controller = TextEditingController();
+  late final _controller = TextEditingController(text: widget.initialQuery);
 
   @override
   void initState() {
     super.initState();
-    _stateService = SearchStateService(getIt<ItemReadService>());
+    _stateService = SearchStateService(
+      getIt<ItemReadService>(),
+      initialQuery: widget.initialQuery,
+    );
     _viewModeService = ItemViewModeStateService(
       getIt<SharedPreferences>(),
       'item_list_view_mode',

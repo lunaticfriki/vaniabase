@@ -17,6 +17,14 @@ void main() {
           onEdit: () {},
           onToggleCompleted: () {},
           onTagTap: (tag) {},
+          onAuthorTap: (author) {},
+          onPublisherTap: (publisher) {},
+          onReferenceTap: (reference) {},
+          onCategoryTap: (category) {},
+          onFormatTap: (format) {},
+          onYearTap: (year) {},
+          onLanguageTap: (language) {},
+          onTopicTap: (topic) {},
         ),
       ),
     );
@@ -67,7 +75,9 @@ void main() {
       expect(backButtonY, lessThan(50));
 
       final titleY = tester.getTopLeft(find.text('Dune')).dy;
-      final creatorY = tester.getTopLeft(find.text(item.creator.join(', '))).dy;
+      final creatorY = tester
+          .getTopLeft(find.byKey(itemDetailHeroCreatorKey))
+          .dy;
       final publisherLabelY = tester.getTopLeft(find.text('Publisher')).dy;
 
       expect(titleY, lessThan(imageRect.height));
@@ -95,6 +105,14 @@ void main() {
               onEdit: () {},
               onToggleCompleted: () {},
               onTagTap: (tag) {},
+              onAuthorTap: (author) {},
+              onPublisherTap: (publisher) {},
+              onReferenceTap: (reference) {},
+              onCategoryTap: (category) {},
+              onFormatTap: (format) {},
+              onYearTap: (year) {},
+              onLanguageTap: (language) {},
+              onTopicTap: (topic) {},
             ),
           ),
         ),
@@ -158,6 +176,84 @@ void main() {
     expect(find.byType(FullscreenImageView), findsOneWidget);
   });
 
+  testWidgets(
+    'narrow screen: tapping the cover image opens the fullscreen image viewer',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FullscreenImageView), findsNothing);
+
+      await tester.tap(find.byKey(itemDetailImageKey));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FullscreenImageView), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'narrow screen: tapping the creator on the hero image invokes onAuthorTap',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      String? tappedAuthor;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ItemDetailView(
+              item: item,
+              onBack: () {},
+              onEdit: () {},
+              onToggleCompleted: () {},
+              onTagTap: (tag) {},
+              onAuthorTap: (author) => tappedAuthor = author,
+              onPublisherTap: (publisher) {},
+              onReferenceTap: (reference) {},
+              onCategoryTap: (category) {},
+              onFormatTap: (format) {},
+              onYearTap: (year) {},
+              onLanguageTap: (language) {},
+              onTopicTap: (topic) {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(item.creator.first));
+      expect(tappedAuthor, item.creator.first);
+    },
+  );
+
+  testWidgets(
+    'narrow screen: dragging from the hero image still scrolls the sheet up',
+    (tester) async {
+      tester.view.physicalSize = const Size(375, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      final before = tester.getTopLeft(find.text('Not completed')).dy;
+
+      await tester.dragFrom(const Offset(187, 100), const Offset(0, -700));
+      await tester.pumpAndSettle();
+
+      final after = tester.getTopLeft(find.text('Not completed')).dy;
+      expect(after, lessThan(before));
+    },
+  );
+
   testWidgets('back button invokes onBack', (tester) async {
     var backPressed = false;
     await tester.pumpWidget(
@@ -169,6 +265,14 @@ void main() {
             onEdit: () {},
             onToggleCompleted: () {},
             onTagTap: (tag) {},
+            onAuthorTap: (author) {},
+            onPublisherTap: (publisher) {},
+            onReferenceTap: (reference) {},
+            onCategoryTap: (category) {},
+            onFormatTap: (format) {},
+            onYearTap: (year) {},
+            onLanguageTap: (language) {},
+            onTopicTap: (topic) {},
           ),
         ),
       ),
@@ -188,6 +292,14 @@ void main() {
             onEdit: () {},
             onToggleCompleted: () => toggled = true,
             onTagTap: (tag) {},
+            onAuthorTap: (author) {},
+            onPublisherTap: (publisher) {},
+            onReferenceTap: (reference) {},
+            onCategoryTap: (category) {},
+            onFormatTap: (format) {},
+            onYearTap: (year) {},
+            onLanguageTap: (language) {},
+            onTopicTap: (topic) {},
           ),
         ),
       ),
@@ -210,12 +322,144 @@ void main() {
             onEdit: () {},
             onToggleCompleted: () {},
             onTagTap: (tag) => tappedTag = tag,
+            onAuthorTap: (author) {},
+            onPublisherTap: (publisher) {},
+            onReferenceTap: (reference) {},
+            onCategoryTap: (category) {},
+            onFormatTap: (format) {},
+            onYearTap: (year) {},
+            onLanguageTap: (language) {},
+            onTopicTap: (topic) {},
           ),
         ),
       ),
     );
 
+    await tester.ensureVisible(find.text('sci-fi'));
     await tester.tap(find.text('sci-fi'));
     expect(tappedTag, 'sci-fi');
   });
+
+  testWidgets('tapping the author invokes onAuthorTap with its value', (
+    tester,
+  ) async {
+    String? tappedAuthor;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ItemDetailView(
+            item: item,
+            onBack: () {},
+            onEdit: () {},
+            onToggleCompleted: () {},
+            onTagTap: (tag) {},
+            onAuthorTap: (author) => tappedAuthor = author,
+            onPublisherTap: (publisher) {},
+            onReferenceTap: (reference) {},
+            onCategoryTap: (category) {},
+            onFormatTap: (format) {},
+            onYearTap: (year) {},
+            onLanguageTap: (language) {},
+            onTopicTap: (topic) {},
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text(item.creator.first));
+    expect(tappedAuthor, item.creator.first);
+  });
+
+  testWidgets('tapping the publisher invokes onPublisherTap with its value', (
+    tester,
+  ) async {
+    String? tappedPublisher;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ItemDetailView(
+            item: item,
+            onBack: () {},
+            onEdit: () {},
+            onToggleCompleted: () {},
+            onTagTap: (tag) {},
+            onAuthorTap: (author) {},
+            onPublisherTap: (publisher) => tappedPublisher = publisher,
+            onReferenceTap: (reference) {},
+            onCategoryTap: (category) {},
+            onFormatTap: (format) {},
+            onYearTap: (year) {},
+            onLanguageTap: (language) {},
+            onTopicTap: (topic) {},
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text(item.publisher));
+    expect(tappedPublisher, item.publisher);
+  });
+
+  testWidgets('tapping the category invokes onCategoryTap with its value', (
+    tester,
+  ) async {
+    String? tappedCategory;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ItemDetailView(
+            item: item,
+            onBack: () {},
+            onEdit: () {},
+            onToggleCompleted: () {},
+            onTagTap: (tag) {},
+            onAuthorTap: (author) {},
+            onPublisherTap: (publisher) {},
+            onReferenceTap: (reference) {},
+            onCategoryTap: (category) => tappedCategory = category,
+            onFormatTap: (format) {},
+            onYearTap: (year) {},
+            onLanguageTap: (language) {},
+            onTopicTap: (topic) {},
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Category'));
+    expect(tappedCategory, item.category);
+  });
+
+  testWidgets(
+    'format is plain linked text, not a chip, and invokes onFormatTap',
+    (tester) async {
+      String? tappedFormat;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ItemDetailView(
+              item: item,
+              onBack: () {},
+              onEdit: () {},
+              onToggleCompleted: () {},
+              onTagTap: (tag) {},
+              onAuthorTap: (author) {},
+              onPublisherTap: (publisher) {},
+              onReferenceTap: (reference) {},
+              onCategoryTap: (category) {},
+              onFormatTap: (format) => tappedFormat = format,
+              onYearTap: (year) {},
+              onLanguageTap: (language) {},
+              onTopicTap: (topic) {},
+            ),
+          ),
+        ),
+      );
+
+      expect(find.widgetWithText(ActionChip, 'Hardcover'), findsNothing);
+
+      await tester.tap(find.text('Hardcover'));
+      expect(tappedFormat, 'hardcover');
+    },
+  );
 }

@@ -68,7 +68,7 @@ class SearchView extends StatelessWidget {
             decoration: const InputDecoration(
               labelText: 'Search your catalog',
               helperText:
-                  'Matches title, creator, publisher, topic, reference and tags',
+                  'Matches title, creator, publisher, topic, reference, year and tags',
               prefixIcon: Icon(Pixel.search),
             ),
           ),

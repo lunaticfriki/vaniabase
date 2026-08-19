@@ -33,7 +33,13 @@ class SearchError extends SearchState {
 }
 
 class SearchStateService extends Cubit<SearchState> {
-  SearchStateService(this._readService) : super(const SearchIdle()) {
+  SearchStateService(this._readService, {String? initialQuery})
+    : super(const SearchIdle()) {
+    final trimmedInitialQuery = initialQuery?.trim();
+    if (trimmedInitialQuery != null && trimmedInitialQuery.isNotEmpty) {
+      _currentQuery = trimmedInitialQuery;
+      emit(const SearchInProgress());
+    }
     _subscription = _readService.watchAll().listen((items) {
       _items = items;
       final query = _currentQuery;
@@ -79,6 +85,7 @@ class SearchStateService extends Cubit<SearchState> {
     item.topic,
     item.reference,
     ...item.tags,
+    if (item.year > 0) '${item.year}',
   ];
 
   @override
