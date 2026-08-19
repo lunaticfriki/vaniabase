@@ -68,7 +68,9 @@ class _LoginViewState extends State<LoginView> {
                 children: [
                   Text(
                     'Log in',
-                    style: Theme.of(context).textTheme.headlineSmall,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                   if (widget.rememberedAccounts.isNotEmpty) ...[
                     const SizedBox(height: 20),

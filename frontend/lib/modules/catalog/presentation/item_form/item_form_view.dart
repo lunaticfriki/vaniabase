@@ -168,7 +168,9 @@ class _ItemFormViewState extends State<ItemFormView> {
               children: [
                 Text(
                   widget.formTitle,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 TextFormField(

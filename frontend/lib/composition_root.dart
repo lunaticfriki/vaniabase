@@ -10,6 +10,7 @@ import 'package:frontend/modules/identity/application/remembered_accounts_reposi
 import 'package:frontend/modules/identity/infrastructure/firebase_identity_repository.dart';
 import 'package:frontend/modules/identity/infrastructure/local_remembered_accounts_repository.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
+import 'package:frontend/shared/theme/accent_color_state_service.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +33,9 @@ Future<void> configureDependencies() async {
   );
   getIt.registerLazySingleton<ThemeStateService>(
     () => ThemeStateService(getIt<SharedPreferences>()),
+  );
+  getIt.registerLazySingleton<AccentColorStateService>(
+    () => AccentColorStateService(getIt<SharedPreferences>()),
   );
 
   getIt.registerLazySingleton<FirebaseIdentityRepository>(

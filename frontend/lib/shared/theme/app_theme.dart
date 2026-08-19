@@ -1,34 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/shared/layout/top_right_corner_clipper.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+enum AppAccentColor {
+  purple('Purple', Color(0xFF6F3194)),
+  magenta('Magenta', Color(0xFFF23DD4)),
+  yellow('Yellow', Color(0xFFFFD23F)),
+  blue('Blue', Color(0xFF448AFF)),
+  green('Green', Color(0xFF00C853)),
+  orange('Orange', Color(0xFFFF6D00)),
+  teal('Teal', Color(0xFF00BFA5));
+
+  const AppAccentColor(this.label, this.seed);
+
+  final String label;
+  final Color seed;
+}
 
 class AppTheme {
   const AppTheme._();
 
-  static const _seedPurple = Color(0xFF9B7EF7);
   static const _darkBackground = Color(0xFF161219);
   static const _darkSurface = Color(0xFF1E1A22);
-  static const _lightPurpleSecondary = Color(0xFF6C3CE9);
-  static const _darkPurpleSecondary = Color(0xFFB9A6FF);
 
-  static ThemeData get light => _themeFrom(_lightScheme);
+  static ThemeData light(AppAccentColor accent) =>
+      _themeFrom(_lightScheme(accent));
 
-  static ThemeData get dark => _themeFrom(_darkScheme);
+  static ThemeData dark(AppAccentColor accent) =>
+      _themeFrom(_darkScheme(accent));
 
-  static ColorScheme get _lightScheme => ColorScheme.fromSeed(
-    seedColor: _seedPurple,
-    brightness: Brightness.light,
-  ).copyWith(secondary: _lightPurpleSecondary, onSecondary: Colors.white);
-
-  static ColorScheme get _darkScheme =>
+  static ColorScheme _lightScheme(AppAccentColor accent) =>
       ColorScheme.fromSeed(
-        seedColor: _seedPurple,
-        brightness: Brightness.dark,
-      ).copyWith(
-        secondary: _darkPurpleSecondary,
-        onSecondary: const Color(0xFF2A2049),
-        surface: _darkSurface,
-        onSurface: const Color(0xFFEAE4F0),
+        seedColor: accent.seed,
+        brightness: Brightness.light,
+        dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
       );
+
+  static ColorScheme _darkScheme(AppAccentColor accent) => ColorScheme.fromSeed(
+    seedColor: accent.seed,
+    brightness: Brightness.dark,
+    dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
+  ).copyWith(surface: _darkSurface, onSurface: const Color(0xFFEAE4F0));
+
+  static const _buttonShape = NotchedCornersShapeBorder(topRightCut: 8);
 
   static ThemeData _themeFrom(ColorScheme colorScheme) {
     final textTheme = GoogleFonts.inconsolataTextTheme(
@@ -50,7 +64,23 @@ class AppTheme {
         foregroundColor: colorScheme.onSurface,
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: colorScheme.secondary),
+        style: TextButton.styleFrom(
+          foregroundColor: colorScheme.secondary,
+          shape: _buttonShape,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(shape: _buttonShape),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(shape: _buttonShape),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(shape: _buttonShape),
+      ),
+      chipTheme: ChipThemeData(shape: _buttonShape),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        shape: _buttonShape,
       ),
     );
   }

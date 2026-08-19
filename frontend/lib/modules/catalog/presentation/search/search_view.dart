@@ -44,7 +44,9 @@ class SearchView extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Search',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
               if (onExport != null)

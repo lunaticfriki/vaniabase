@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/shared/layout/top_right_corner_clipper.dart';
 
 class OverlayIconButton extends StatelessWidget {
   const OverlayIconButton({
@@ -16,27 +17,28 @@ class OverlayIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4),
-      child: Material(
-        color: Colors.black.withValues(alpha: 0.35),
-        shape: const StadiumBorder(),
-        child: InkWell(
-          customBorder: const StadiumBorder(),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 18, color: Colors.white),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+      child: ClipPath(
+        clipper: const TopRightCornerClipper(cut: 10),
+        child: Material(
+          color: Colors.black.withValues(alpha: 0.35),
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, size: 18, color: Colors.white),
+                  const SizedBox(width: 6),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

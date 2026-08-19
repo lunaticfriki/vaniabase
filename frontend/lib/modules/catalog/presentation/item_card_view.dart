@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/catalog/application/item_read_model.dart';
 import 'package:frontend/modules/catalog/application/catalog_option_labels_util.dart';
+import 'package:frontend/shared/layout/top_right_corner_clipper.dart';
 import 'package:pixelarticons/pixel.dart';
 
 class ItemCardView extends StatelessWidget {
@@ -15,6 +16,8 @@ class ItemCardView extends StatelessWidget {
   final ItemReadModel item;
   final VoidCallback onTap;
   final bool showDetails;
+
+  static const _cornerCut = 20.0;
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +38,24 @@ class ItemCardView extends StatelessWidget {
             ),
           );
 
+    final sizedImage = AspectRatio(aspectRatio: 3 / 4, child: image);
+
     return Card(
       clipBehavior: Clip.antiAlias,
+      shape: const NotchedCornersShapeBorder(
+        topRightCut: _cornerCut,
+        bottomLeftCut: _cornerCut,
+      ),
       child: InkWell(
         onTap: onTap,
         child: !showDetails
-            ? AspectRatio(aspectRatio: 3 / 4, child: image)
+            ? sizedImage
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AspectRatio(aspectRatio: 3 / 4, child: image),
+                  sizedImage,
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, _cornerCut),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -65,11 +74,10 @@ class ItemCardView extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           '${categoryLabel(item.category)} · ${item.format.map(formatLabel).join(', ')}',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                       ],
                     ),

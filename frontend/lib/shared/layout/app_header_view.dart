@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/shared/session/session_state_service.dart';
+import 'package:frontend/shared/theme/accent_color_state_service.dart';
+import 'package:frontend/shared/theme/app_theme.dart';
 import 'package:frontend/shared/theme/theme_state_service.dart';
 import 'package:pixelarticons/pixel.dart';
 
@@ -12,6 +14,8 @@ Future<void> _showResponsiveMenu(
   required String? greetingName,
   required ThemeMode themeMode,
   required ValueChanged<ThemeMode> onThemeChanged,
+  required AppAccentColor accentColor,
+  required ValueChanged<AppAccentColor> onAccentChanged,
   required bool isAuthenticated,
   required VoidCallback onLogout,
 }) async {
@@ -58,6 +62,25 @@ Future<void> _showResponsiveMenu(
             ],
           ),
         ),
+      const PopupMenuDivider(),
+      PopupMenuItem<VoidCallback>(
+        enabled: false,
+        child: Wrap(
+          spacing: 12,
+          runSpacing: 8,
+          children: [
+            for (final color in AppAccentColor.values)
+              _AccentColorSwatch(
+                color: color.seed,
+                size: 24,
+                selected: color == accentColor,
+                onTap: () => Navigator.of(
+                  context,
+                ).pop<VoidCallback>(() => onAccentChanged(color)),
+              ),
+          ],
+        ),
+      ),
       if (isAuthenticated) ...[
         const PopupMenuDivider(),
         PopupMenuItem<VoidCallback>(
@@ -66,7 +89,10 @@ Future<void> _showResponsiveMenu(
             children: [
               const Icon(Pixel.logout, size: 20),
               const SizedBox(width: 12),
-              Text('Log out', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              Text(
+                'Log out',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
             ],
           ),
         ),
@@ -103,6 +129,44 @@ PopupMenuItem<ThemeMode> _themeModeMenuItem(
       ],
     ),
   );
+}
+
+class _AccentColorSwatch extends StatelessWidget {
+  const _AccentColorSwatch({
+    required this.color,
+    this.size = 18,
+    this.selected = false,
+    this.onTap,
+  });
+
+  final Color color;
+  final double size;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final swatch = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: selected
+            ? Border.all(
+                color: Theme.of(context).colorScheme.onSurface,
+                width: 2,
+              )
+            : null,
+      ),
+    );
+    if (onTap == null) return swatch;
+    return InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: Padding(padding: const EdgeInsets.all(4), child: swatch),
+    );
+  }
 }
 
 class _NavItem {
@@ -169,9 +233,12 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
       return null;
     });
     final themeMode = context.watch<ThemeStateService>().state;
+    final accentColor = context.watch<AccentColorStateService>().state;
     final isWide = MediaQuery.sizeOf(context).width >= navWideBreakpoint;
     void onThemeChanged(ThemeMode mode) =>
         context.read<ThemeStateService>().setMode(mode);
+    void onAccentChanged(AppAccentColor color) =>
+        context.read<AccentColorStateService>().setColor(color);
 
     final navItems = [
       _NavItem(
@@ -216,7 +283,16 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
     ];
 
     return AppBar(
-      title: InkWell(onTap: onNavigateHome, child: const Text('VANIABASE')),
+      title: InkWell(
+        onTap: onNavigateHome,
+        child: Text(
+          'VANIABASE',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      ),
       actions: [
         if (greetingName != null && isWide)
           Padding(
@@ -258,6 +334,30 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
                               _themeModeMenuItem(mode, themeMode),
                           ],
                         ),
+                        PopupMenuButton<AppAccentColor>(
+                          tooltip: 'Accent color',
+                          icon: _AccentColorSwatch(color: accentColor.seed),
+                          onSelected: onAccentChanged,
+                          itemBuilder: (context) => [
+                            PopupMenuItem<AppAccentColor>(
+                              enabled: false,
+                              child: Wrap(
+                                spacing: 12,
+                                runSpacing: 8,
+                                children: [
+                                  for (final color in AppAccentColor.values)
+                                    _AccentColorSwatch(
+                                      color: color.seed,
+                                      size: 24,
+                                      selected: color == accentColor,
+                                      onTap: () =>
+                                          Navigator.of(context).pop(color),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                         if (isAuthenticated)
                           IconButton(
                             onPressed: onLogout,
@@ -280,6 +380,8 @@ class AppHeaderView extends StatelessWidget implements PreferredSizeWidget {
                       greetingName: greetingName,
                       themeMode: themeMode,
                       onThemeChanged: onThemeChanged,
+                      accentColor: accentColor,
+                      onAccentChanged: onAccentChanged,
                       isAuthenticated: isAuthenticated,
                       onLogout: onLogout,
                     ),

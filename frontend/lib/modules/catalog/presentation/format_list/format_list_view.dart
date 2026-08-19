@@ -20,7 +20,12 @@ class FormatListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Formats', style: Theme.of(context).textTheme.headlineSmall),
+          Text(
+            'Formats',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
           const SizedBox(height: 12),
           Expanded(
             child: SingleChildScrollView(
