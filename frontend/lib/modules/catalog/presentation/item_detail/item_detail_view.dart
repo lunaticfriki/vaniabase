@@ -432,7 +432,7 @@ class _ItemHeroImage extends StatelessWidget {
                   item.title,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.white,
                   ),
                 ),
                 if (item.creator.isNotEmpty) ...[
